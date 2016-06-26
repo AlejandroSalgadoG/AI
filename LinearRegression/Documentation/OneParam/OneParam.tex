@@ -17,7 +17,11 @@
     for example, we have the folowing points plotted in a graphic\\
 
     \begin{tikzpicture}
-        \begin{axis}[ xmin=0, xmax=5,
+        \begin{axis}[
+                      title={Input points},
+                      xlabel=$x$,
+                      ylabel=$y$,
+                      xmin=0, xmax=5,
                       ymin=0, ymax=10,
                       grid=both
                     ]
@@ -44,7 +48,8 @@
     answers\\
 
     \begin{tikzpicture}
-        \begin{axis}[ xmin=0, xmax=5,
+        \begin{axis}[
+                      xmin=0, xmax=5,
                       ymin=0, ymax=10,
                       grid=both
                     ]
@@ -73,7 +78,11 @@
     get more info from data.\\
 
     \begin{tikzpicture}
-        \begin{axis}[ xmin=0, xmax=5,
+        \begin{axis}[
+                      title={Predictions},
+                      xlabel=$h(x)$,
+                      ylabel=$y$,
+                      xmin=0, xmax=5,
                       ymin=0, ymax=10,
                     ]
             \addplot[color=blue]{1.5*x};
@@ -185,11 +194,10 @@
 
     Now that we have seen the process, we are gonig to formalize a little bit
     the process. The first thing that we are going to do is define a varible as
-    the number of elements in each set
-
+    the number of elements in each set \\
 
     \begin{itemize}
-        \item $m = number\_of\_elements$
+        \item $m = number\_of\_elements$ \\
     \end{itemize}
 
     Second we are going to define the resulting set as $\{x_1,x_2, ... , x_m\}$
@@ -238,25 +246,21 @@
        J(\theta) = \frac{1}{2m} \sum_{i=1}^{m} ( h(x_i) - y_i )^2
     \end{equation}
 
-    This equation has the following graphic
+    This equation will have the following graphic
 
     \begin{figure}[h!]
-
-        \centering
-        \captionsetup{justification=centering}
-
         \begin{tikzpicture}
             \begin{axis}[
-                            xlabel=$\theta$,
-                            ylabel=$J(\theta)$,
-                            xmin=-5, xmax=5,
-                            ymin=0, ymax=10,
+                         title={Cost function},
+                         xlabel=$\theta$,
+                         ylabel=$J(\theta)$,
+                         ymin=0, ymax=25,
+                         xtick=\empty,
+                         ytick=\empty
                         ]
                 \addplot[mark=none, color=blue]{x^2};
             \end{axis}
         \end{tikzpicture}
-
-        \caption{Cost function}
     \end{figure}
 
     The next step is define a way to make the error as small as posible,
@@ -272,10 +276,67 @@
 
     The objective of this function is to actualize the parameter $\theta$
     of the cost function J minimizing the error in each iteration, this
-    is done by searching the path to the global minimum. The function
-    that we are going to use is described bellow.\\
+    is done by searching the path to the global minimum. \\
 
-    The first thing to do is replace the function $J(\theta)$
+    \begin{figure}[ht!]
+        \begin{tikzpicture}
+            \begin{axis}[
+                         xlabel=$\theta$,
+                         ylabel=$J(\theta)$,
+                         ymin=0, ymax=25,
+                         xtick=\empty,
+                         ytick=\empty
+                        ]
+                \addplot[mark=none, color=red]{x^2};
+
+                \draw[thick,->] (axis cs: 3.5,16) -- node[left]{$\alpha \Bigg(\frac{d}{d \theta} J(\theta)\Bigg)$} (axis cs: 2.65,9.75);
+                \draw[thick,->] (axis cs: 2.5,9) -- (axis cs: 1.65,4.75);
+                \draw[thick,->] (axis cs: 1.5,4) -- (axis cs: 0.75,2);
+                \draw[thick,->] (axis cs: 0.75,1.75) -- (axis cs: 0,0.75);
+
+                \addplot[color=blue, only marks]
+                coordinates{
+                    (4,16)
+                    (3,9)
+                    (2,4)
+                    (1,1)
+                    (0,0)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
+
+    \begin{figure}[ht!]
+        \begin{tikzpicture}
+            \begin{axis}[
+                         title={Gradient decend with negative derivative},
+                         xlabel=$\theta$,
+                         ylabel=$J(\theta)$,
+                         ymin=0, ymax=25,
+                         xtick=\empty,
+                         ytick=\empty
+                        ]
+                \addplot[mark=none, color=red]{x^2};
+
+                \draw[thick,->] (axis cs: -3.5,16) -- node[right]{$\alpha\Bigg(\frac{d}{d\theta}J(\theta)\Bigg)$} (axis cs: -2.65,9.75);
+                \draw[thick,->] (axis cs: -2.5,9) -- (axis cs: -1.65,4.75);
+                \draw[thick,->] (axis cs: -1.5,4) -- (axis cs: -0.75,2);
+                \draw[thick,->] (axis cs: -0.75,1.75) -- (axis cs: -0,0.75);
+
+                \addplot[color=blue, only marks]
+                coordinates{
+                    (-4,16)
+                    (-3,9)
+                    (-2,4)
+                    (-1,1)
+                    (0,0)
+                };
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
+
+    The function that we are going to use is described bellow. The first thing
+    to do is replace the function $J(\theta)$
 
     \begin{equation}
         \theta := \theta - \alpha
