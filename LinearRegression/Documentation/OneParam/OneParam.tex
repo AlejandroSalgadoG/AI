@@ -270,6 +270,13 @@
             \Bigg)
     \end{equation}
 
+    The objective of this function is to actualize the parameter $\theta$
+    of the cost function J minimizing the error in each iteration, this
+    is done by searching the path to the global minimum. The function
+    that we are going to use is described bellow.\\
+
+    The first thing to do is replace the function $J(\theta)$
+
     \begin{equation}
         \theta := \theta - \alpha
             \Bigg(
@@ -279,6 +286,9 @@
                     \Bigg]
             \Bigg)
     \end{equation}
+
+    Now the factor of the denominator has no influence on the function so it
+    can be tranlated outside of the derivative
 
     \begin{equation}
         \theta := \theta - \alpha \frac{1}{2m}
@@ -290,6 +300,9 @@
             \Bigg)
     \end{equation}
 
+    The derivative of the summatory is equal to the derivative of each term and
+    then add each result, so we can insert the dirivative into the summary
+
     \begin{equation}
         \theta := \theta - \alpha
             \Bigg(
@@ -299,6 +312,10 @@
                     \Bigg]
             \Bigg)
     \end{equation}
+
+    Then we calculate the derivative, notice that because of derivative
+    properties we must calculate the outside derivative multiplied by the inside
+    derivative
 
     \begin{equation}
         \theta := \theta - \alpha
@@ -310,6 +327,8 @@
             \Bigg)
     \end{equation}
 
+    Now we calculate the inside derivative
+
     \begin{equation}
         \theta := \theta - \alpha
             \Bigg(
@@ -320,15 +339,7 @@
             \Bigg)
     \end{equation}
 
-    \begin{equation}
-        \theta := \theta - \alpha
-            \Bigg(
-                \frac{1}{2m} \sum_{i=1}^{m}
-                    \Big[
-                        2 (\theta x_i - y_i) x_i
-                    \Big]
-            \Bigg)
-    \end{equation}
+    Now we can take the factor 2 outside the summatory
 
     \begin{equation}
         \theta := \theta - \alpha
@@ -339,6 +350,12 @@
                     \Big]
             \Bigg)
     \end{equation}
+
+    Finally we can see the reason why the denominator has a extra factor
+    (the 2 that we added at the begining), this is with the objective
+    to cancel the 2 in the numerator that result of the derivative. Finaly
+    this is the resulting function that we are going to use to minimize the
+    error of the algorithm
 
     \begin{equation}
         \theta := \theta - \alpha
