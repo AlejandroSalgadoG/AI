@@ -276,11 +276,21 @@
 
     The objective of this function is to actualize the parameter $\theta$
     of the cost function J minimizing the error in each iteration, this
-    is done by searching the path to the global minimum. \\
+    is done by searching the path to the global minimum.
+
+    for those of you who are not familiar with the derivarives, is highly
+    recomendable to look at the Derivative fundamentals article that is in
+    located in the documentation directory.\\
+
+    Now lets analyze the formula, the fist simbol is the $\theta$ that is the
+    parameter of the cost function, the second is the $:=$ which means assign,
+    this make sence because we are trying to update the parameter of the
+    function trying to make it as closer to the minimum as possible.
 
     \begin{figure}[ht!]
         \begin{tikzpicture}
             \begin{axis}[
+                         title={Gradient decend with positive derivative},
                          xlabel=$\theta$,
                          ylabel=$J(\theta)$,
                          ymin=0, ymax=25,
@@ -335,8 +345,10 @@
         \end{tikzpicture}
     \end{figure}
 
-    The function that we are going to use is described bellow. The first thing
-    to do is replace the function $J(\theta)$
+    \vspace{8cm}
+
+    Now the first thing to do in order to use the gradient desent in our cost
+    function is replace the function $J(\theta)$ in the formula
 
     \begin{equation}
         \theta := \theta - \alpha
