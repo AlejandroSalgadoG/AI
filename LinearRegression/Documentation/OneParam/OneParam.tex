@@ -1,8 +1,12 @@
 \documentclass[12pt,journal]{IEEEtran}
 
+%
+
 \usepackage[utf8]{inputenc}
 \usepackage{pgfplots}
 \usepackage{caption}
+\usepackage{graphicx}
+\graphicspath{ {Images/} }
 
 \begin{document}
 
@@ -125,7 +129,6 @@
     make this variable equal to zero ($\theta_0 = 0$), this means  that the line
     that we will make will allways pass by the origin. In the next article this
     term will be used. In this article the function will be define as follow
-
 
     \begin{equation}
         h(x) = \theta x
@@ -278,74 +281,160 @@
     of the cost function J minimizing the error in each iteration, this
     is done by searching the path to the global minimum.
 
-    for those of you who are not familiar with the derivarives, is highly
+    for those of you who are not familiar with the derivatives, is highly
     recomendable to look at the Derivative fundamentals article that is in
     located in the documentation directory.\\
+
+    Before explaining the deeper meaning of this derivative we are going to
+    explain in other words what the gradient decend does, imagin that you are
+    lost in a jungle that is kind of a valley, and you are trying to find your
+    frinds that are in the lowest part of the valley, but you dont know exactly
+    in what point of the valley are you, what do you do?\\
+
+    %taken from http://bluepoppyholidays.com/wp-content/uploads/2014/10/Valley-of-flowers-from-top.jpg
+
+    \vspace{2cm}
+
+    \begin{figure}[h]
+        \centering
+        \includegraphics[scale=0.2]{Valley}
+        \caption{What you are specting as a valley}
+    \end{figure}
+
+    \begin{figure}[h]
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                         title=What you have to imagin as a valley,
+                         ymin=0, ymax=25,
+                         xtick=\empty,
+                         ytick=\empty
+                        ]
+                \addplot[mark=none, color=black]{x^2};
+
+                \node[above] at (axis cs: 0,2) {Your};
+                \node[above] at (axis cs: 0,0.5) {friends};
+
+                \addplot[color=blue, only marks]
+                    coordinates{
+                        (0,0)
+                    };
+
+                \addplot[color=red, only marks]
+                    coordinates{
+                        (4,16)
+                        (2,4)
+                        (-3,9)
+                    };
+
+                \addplot[color=black, only marks]
+                    coordinates{
+                        (0,18)
+                    };
+
+
+                \node[above] at (axis cs: 0,18) {Your possible possition};
+
+                \draw[thick, ->] (axis cs: 0,18) -- (axis cs: 3.7,16);
+                \draw[thick, ->] (axis cs: 0,18) -- (axis cs: 1.8,4.4);
+                \draw[thick, ->] (axis cs: 0,18) -- (axis cs: -2.9,9.3);
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
+
+    What you shoul do
 
     Now lets analyze the formula, the fist simbol is the $\theta$ that is the
     parameter of the cost function, the second is the $:=$ which means assign,
     this make sence because we are trying to update the parameter of the
-    function trying to make it as closer to the minimum as possible.
+    function trying to make it as closer to the minimum as possible. Then we
+    have a the actual value of $\theta$ followed by a substraction and a
+    $\alpha$ simbol, we are goint to talk about this later, now we get to de
+    most important part of the formula, the derivative ($\frac{d}{d \theta}$).\\
 
-    \begin{figure}[ht!]
-        \begin{tikzpicture}
-            \begin{axis}[
-                         title={Gradient decend with positive derivative},
-                         xlabel=$\theta$,
-                         ylabel=$J(\theta)$,
-                         ymin=0, ymax=25,
-                         xtick=\empty,
-                         ytick=\empty
-                        ]
-                \addplot[mark=none, color=red]{x^2};
+    the idea is that we are going to start in a point that is located at any
+    part of the graphic, it could be far or close to the minimum, remember that
+    this point is the result of the cost function for a line, and what we want
+    to do is to start updating the value of $\theta$ because is the value that
+    makes that the error will be big or small ($J(\theta)$).\\
 
-                \draw[thick,->] (axis cs: 3.5,16) -- node[left]{$\alpha \Bigg(\frac{d}{d \theta} J(\theta)\Bigg)$} (axis cs: 2.65,9.75);
-                \draw[thick,->] (axis cs: 2.5,9) -- (axis cs: 1.65,4.75);
-                \draw[thick,->] (axis cs: 1.5,4) -- (axis cs: 0.75,2);
-                \draw[thick,->] (axis cs: 0.75,1.75) -- (axis cs: 0,0.75);
+    \begin{tikzpicture}
+        \begin{axis}[
+                     xlabel=$\theta$,
+                     ylabel=$J(\theta)$,
+                     ymin=0, ymax=25,
+                     xtick=\empty,
+                     ytick=\empty
+                    ]
+            \addplot[mark=none, color=red]{x^2};
 
-                \addplot[color=blue, only marks]
-                coordinates{
-                    (4,16)
-                    (3,9)
-                    (2,4)
-                    (1,1)
-                    (0,0)
-                };
-            \end{axis}
-        \end{tikzpicture}
-    \end{figure}
+            \draw[thick,->] (axis cs: 4,0) -- node[left]{$\theta_1$} (axis cs: 4,16);
 
-    \begin{figure}[ht!]
-        \begin{tikzpicture}
-            \begin{axis}[
-                         title={Gradient decend with negative derivative},
-                         xlabel=$\theta$,
-                         ylabel=$J(\theta)$,
-                         ymin=0, ymax=25,
-                         xtick=\empty,
-                         ytick=\empty
-                        ]
-                \addplot[mark=none, color=red]{x^2};
+            \addplot[color=blue, only marks]
+            coordinates{
+                (4,16)
+                (2,4)
+                (1,1)
+                (0,0)
+            };
+        \end{axis}
+    \end{tikzpicture}
 
-                \draw[thick,->] (axis cs: -3.5,16) -- node[right]{$\alpha\Bigg(\frac{d}{d\theta}J(\theta)\Bigg)$} (axis cs: -2.65,9.75);
-                \draw[thick,->] (axis cs: -2.5,9) -- (axis cs: -1.65,4.75);
-                \draw[thick,->] (axis cs: -1.5,4) -- (axis cs: -0.75,2);
-                \draw[thick,->] (axis cs: -0.75,1.75) -- (axis cs: -0,0.75);
+    This can be done by calculating the direcction and that we want to follow
 
-                \addplot[color=blue, only marks]
-                coordinates{
-                    (-4,16)
-                    (-3,9)
-                    (-2,4)
-                    (-1,1)
-                    (0,0)
-                };
-            \end{axis}
-        \end{tikzpicture}
-    \end{figure}
+    \begin{tikzpicture}
+        \begin{axis}[
+                     title={Gradient decend with positive derivative},
+                     xlabel=$\theta$,
+                     ylabel=$J(\theta)$,
+                     ymin=0, ymax=25,
+                     xtick=\empty,
+                     ytick=\empty
+                    ]
+            \addplot[mark=none, color=red]{x^2};
 
-    \vspace{8cm}
+            \draw[thick,->] (axis cs: 3.5,16) -- node[left]{$\alpha \Bigg(\frac{d}{d \theta} J(\theta)\Bigg)$} (axis cs: 2.65,9.75);
+            \draw[thick,->] (axis cs: 2.5,9) -- (axis cs: 1.65,4.75);
+            \draw[thick,->] (axis cs: 1.5,4) -- (axis cs: 0.75,2);
+            \draw[thick,->] (axis cs: 0.75,1.75) -- (axis cs: 0,0.75);
+
+            \addplot[color=blue, only marks]
+            coordinates{
+                (4,16)
+                (3,9)
+                (2,4)
+                (1,1)
+                (0,0)
+            };
+        \end{axis}
+    \end{tikzpicture}
+
+    \begin{tikzpicture}
+        \begin{axis}[
+                     title={Gradient decend with negative derivative},
+                     xlabel=$\theta$,
+                     ylabel=$J(\theta)$,
+                     ymin=0, ymax=25,
+                     xtick=\empty,
+                     ytick=\empty
+                    ]
+            \addplot[mark=none, color=red]{x^2};
+
+            \draw[thick,->] (axis cs: -3.5,16) -- node[right]{$\alpha\Bigg(\frac{d}{d\theta}J(\theta)\Bigg)$} (axis cs: -2.65,9.75);
+            \draw[thick,->] (axis cs: -2.5,9) -- (axis cs: -1.65,4.75);
+            \draw[thick,->] (axis cs: -1.5,4) -- (axis cs: -0.75,2);
+            \draw[thick,->] (axis cs: -0.75,1.75) -- (axis cs: -0,0.75);
+
+            \addplot[color=blue, only marks]
+            coordinates{
+                (-4,16)
+                (-3,9)
+                (-2,4)
+                (-1,1)
+                (0,0)
+            };
+        \end{axis}
+    \end{tikzpicture}
 
     Now the first thing to do in order to use the gradient desent in our cost
     function is replace the function $J(\theta)$ in the formula
