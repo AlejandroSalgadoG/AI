@@ -281,7 +281,7 @@
         \end{axis}
     \end{tikzpicture}
 
-    Now with this new concepts we can define the slope of this two points as 
+    Now with this new concepts we can define the slope of this two points as
 
     \begin{equation}
         m = \frac{f(x+h) - f(x)}{(x+h) - x}
@@ -298,8 +298,10 @@
 
     Regrettably this slope does not describe the change of the point very well
     because the line does not touch the function in just one point (this is
-    what is a tangent line), insted touch the function two times (this is call a 
-    secant line), so this is not what we want. Now the ilustration \\
+    what a tangent line is), insted touch the function two times (this is call a
+    secant line), this means that the change of the point that we are
+    calculating is taking into account two points of the function, not only the
+    original point, so this is not what we want. Now the ilustration \\
 
     \begin{tikzpicture}
         \begin{axis}[
@@ -308,6 +310,7 @@
                       xmin=0, xmax=6,
                       ymin=-100, ymax=800,
                       xtick=\empty,
+                      ytick=\empty,
                     ]
 
             \addplot[color=blue]{x^4};
@@ -451,7 +454,7 @@
         \end{axis}
     \end{tikzpicture}
 
-    As we can see in the last graphic the slope of the first point is almost 
+    As we can see in the last graphic the slope of the first point is almost
     horizontal, this means that the rate of change is samall, in the second
     is bigger and in the third point is the most vertical, so is the point with
     the highest change in the graphic, just like it would be, so we can
