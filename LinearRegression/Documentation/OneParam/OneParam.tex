@@ -1,7 +1,5 @@
 \documentclass[12pt,journal]{IEEEtran}
 
-%
-
 \usepackage[utf8]{inputenc}
 \usepackage{pgfplots}
 \usepackage{caption}
@@ -342,45 +340,89 @@
         \end{tikzpicture}
     \end{figure}
 
-    What you shoul do
+    Lets see how can we make our way to the bottom of the valley, the first
+    thing to do is find a direction, in order to do this we must know the
+    inclination of the side where you are, then start going to the lower place.
+    Lets assume that you start in the top left point, when you start going down
+    the hill, with a constant step size (this is very important for the
+    example), you should notice that you have a big advance with each step
+    becouse of the high inclination, but when you are aproaching your friends
+    the inclunation is lower and you start to get smaller steps until you get
+    your friends and stop walking.
 
-    Now lets analyze the formula, the fist simbol is the $\theta$ that is the
-    parameter of the cost function, the second is the $:=$ which means assign,
-    this make sence because we are trying to update the parameter of the
-    function trying to make it as closer to the minimum as possible. Then we
-    have a the actual value of $\theta$ followed by a substraction and a
-    $\alpha$ simbol, we are goint to talk about this later, now we get to de
-    most important part of the formula, the derivative ($\frac{d}{d \theta}$).\\
+    \newpage
 
-    the idea is that we are going to start in a point that is located at any
-    part of the graphic, it could be far or close to the minimum, remember that
-    this point is the result of the cost function for a line, and what we want
-    to do is to start updating the value of $\theta$ because is the value that
-    makes that the error will be big or small ($J(\theta)$).\\
+    Now that we have seen the example lets analyze the formula, the fist symbol
+    is the $\theta$ that in the example is your position but in the
+    formula is the parameter of the cost function, the second symbol is $:=$
+    which means that we are updating the value or assigning a new one,
+    this make sence because we are trying to get closer to our friends which
+    means update the cost function ($J(\theta)$) to the minimum. Then we
+    have a second $\theta$ that is your actual possition in the example and
+    the actual value of $\theta$ in the formula, followed by a substraction
+    that means that we are going to decrement the actual value of $\theta$
+    and then assign the new value to $\theta$ trying to get the minimum,
+    that means update the value, in the example means walk, then we get an
+    $\alpha$ symbol which is a positive number, this represent the step size,
+    and is a constant, now we get to the most important part of the formula, the
+    derivative ($\frac{d}{d \theta}$).
 
-    \begin{tikzpicture}
-        \begin{axis}[
-                     xlabel=$\theta$,
-                     ylabel=$J(\theta)$,
-                     ymin=0, ymax=25,
-                     xtick=\empty,
-                     ytick=\empty
-                    ]
-            \addplot[mark=none, color=red]{x^2};
+    Remember that the first thing we do in the example was looked at the
+    inclunation of the hill where we are, this in order to know if we should
+    move right or left. Now, as you may know a derivative is basicaly the
+    slope of a function in a point, this is perfect for us because fit our
+    request perfectly. Lets imaging that we start at the right side of the
+    valley, so we what to go left, now mathematically the derivative of the
+    point situated in the right side of the function is positive because the
+    slope is pointing the right, so the term $\frac{d}{d \theta}$ will be a
+    positive number, that will be multiplied by a factor ($\alpha$) and then
+    substracted to the actual value of $\theta$, just as we want.
+    Now lets imaging that we end up in the left side of the valley, in that case
+    we want to go right, now mathematically the derivative of a point that is
+    situated in the left side of the function will be negative because the
+    slope is pointing to the left, this means that the term $\frac{d}{d \theta}$
+    will be a negative number, that will be multiplied by the factor ($\alpha$)
+    and then added to the actual value of $\theta$ (remember that - * - = +),
+    fiting perfectly what we want. now a few ilustrations to show better what we
+    are talking about.
 
-            \draw[thick,->] (axis cs: 4,0) -- node[left]{$\theta_1$} (axis cs: 4,16);
+    \vspace{3cm}
 
-            \addplot[color=blue, only marks]
-            coordinates{
-                (4,16)
-                (2,4)
-                (1,1)
-                (0,0)
-            };
-        \end{axis}
-    \end{tikzpicture}
+    \begin{figure}[h]
+        \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                         title=Gradient decend movement description,
+                         xlabel=$\theta$,
+                         ylabel=$J(\theta)$,
+                         ymin=-5, ymax=25,
+                         xtick=\empty,
+                         ytick=\empty
+                        ]
+                \addplot[mark=none, color=black]{x^2};
 
-    This can be done by calculating the direcction and that we want to follow
+                \addplot[color=red, only marks]
+                    coordinates{
+                        (4,16)
+                        (-4,16)
+                    };
+
+                \addplot[color=blue, only marks]
+                    coordinates{
+                        (0,0)
+                    };
+
+                \node[above] at (axis cs: 0,1.5) {Minimum};
+
+                \draw[thick,->] (axis cs: 3.5,4) -- node[right]{+} (axis cs: 5.5,20);
+                \draw[thick,->] (axis cs: -3.5,4) -- node[left]{-} (axis cs: -5.5,20);
+
+                \draw[thick,->] (axis cs: -6,-4) -- node[above]{Increment $\theta$} (axis cs: -0.1,-4);
+                \draw[thick,->] (axis cs: 6,-4) -- node[above]{Increment $\theta$} (axis cs: 0.1,-4);
+
+            \end{axis}
+        \end{tikzpicture}
+    \end{figure}
 
     \begin{tikzpicture}
         \begin{axis}[
@@ -436,8 +478,25 @@
         \end{axis}
     \end{tikzpicture}
 
-    Now the first thing to do in order to use the gradient desent in our cost
-    function is replace the function $J(\theta)$ in the formula
+    \newpage
+
+    Now to finish the explanation remember the second part of the example, when
+    you start to walk, with a constant step size, down the hill you start
+    making a big advance because of the inclunation, but when you are getting
+    closer to your friends the distance that you move with just one step is
+    smaller because the slope of the hill is lower. This is just what we are
+    trying to show in the last couple of grafics, notice that when the $\theta$
+    is getting closer to the minimum the arrow that represents the movement is
+    smaller, this is always going to happen because the inclunation of the hill
+    is slower so you move less.\\
+
+    Until the moment what we have done is to show the generic version of the
+    gradient desent, what we are goint to do now is to replace the function
+    $J(\theta)$ for our cost function and apply the derivative to the formula
+    in order to get the gradient desend for our particular case.
+
+    Lets start, the first thing to do in order to use the gradient desent in our
+    cost function is replace the function $J(\theta)$ in the formula
 
     \begin{equation}
         \theta := \theta - \alpha
