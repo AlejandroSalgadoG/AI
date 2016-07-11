@@ -8,4 +8,4 @@ clean:
 	rm -f *.o OneParam
 
 exe:
-	./OneParam
+	./OneParam Data.txt 5
