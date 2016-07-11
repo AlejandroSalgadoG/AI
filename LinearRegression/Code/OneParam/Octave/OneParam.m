@@ -65,10 +65,10 @@ endfunction
 
 points = getPoints();
 
-printf("\nalpha = %d\n\n", alpha);
+printf("\nalpha = %f\n\n", alpha);
 
 for i=1:3
     cost_function(points);
-    printf("theta = %d \t error = %d\n", theta, err);
+    printf("theta = %f \t error = %f\n", theta, err);
     gradient_decend(points);
 end
