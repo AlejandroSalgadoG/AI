@@ -45,8 +45,8 @@
         \end{axis}
     \end{tikzpicture}
 
-    What the algorithm will do is to draw a line as closser as posible to all
-    the points in order to get the best aproximation posible to the original
+    What the algorithm will do is to draw a line as closser as possible to all
+    the points in order to get the best aproximation possible to the original
     answers\\
 
     \begin{tikzpicture}
@@ -76,14 +76,14 @@
     \end{tikzpicture}
 
     When the right line is founded we can get an aproximatly answers to
-    inputs, that not necesarly where given in first place, allowing to
+    inputs, that not necessarily where given in first place, allowing to
     get more info from data.\\
 
     \begin{tikzpicture}
         \begin{axis}[
                       title={Predictions},
-                      xlabel=$h(x)$,
-                      ylabel=$y$,
+                      xlabel=$x$,
+                      ylabel=$h(x)$,
                       xmin=0, xmax=5,
                       ymin=0, ymax=10,
                     ]
@@ -116,8 +116,8 @@
         \end{axis}
     \end{tikzpicture}
 
-    In order to get this line we must define a function that give as the answers
-    values, the functionwill be the equation of a line
+    In order to get this line we must define a function that give us the answers
+    values, the function will be the equation of a line
     \begin{equation}
         h(x) = \theta_0 + \theta_1 x
     \end{equation}
@@ -145,7 +145,7 @@
 
     Lets say that in our problem we are going to have only three points to
     predict. Our function $h(x)$ gave the results $\{5,10,1\}$ and the correct
-    results are $\{6,9,3\}$ and we want to cuantificate the error asocciated to
+    results are $\{6,9,3\}$ and we want to cuantificate the error associated to
     this two answers.
 
     The first thing that must do is calculate the difference between this two
@@ -166,7 +166,7 @@
     must eliminate this type of numbers in order to get only the information
     that we are interested on.
 
-    To achive this gold we have two posible ways to do it, the first one is to
+    To achive this gold we have two possible ways to do it, the first one is to
     add an absolute value to the calculation and the other is to squaring the
     results. The first option is not useful because later we will have to
     calculate a simple derivative to the resulting function and the absolute
@@ -178,11 +178,11 @@
         \item $(1-3)^2 = 4$\\
     \end{itemize}
 
-    The result of this operation is the set $\{1,1,4\}$. Exelent, now we will
+    The result of this operation is the set $\{1,1,4\}$. Excelent, now we will
     never have a negative number in out resulting set, notice that our
     answers will be much bigger because we are using square of two as our
-    method to eliminate the negative numbers, actually this doesn't metter
-    because we are lookin for a number that describes the error associated to
+    method to eliminate the negative numbers, actually this doesn't matter
+    because we are looking for a number that describes the error associated to
     the prediction that we are computing so the range of the number is not too
     important.\\
 
@@ -204,10 +204,10 @@
     Second we are going to define the resulting set as $\{x_1,x_2, ... , x_m\}$
     and the real resulting set as $\{y_1,y_2, ... , y_m\}$. This definition can
     be more concise because the first set is the result of the function $h(x)$,
-    so we are going to define it as $h(x_i)$ and the second can be decribed as
+    so we are going to define it as $h(x_i)$ and the second can be described as
     $y_i$.
 
-    Now we will define the substration of each set as follows
+    Now we will define the subtraction of each set as follows
 
     \begin{equation}
         h(x_i) - y_i \hspace{0.5cm} i=1, 2, ..., m
@@ -225,7 +225,7 @@
         \frac{\sum_{i=1}^{m} (h(x_i) - y_i)^2}{m}
     \end{equation}
 
-    Applying properties of sum
+    Moving the m aside
 
     \begin{equation}
        \frac{1}{m} \sum_{i=1}^{m} ( h(x_i) - y_i )^2
@@ -239,7 +239,7 @@
     \end{equation}
 
     This is the cuadratic error and will be used as our cost function in terms
-    of the parameter $\theta$ to expess the error associated to the prediction
+    of the parameter $\theta$ to express the error associated to the prediction
     of the algorithm with respect to the correct output that is given at the
     begin of the problem.
 
@@ -264,8 +264,8 @@
         \end{tikzpicture}
     \end{figure}
 
-    The next step is define a way to make the error as small as posible,
-    to do this we will use a famus algorithm called gradient decend.
+    The next step is define a way to make the error as small as possible,
+    to do this we will use a famous algorithm called gradient descend.
     the formula of the algorithm is show bellow
 
     \begin{equation}
@@ -284,10 +284,10 @@
     located in the documentation directory.\\
 
     Before explaining the deeper meaning of this derivative we are going to
-    explain in other words what the gradient decend does, imagin that you are
+    explain in other words what the gradient descend does, imagine that you are
     lost in a jungle that is kind of a valley, and you are trying to find your
     frinds that are in the lowest part of the valley, but you dont know exactly
-    in what point of the valley are you, what do you do?\\
+    in what point you are, what do you do?\\
 
     %taken from http://bluepoppyholidays.com/wp-content/uploads/2014/10/Valley-of-flowers-from-top.jpg
 
@@ -303,7 +303,7 @@
         \centering
         \begin{tikzpicture}
             \begin{axis}[
-                         title=What you have to imagin as a valley,
+                         title=What you have to imagine as a valley,
                          ymin=0, ymax=25,
                          xtick=\empty,
                          ytick=\empty
@@ -346,17 +346,17 @@
     Lets assume that you start in the top left point, when you start going down
     the hill, with a constant step size (this is very important for the
     example), you should notice that you have a big advance with each step
-    becouse of the high inclination, but when you are aproaching your friends
+    because of the high inclination, but when you are aproaching your friends
     the inclunation is lower and you start to get smaller steps until you get
     your friends and stop walking.
 
     \newpage
 
-    Now that we have seen the example lets analyze the formula, the fist symbol
+    Now that we have seen the example lets analyze the formula, the first symbol
     is the $\theta$ that in the example is your position but in the
     formula is the parameter of the cost function, the second symbol is $:=$
     which means that we are updating the value or assigning a new one,
-    this make sence because we are trying to get closer to our friends which
+    this make sence because we are trying to get closer to our friends, which
     means update the cost function ($J(\theta)$) to the minimum. Then we
     have a second $\theta$ that is your actual possition in the example and
     the actual value of $\theta$ in the formula, followed by a substraction
@@ -368,22 +368,22 @@
     derivative ($\frac{d}{d \theta}$).
 
     Remember that the first thing we do in the example was looked at the
-    inclunation of the hill where we are, this in order to know if we should
-    move right or left. Now, as you may know a derivative is basicaly the
+    inclination of the hill where we are, this in order to know if we should
+    move right or left. Now, as you may know a derivative is basically the
     slope of a function in a point, this is perfect for us because fit our
-    request perfectly. Lets imaging that we start at the right side of the
+    request perfectly. Lets imagine that we start at the right side of the
     valley, so we what to go left, now mathematically the derivative of the
     point situated in the right side of the function is positive because the
     slope is pointing the right, so the term $\frac{d}{d \theta}$ will be a
     positive number, that will be multiplied by a factor ($\alpha$) and then
     substracted to the actual value of $\theta$, just as we want.
-    Now lets imaging that we end up in the left side of the valley, in that case
+    Now lets imagine that we end up in the left side of the valley, in that case
     we want to go right, now mathematically the derivative of a point that is
     situated in the left side of the function will be negative because the
     slope is pointing to the left, this means that the term $\frac{d}{d \theta}$
     will be a negative number, that will be multiplied by the factor ($\alpha$)
     and then added to the actual value of $\theta$ (remember that - * - = +),
-    fiting perfectly what we want. now a few ilustrations to show better what we
+    fitting perfectly what we want. now a few ilustrations to show better what we
     are talking about.
 
     \vspace{3cm}
@@ -392,7 +392,7 @@
         \centering
         \begin{tikzpicture}
             \begin{axis}[
-                         title=Gradient decend movement description,
+                         title=Gradient descend movement description,
                          xlabel=$\theta$,
                          ylabel=$J(\theta)$,
                          ymin=-5, ymax=25,
@@ -426,7 +426,7 @@
 
     \begin{tikzpicture}
         \begin{axis}[
-                     title={Gradient decend with positive derivative},
+                     title={Gradient descend with positive derivative},
                      xlabel=$\theta$,
                      ylabel=$J(\theta)$,
                      ymin=0, ymax=25,
@@ -453,7 +453,7 @@
 
     \begin{tikzpicture}
         \begin{axis}[
-                     title={Gradient decend with negative derivative},
+                     title={Gradient descend with negative derivative},
                      xlabel=$\theta$,
                      ylabel=$J(\theta)$,
                      ymin=0, ymax=25,
@@ -487,7 +487,7 @@
     smaller because the slope of the hill is lower. This is just what we are
     trying to show in the last couple of grafics, notice that when the $\theta$
     is getting closer to the minimum the arrow that represents the movement is
-    smaller, this is always going to happen because the inclunation of the hill
+    smaller, this is always going to happen because the inclination of the hill
     is slower so you move less.\\
 
     Until the moment what we have done is to show the generic version of the
@@ -509,7 +509,7 @@
     \end{equation}
 
     Now the factor of the denominator has no influence on the function so it
-    can be tranlated outside of the derivative
+    can be translated outside of the derivative
 
     \begin{equation}
         \theta := \theta - \alpha \frac{1}{2m}
@@ -522,7 +522,7 @@
     \end{equation}
 
     The derivative of the summatory is equal to the derivative of each term and
-    then add each result, so we can insert the dirivative into the summary
+    then add each result, so we can insert the derivative into the summary
 
     \begin{equation}
         \theta := \theta - \alpha
@@ -574,7 +574,7 @@
 
     Finally we can see the reason why the denominator has a extra factor
     (the 2 that we added at the begining), this is with the objective
-    to cancel the 2 in the numerator that result of the derivative. Finaly
+    to cancel the 2 in the numerator that result of the derivative. Finally
     this is the resulting function that we are going to use to minimize the
     error of the algorithm
 
