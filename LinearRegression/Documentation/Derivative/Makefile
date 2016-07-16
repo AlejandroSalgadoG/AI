@@ -6,4 +6,4 @@ clean:
 	rm -f Derivative.pdf
 
 exe:
-	gnome-open Derivative.pdf
+	xournal Derivative.pdf &

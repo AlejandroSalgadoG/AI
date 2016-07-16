@@ -6,4 +6,4 @@ clean:
 	rm -f OneParam.pdf
 
 exe:
-	gnome-open OneParam.pdf
+	xournal OneParam.pdf &
