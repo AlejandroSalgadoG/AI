@@ -6,4 +6,4 @@ clean:
 	rm -f TwoParam.pdf
 
 exe:
-	gnome-open TwoParam.pdf
+	xournal TwoParam.pdf &
