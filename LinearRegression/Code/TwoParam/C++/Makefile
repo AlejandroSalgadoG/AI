@@ -8,4 +8,4 @@ clean:
 	rm -f *.o TwoParam
 
 exe:
-	./TwoParam
+	./TwoParam Data.txt 5
