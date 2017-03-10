@@ -43,6 +43,3 @@ def sensorModel(x, y):
                 return (0.2, "Y")
             if prob == 10:
                 return (0.1, "G")
-
-def bayes():
-    return 0.0

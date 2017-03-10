@@ -28,6 +28,30 @@ def printProbMatrix(matrix):
 
     print
 
+visited = [[0,0],[0,0]]
+probAc = 0
+def updateProbMatrix(prob, pmatrix, x, y):
+    global probAc
+
+    count = 0
+    comp = 1 - prob - probAc
+    pmatrix[x][y] = prob
+    for i in range(2):
+        for j in range(2):
+            if i == x and j == y:
+                visited[i][j] = 1
+                probAc += prob
+            else:
+                if visited[i][j] == 0:
+                    count += 1
+    if count != 0:
+        prob = comp / count
+
+    for i in range(2):
+        for j in range(2):
+            if visited[i][j] == 0:
+                pmatrix[i][j] = prob
+
 def main():
     pmatrix = getProbMatrix()
     cmatrix = getColorMatrix()
@@ -47,6 +71,6 @@ def main():
     
         cmatrix[x][y] = color
 
-        print prob, color
+        updateProbMatrix(prob, pmatrix, x, y)
 
 main()
