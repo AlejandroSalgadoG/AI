@@ -33,6 +33,7 @@ probAc = 0
 def updateProbMatrix(prob, pmatrix, x, y):
     global probAc
 
+    prob *= 0.25
     count = 0
     comp = 1 - prob - probAc
     pmatrix[x][y] = prob
