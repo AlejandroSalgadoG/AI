@@ -18,24 +18,26 @@ def probR(probC):
     return selectElem(table, gen)
 
 def probS(probC):
-    gen = rand()
+    #gen = rand()
 
     desc, prob = probC
     table = sprinkler[desc]
 
-    return selectElem(table, gen)
+    return table[0]
+    #return selectElem(table, gen)
 
 def probW(probS, probR):
-    gen = rand()
+    #gen = rand()
 
     descS, probS = probS
     descR, probR = probR
     table = wetgrass[descS][descR]
 
-    return selectElem(table, gen)
+    return table[0]
+    #return selectElem(table, gen)
 
 def selectElem(table, gen):
     for desc, prob in table:
         gen -= prob
-        if gen < 0:
+        if gen <= 0:
             return (desc, prob)
