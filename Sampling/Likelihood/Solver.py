@@ -13,7 +13,16 @@ def solveQueryWeight(samples, query, evidence):
     return numerator / denominator
 
 def solveQuery(samples, query, evidence):
-    return 1
+
+    numeratorSamples = getConsistentSamples(query, samples)
+    numerator = len(numeratorSamples)
+    
+    denominator = len(samples)
+
+    if denominator == 0:
+        return error()
+
+    return numerator / denominator
 
 def error():
     print("ERROR: there is no sample consistent with the evidence, set a ",
