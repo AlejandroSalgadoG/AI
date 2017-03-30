@@ -19,7 +19,10 @@ def main(iterations, expression):
 
         iterations -= 1
 
-    solveQuery(samples, query, evidence)
-    solveQueryWeight(samples, query, evidence)
+    prob = solveQuery(samples, query, evidence)
+    print("P(%s) = %f" % (expression, prob) )
 
-main(3, "+a,+r|+s,+w")
+    prob = solveQueryWeight(samples, query, evidence)
+    print("WP(%s) = %f" % (expression, prob) )
+
+main(3, "+c,+r|+s,+w")
