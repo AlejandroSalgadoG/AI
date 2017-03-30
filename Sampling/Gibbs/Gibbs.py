@@ -9,7 +9,6 @@ def main(samplings, iterations, expression):
     samples = []
 
     while samplings > 0:
-
         probc = probC()
         probs = probS(probc)
         probr = probR(probc)
@@ -17,13 +16,15 @@ def main(samplings, iterations, expression):
 
         sample = ([probc, probs, probr, probw])
     
-        while iterations > 0:
+        tmpIter = iterations
+
+        while tmpIter > 0:
             var = getRandVar(query)
 
-            newVal = getNewVarVal(var, sample)
-            sample = updateSample(newVal, sample)
+            newDesc, newProb = getNewVarVal(var, sample)
+            sample = updateSample(newDesc, newProb, sample)
             
-            iterations -= 1
+            tmpIter -= 1
     
         samples.append(sample)
 

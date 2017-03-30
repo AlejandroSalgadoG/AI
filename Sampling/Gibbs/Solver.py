@@ -7,15 +7,22 @@ def splitQuery(expression):
     return (query, evidence)
 
 def getNewVarVal(var, sample):
-    return var
+    return (var, 0.2)
 
-def updateSample(newVal, sample):
+def updateSample(newDesc, newProb, sample):
+    tmpDesc = newDesc[1:]
+    newSample = [desc[1:] for desc, prob in sample]
+
+    for idx, desc in enumerate(newSample):
+        if desc == tmpDesc:
+            sample[idx] = (newDesc, newProb)
+
     return sample
 
 def solveQuery(samples, query, evidence):
     numeratorSamples = getConsistentSamples(query, samples)
     numerator = len(numeratorSamples)
-    
+
     denominator = len(samples)
 
     if denominator == 0:
@@ -25,7 +32,7 @@ def solveQuery(samples, query, evidence):
 
 def getConsistentSamples(information, samples):
     consistentSamples = []
-    
+
     infoSz = len(information)
 
     for sample in samples:
@@ -33,7 +40,7 @@ def getConsistentSamples(information, samples):
         for info in information:
             for desc, prob in sample:
                 if info == desc:
-                    consistent += 1 
+                    consistent += 1
                     break
         if consistent == infoSz:
             consistentSamples.append(sample)
