@@ -30,6 +30,7 @@ def main(samplings, iterations, expression):
 
         samplings -= 1
 
+    print(samples)
     prob = solveQuery(samples, query, evidence)
     print("P(%s) = %f" % (expression, prob) )
 

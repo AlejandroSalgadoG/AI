@@ -19,10 +19,10 @@ wetSPlusPlus = [ ("+w", 0.99),
                  ("-w", 0.01) ]
 wetSPlusMin =  [ ("+w", 0.90),
                  ("-w", 0.10) ]
-wetSMinPlus =  [ ("+w", 0.99),
-                 ("-w", 0.01) ]
-wetSMinMin =   [ ("+w", 0.90),
+wetSMinPlus =  [ ("+w", 0.90),
                  ("-w", 0.10) ]
+wetSMinMin =   [ ("+w", 0.01),
+                 ("-w", 0.99) ]
 wetSPlus = { "+r" : wetSPlusPlus,
              "-r" : wetSPlusMin }
 wetSMin =  { "+r" : wetSMinPlus,

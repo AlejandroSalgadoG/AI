@@ -1,4 +1,5 @@
 from Distribution import *
+from BayesNet import *
 
 def splitQuery(expression):
     expression = expression.split('|')
@@ -7,7 +8,18 @@ def splitQuery(expression):
     return (query, evidence)
 
 def getNewVarVal(var, sample):
-    return (var, 0.2)
+    desc = var[1:]
+
+    if desc == "c":
+        table = getCConditioned(desc, sample)
+    if desc == "s":
+        table = getSConditioned(desc, sample)
+    if desc == "r":
+        table = getRConditioned(desc, sample)
+    if desc == "w":
+        table = getWConditioned(desc, sample)
+
+    return selectElem(table)
 
 def updateSample(newDesc, newProb, sample):
     tmpDesc = newDesc[1:]
