@@ -1,10 +1,10 @@
 #!/bin/python
 
-from BayesNet import *
 from Solver import *
 
 def main(samplings, iterations, expression):
     query, evidence = splitQuery(expression)    
+    varDict = createVarDict(query + evidence)
 
     samples = []
 
@@ -21,7 +21,7 @@ def main(samplings, iterations, expression):
         while tmpIter > 0:
             var = getRandVar(query)
 
-            newDesc, newProb = getNewVarVal(var, sample)
+            newDesc, newProb = getNewVarVal(var, varDict, sample)
             sample = updateSample(newDesc, newProb, sample)
             
             tmpIter -= 1
@@ -30,7 +30,6 @@ def main(samplings, iterations, expression):
 
         samplings -= 1
 
-    print(samples)
     prob = solveQuery(samples, query, evidence)
     print("P(%s) = %f" % (expression, prob) )
 
