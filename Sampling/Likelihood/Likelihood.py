@@ -1,7 +1,7 @@
 #!/bin/python
 
-from BayesNet import *
 from Solver import *
+from BayesNet import *
 
 def main(iterations, expression):
 
@@ -10,12 +10,8 @@ def main(iterations, expression):
     samples = []
 
     while iterations > 0:
-        probc = probC()
-        probs = probS(probc)
-        probr = probR(probc)
-        probw = probW(probs, probr)
-        
-        samples.append([probc, probs, probr, probw])
+        sample = getSample(evidence)
+        samples.append(sample)
 
         iterations -= 1
 

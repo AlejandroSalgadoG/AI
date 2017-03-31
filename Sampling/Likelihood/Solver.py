@@ -1,3 +1,5 @@
+from BayesNet import *
+
 def solveQueryWeight(samples, query, evidence):
     join = query + evidence
 
@@ -13,10 +15,9 @@ def solveQueryWeight(samples, query, evidence):
     return numerator / denominator
 
 def solveQuery(samples, query, evidence):
-
     numeratorSamples = getConsistentSamples(query, samples)
     numerator = len(numeratorSamples)
-    
+
     denominator = len(samples)
 
     if denominator == 0:
@@ -37,7 +38,7 @@ def splitQuery(expression):
 
 def getConsistentSamples(information, samples):
     consistentSamples = []
-    
+
     infoSz = len(information)
 
     for sample in samples:
@@ -45,7 +46,7 @@ def getConsistentSamples(information, samples):
         for info in information:
             for desc, prob in sample:
                 if info == desc:
-                    consistent += 1 
+                    consistent += 1
                     break
         if consistent == infoSz:
             consistentSamples.append(sample)
@@ -62,3 +63,11 @@ def getTotalWeight(samples):
         totalWeight += sampleWeight
 
     return totalWeight
+
+def getSample(evidence):
+    probc = probC(evidence)
+    probs = probS(evidence, probc)
+    probr = probR(evidence, probc)
+    probw = probW(evidence, probs, probr)
+
+    return [probc, probs, probr, probw]
