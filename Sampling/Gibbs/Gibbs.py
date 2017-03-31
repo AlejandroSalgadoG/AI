@@ -9,13 +9,8 @@ def main(samplings, iterations, expression):
     samples = []
 
     while samplings > 0:
-        probc = probC()
-        probs = probS(probc)
-        probr = probR(probc)
-        probw = probW(probs, probr)
+        sample = getSample(evidence)
 
-        sample = ([probc, probs, probr, probw])
-    
         tmpIter = iterations
 
         while tmpIter > 0:

@@ -1,3 +1,5 @@
+from __future__ import division
+
 from BayesNet import *
 
 def splitQuery(expression):
@@ -8,7 +10,6 @@ def splitQuery(expression):
 
 def getNewVarVal(var, varDict, sample):
     desc = var[1:]
-
 
     if desc == "c":
         table = getCConditioned(varDict, sample)
@@ -42,8 +43,8 @@ def updateSample(newDesc, newProb, sample):
 
 def solveQuery(samples, query, evidence):
     numeratorSamples = getConsistentSamples(query, samples)
-    numerator = len(numeratorSamples)
 
+    numerator = len(numeratorSamples)
     denominator = len(samples)
 
     if denominator == 0:
@@ -67,3 +68,11 @@ def getConsistentSamples(information, samples):
             consistentSamples.append(sample)
 
     return consistentSamples
+
+def getSample(evidence):
+    probc = probC(evidence)
+    probs = probS(evidence, probc)
+    probr = probR(evidence, probc)
+    probw = probW(evidence, probs, probr)
+
+    return [probc, probs, probr, probw]
