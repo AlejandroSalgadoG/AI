@@ -1,33 +1,25 @@
-#!/bin/python2.7
+#!/bin/python
 
+from Gui import Gui
 from Model import *
-from MatrixHandler import *
 
 def main():
-    initializeModel()
 
-    pmatrix = getPositionMatrix()
-    cmatrix = getColorMatrix()
-    posDist = getInitialPosDist()
+    gui = Gui()
+    gui.drawGrid()
 
-    printMatrix(pmatrix, prob=True)
-    printMatrix(cmatrix, prob=False)
+    generateGhost()
+    probs = getInitialPosDist()
 
-    pos = getRandPos(cmatrix)
+    gui.drawProb(probs)
 
-    while pos is not None:
-        i,j = pos
-        color = getColor()
-        cmatrix[i][j] = color
+    while True:
+        pos = gui.getMouse()
+        color = useSensor(pos)
 
-        posDist = updatePosDist(posDist, color)
-        pmatrix = updatePosMat(pmatrix, posDist)
+        probs = getNewPosDist(pos, color, probs)
 
-        raw_input()
-
-        printMatrix(pmatrix, prob=True)
-        printMatrix(cmatrix, prob=False)
-        
-        pos = getRandPos(cmatrix)
+        gui.drawSensorReading(pos, color)
+        gui.drawProb(probs)
 
 main()

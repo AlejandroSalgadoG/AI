@@ -1,90 +1,55 @@
 import random
 
-green = 'G'
-yellow = 'Y'
-orange = 'O'
-red = 'R'
+from Parameters import *
+from Structures import *
 
-model = []
 ghost = None
 
 def rand():
-    return random.randint(1,10)
+    return random.randint(0,100) / 100
 
 def generateGhost():
+    global ghost
     i = random.randint(0,2)
     j = random.randint(0,2)
-    return (i,j)
-
-def initializeModel():
-    global model,ghost
-
-    ghost = generateGhost()
-
-    #P(col | pos)
-                 # 0     1     2    3     4
-    model.append([0.4,  0.3,  0.2, 0.15, 0.1 ]) # g
-    model.append([0.3,  0.4,  0.5, 0.25, 0.2 ]) # y
-    model.append([0.2,  0.2,  0.2, 0.4,  0.25]) # o
-    model.append([0.1,  0.1,  0.1, 0.2,  0.45]) # r
+    ghost = (i,j)
 
 def getInitialPosDist():
-    posDist = [0 for i in range(5)]
+    posNum = numRow**2
+    prob = 1 / posNum
 
-    for i in range(3):
-        for j in range(3):
-            dist = getGhostDistance(i,j)
-            posDist[dist] += 1
+    return [prob for i in range(posNum)]
 
-    for i in range(5):
-        posDist[i] *= 0.11 
+def getNewPosDist(pos, color, probs):
+    dist = 
+    return [0.11 for i in range(9)]
 
-    return posDist
+def calcDistMatrix(ghostPos):
+    distMatrix = []
+    for i in range(numRow):
+        for j in range(numRow):
+            dist = getGhostDistance(i,j, ghostPos)
+            distMatrix.append(dist)
 
-def getColor():
-    prob = rand()
-    if prob <= 3: # 0.3
-        return green
-    if prob >= 4 and prob <= 5: # 0.2
-        return yellow
-    if prob >= 6 and prob <= 7: # 0.2
-        return orange
-    if prob >= 8: # 0.3
-        return red
+    return distMatrix
 
-def getModel(color):
-    if color == green:
-        return model[0]
-    elif color == yellow:
-        return model[1]
-    elif color == orange:
-        return model[2]
-    else: 
-        return model[3]
+def useSensor(pos):
+    dist = getGhostDistance(pos)
+    color = selectRandom(model[dist])
+    return translation[color]
 
-def updatePosDist(postDist, color):
-    newDistr = []
-    distr = getModel(color)
-
-    acum = 0
-    for i in range(5):
-        prob = postDist[i] * distr[i]
-        acum += prob
-        newDistr.append(prob)    
-
-    for i in range(5):
-        newDistr[i] /= acum
-
-    return newDistr
-
-def updatePosMat(pmatrix, posDist):
-    for i in range(3):
-        for j in range(3):
-            distance = getGhostDistance(i,j)
-            pmatrix[i][j] = posDist[distance]
-
-    return pmatrix
-
-def getGhostDistance(i,j):
+def getGhostDistance(pos):
+    i,j = pos
     gi, gj = ghost
     return abs(i-gi) + abs(j-gj)
+
+def selectRandom(probs):
+    randVal = rand()
+    size = len(probs)
+
+    for i in range(size):
+        randVal -= probs[i]
+        if randVal <= 0:
+            return i
+
+    return size-1
