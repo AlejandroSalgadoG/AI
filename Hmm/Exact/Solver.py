@@ -31,7 +31,6 @@ def getGhostDistance(pos, ghost):
     return abs(i-gi) + abs(j-gj)
 
 def getNewDist(pos, color, probs):
-
     newDist = []
 
     for i in range(numRow):
@@ -67,22 +66,6 @@ def normalize(dist):
 
     return dist
 
-#def getDistVector():
-#
-#    distVec = { 0 : [],
-#                1 : [],
-#                2 : [],
-#                3 : [],
-#                4 : [] }
-#
-#    for i in range(numRow):
-#        for j in range(numRow):
-#            pos = (i,j)
-#            dist = getGhostDistance(pos)
-#            distVec[dist].append(pos)
-#
-#    return distVec
-
 def selectRandom(probs):
     randVal = rand()
     size = len(probs)
@@ -96,84 +79,11 @@ def selectRandom(probs):
 
 def moveGhost():
     global ghost
-    gi, gj = ghost
+    table = transition[ghost]
+    idx = selectRandom(table)
+    ghost = fromIdxToPos(idx)
 
-    posAvail = getPosAvail()
-
-    if gi == 0:
-        if gj == 2:
-            probs = getPosProbs(posAvail, "down")
-        else:
-            probs = getPosProbs(posAvail, "right")
-    if gi == 1:
-        if gj == 0:
-            probs = getPosProbs(posAvail, "up")
-        if gj == 1:
-            probs = getPosProbs(posAvail, "right")
-        if gj == 2:
-            probs = getPosProbs(posAvail, "down")
-    if gi == 2:
-        if gj == 0:
-            probs = getPosProbs(posAvail, "up")
-        else:
-            probs = getPosProbs(posAvail, "left")
-
-    idx = selectRandom(probs)
-
-    ghost = posAvail[idx]
-
-def getPosAvail():
-    gi, gj = ghost
-    pos = [(gi,gj)]
-
-    if gj+1 <= 2:
-        pos.append((gi,gj+1))
-    if gi+1 <= 2:
-        pos.append((gi+1,gj))
-    if gj-1 >= 0:
-        pos.append((gi,gj-1))
-    if gi-1 >= 0:
-        pos.append((gi-1,gj))
-
-    return pos
-
-def getPosProbs(posAvail, direction):
-    compProb = 0.5 / (len(posAvail) - 1)
-    gi, gj = ghost
-    probs = []
-
-    right = (gi,gj+1)
-    down = (gi+1,gj)
-    left = (gi,gj-1)
-    up = (gi-1,gj)
-
-    if direction == "right":
-        for pos in posAvail:
-            if pos == right:
-                probs.append(0.5)
-            else:
-                probs.append(compProb)
-    elif direction == "down":
-        for pos in posAvail:
-            if pos == down:
-                probs.append(0.5)
-            else:
-                probs.append(compProb)
-    elif direction == "left":
-        for pos in posAvail:
-            if pos == left:
-                probs.append(0.5)
-            else:
-                probs.append(compProb)
-    elif direction == "up":
-        for pos in posAvail:
-            if pos == up:
-                probs.append(0.5)
-            else:
-                probs.append(compProb)
-    else:
-        print("Error: Unrecognized direction!")
-
-    return probs
-
-
+def fromIdxToPos(idx):
+    i = idx // numRow
+    j = idx - i * numRow
+    return (i,j)
