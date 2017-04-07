@@ -5,7 +5,6 @@ from Solver import *
 
 def main():
     gui = Gui()
-    gui.drawGrid()
 
     generateGhost()
     probs = getInitialDist()
