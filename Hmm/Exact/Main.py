@@ -9,6 +9,8 @@ def main():
     generateGhost()
     probs = getInitialDist()
 
+    first = True
+
     while True:
         gui.drawProb(probs)
 
@@ -19,6 +21,10 @@ def main():
 
         moveGhost()
 
-        probs = getNewDist(pos, color, probs)
+        if first:
+            probs = getNewDistBase(pos, color, probs)
+            first = False
+        else:
+            probs = getNewDistRec(pos, color, probs)
 
 main()
