@@ -8,4 +8,8 @@ model = { 0 : [0.4,  0.3,  0.2,  0.1  ],
 translation = { 0 : "green",
                 1 : "yellow",
                 2 : "orange",
-                3 : "red" }
+                3 : "red",
+                "green"  : 0,
+                "yellow" : 1,
+                "orange" : 2,
+                "red"    : 3 }

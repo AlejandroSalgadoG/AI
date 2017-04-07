@@ -18,6 +18,8 @@ def main():
 
         gui.drawSensorReading(pos, color)
 
+        moveGhost()
+
         probs = getNewDist(pos, color, probs)
 
 main()
