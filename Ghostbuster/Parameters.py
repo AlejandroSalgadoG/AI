@@ -1,3 +1,3 @@
-size = 300
+size = 600
 btnSize = 50
-numRow = 3
+numRow = 6

@@ -35,6 +35,10 @@ def getNewPosDist(pos, color, probs):
             imgGhost = (i,j)
 
             dist = getGhostDistance(pos, imgGhost)
+
+            if dist > maxDist:
+                dist = maxDist
+
             table = model[dist]
             colorIdx = translation[color]
             posIdx = j + i*numRow
@@ -60,6 +64,10 @@ def normalize(probs):
 
 def useSensor(pos):
     dist = getGhostDistance(pos, ghost)
+
+    if dist > maxDist:
+        dist = maxDist
+
     table = model[dist]
     colorIdx = selectRandom(table)
     return translation[colorIdx]
