@@ -67,7 +67,7 @@ class Gui:
         return (int(i), int(j))
 
     def writeMsg(self, i,j, msg, color):
-        x,y = i*self.rectSize, j*self.rectSize
+        x,y = j*self.rectSize, i*self.rectSize
         halfRectSz = self.rectSize / 2
 
         pos = Point(x + halfRectSz, y + halfRectSz)
@@ -88,4 +88,4 @@ class Gui:
 
         i,j = pos
         self.drawRect(i,j, color)
-        self.writeMsg(j,i, msg, "white")
+        self.writeMsg(i,j, msg, "white")
