@@ -81,4 +81,4 @@ def selectRandom(probs):
     return size-1
 
 def revealGhost():
-    print(ghost)
+    print("The ghost was in", ghost)
