@@ -5,36 +5,57 @@ class Gui:
 
     win = None
     rectSize = size / numRow
+    colors = []
 
     def __init__(self):
-        self.win = GraphWin("Ghostbuster", size, size)
+        self.win = GraphWin("Ghostbuster", size + btnSize, size)
+        self.colors = ["black" for i in range(numRow ** 2)]
+        self.drawGrid()
+        self.drawEndBtn("black")
+
+    def drawEndBtn(self, color):
+        p1 = Point(size, 0)
+        p2 = Point(size + btnSize, size)
+
+        rect = Rectangle(p1,p2)
+        rect.draw(self.win)
+        rect.setFill(color)
+        rect.setOutline("white")
+
+        x,y = (size + size+btnSize)/2, size/2
+        pos = Point(x,y)
+
+        label = Text(pos, "BUST")
+        label.setTextColor("white")
+        label.draw(self.win)
         
     def drawGrid(self):
         for i in range(numRow):
             for j in range(numRow):
-                x = j*self.rectSize
-                y = i*self.rectSize
+                colorIdx = j + i*numRow
+                color = self.colors[colorIdx]
 
-                p1 = Point(x, y)
-                p2 = Point(x + self.rectSize, y + self.rectSize)
+                self.drawRect(i,j, color)
 
-                rect = Rectangle(p1,p2)
-                rect.draw(self.win)
-                rect.setFill("black")
-                rect.setOutline("white")
+    def drawRect(self, i,j, color):
+        p1 = Point(j * self.rectSize, i * self.rectSize)
+        p2 = Point(p1.x + self.rectSize, p1.y + self.rectSize)
+
+        rect = Rectangle(p1,p2)
+        rect.draw(self.win)
+
+        rect.setFill(color)
+        rect.setOutline("white")
 
     def drawProb(self, probs):
+        self.drawGrid()
+
         for i in range(numRow):
             for j in range(numRow):
-                x = j*self.rectSize
-                y = i*self.rectSize
-                halfRectSz = self.rectSize /2
-
-                point = Point(x + halfRectSz, y + halfRectSz)
-            
                 pos = j + i*numRow 
-                
-                self.drawProbs(point, probs[pos])
+                strProb = "%.2f" % probs[pos]
+
+                self.writeMsg(i,j, strProb, "blue")
 
     def getMouse(self):
         point = self.win.getMouse()
@@ -45,24 +66,26 @@ class Gui:
 
         return (int(i), int(j))
 
-    def drawProbs(self, pos, prob):
-        x,y = pos.x, pos.y
-        point = Point(x,y)
-        strProb = "%.2f" % prob
-        label = Text(point, strProb)
-        label.setTextColor("blue")
+    def writeMsg(self, i,j, msg, color):
+        x,y = i*self.rectSize, j*self.rectSize
+        halfRectSz = self.rectSize / 2
+
+        pos = Point(x + halfRectSz, y + halfRectSz)
+        label = Text(pos, msg)
+        label.setTextColor(color)
         label.draw(self.win)
 
     def drawSensorReading(self, pos, color):
         i,j = pos
-    
-        x = j*self.rectSize
-        y = i*self.rectSize
+        pos = j+i*numRow
+        self.colors[pos] = color
 
-        p1 = Point(x, y)
-        p2 = Point(x + self.rectSize, y + self.rectSize)
+    def drawResult(self, pos, result):
+        if result:
+            color,msg = "red", "HIT!"
+        else:
+            color,msg = "blue", "MISS!"
 
-        rect = Rectangle(p1,p2)
-        rect.draw(self.win)
-        rect.setFill(color)
-        rect.setOutline("white")
+        i,j = pos
+        self.drawRect(i,j, color)
+        self.writeMsg(j,i, msg, "white")
