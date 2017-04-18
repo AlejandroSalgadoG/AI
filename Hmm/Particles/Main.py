@@ -3,21 +3,30 @@
 from Gui import *
 from Solver import *
 
-def main():
+def main(particles):
     gui = Gui()
-    gui.drawGrid()
 
     generateGhost()
     probs = getInitialDist()
+    gui.drawProb(probs)
+    part = getParticles(particles, probs)
+
+    first = True
 
     while True:
-        gui.drawProb(probs)
-
         pos = gui.getMouse()
         color = useSensor(pos)
 
         gui.drawSensorReading(pos, color)
 
-        probs = getNewDist(pos, color, probs)
+        if first:
+            probs = getNewDistBase(pos, color, probs)
+            first = False
+        else:
+            probs = getNewDistRec(pos, color, probs)
 
-main()
+        gui.drawProb(probs)
+
+        moveGhost()
+
+main(100)
