@@ -30,57 +30,14 @@ def getGhostDistance(pos, ghost):
     gi, gj = ghost
     return abs(i-gi) + abs(j-gj)
 
-getParticles(particles, probs):
+def getParticles(particles, probs):
     part = []
     for i in range(particles):
         idx = selectRandom(probs)
         pos = fromIdxToPos(idx)
-        part.append(part)
+        part.append(pos)
 
     return part
-
-def getNewDistBase(pos, color, probs):
-    newDist = []
-
-    for i in range(numRow):
-        for j in range(numRow):
-            imgGhost = (i,j)
-
-            pex = calcCondProb(pos, color, imgGhost)
-            px = getPosProb(imgGhost, probs)
-
-            newDist.append(pex * px)
-
-    return normalize(newDist)
-
-def getNewDistRec(pos, color, probs):
-    newDist = []
-
-    for g in range(numRow):
-        for h in range(numRow):
-            imgGhost = (g,h)
-
-            acum = 0
-            for i in range(numRow):
-                for j in range(numRow):
-                    xt1Key = (i,j)
-                    xt1 = j + i * numRow 
-
-                    xt = fromPosToIdx(imgGhost)
-
-                    table = transition[xt1Key]
-
-                    pxt = table[xt]
-                    b = probs[xt1]
-
-                    acum += pxt * b
-
-            pex = calcCondProb(pos, color, imgGhost)
-
-            newDist.append(pex * acum)
-        
-
-    return normalize(newDist)
 
 def calcCondProb(pos, color, imgGhost):
     dist = getGhostDistance(pos, imgGhost)
@@ -88,9 +45,42 @@ def calcCondProb(pos, color, imgGhost):
     idx = translation[color]
     return model[dist][idx]
 
-def getPosProb(pos, probs):
-    i,j = pos
-    return probs[j+i*numRow]
+def getParticlesWeight(pos, color):
+    weights = []
+    for i in range(numRow**2):
+        imgGhost = fromIdxToPos(i)
+        weight = calcCondProb(pos, color, imgGhost)
+        weights.append(weight)
+
+    return weights
+
+def redistributeParticles(particleNum, weights):
+    weights = normalize(weights)
+    return getParticles(particleNum, weights)
+
+def moveParticles(particles):
+    newParticles = []
+
+    for particle in particles:
+        table = transition[particle]
+        idx = selectRandom(table)
+        pos = fromIdxToPos(idx)
+        newParticles.append(pos)
+         
+    return newParticles
+
+def getProbs(particles):
+    total = len(particles)
+    probs = [0 for i in range(numRow **2)]
+
+    for part in particles:
+        pos = fromPosToIdx(part)
+        probs[pos] += 1
+
+    for i in range(numRow**2):
+        probs[i] /= total
+
+    return probs
 
 def normalize(dist):
     total = 0

@@ -3,15 +3,15 @@
 from Gui import *
 from Solver import *
 
-def main(particles):
+def main(particleNum):
     gui = Gui()
 
     generateGhost()
-    probs = getInitialDist()
-    gui.drawProb(probs)
-    part = getParticles(particles, probs)
+    iniProbs = getInitialDist()
+    particles = getParticles(particleNum, iniProbs)
+    probs = getProbs(particles)
 
-    first = True
+    gui.drawProb(probs)
 
     while True:
         pos = gui.getMouse()
@@ -19,14 +19,13 @@ def main(particles):
 
         gui.drawSensorReading(pos, color)
 
-        if first:
-            probs = getNewDistBase(pos, color, probs)
-            first = False
-        else:
-            probs = getNewDistRec(pos, color, probs)
+        weight = getParticlesWeight(pos, color)
+        particles = redistributeParticles(particleNum, weight)
+        particles = moveParticles(particles)
+        probs = getProbs(particles)
 
         gui.drawProb(probs)
 
         moveGhost()
 
-main(100)
+main(1000)
