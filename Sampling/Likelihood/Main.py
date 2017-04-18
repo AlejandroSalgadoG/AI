@@ -6,7 +6,6 @@ from BayesNet import *
 def main(iterations, expression):
 
     query, evidence = splitQuery(expression)
-
     samples = []
 
     while iterations > 0:
@@ -15,10 +14,14 @@ def main(iterations, expression):
 
         iterations -= 1
 
-    prob = solveQuery(samples, query, evidence)
+#    for sample in samples:
+#        print(sample)
+#    print()
+
+    prob = solveQuery(samples, query)
     print("P(%s) = %f" % (expression, prob) )
 
     prob = solveQueryWeight(samples, query, evidence)
     print("WP(%s) = %f" % (expression, prob) )
 
-main(3, "+c,+r|+s,+w")
+main(500000, "+c,+r,+s,+w")

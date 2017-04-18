@@ -7,12 +7,14 @@ from Distribution import *
 def rand():
     return random.randint(0,100) / 100
 
-def getEvidenceVar(var, evidence):
-    evidenceDesc = [desc[1:] for desc in evidence]
-    for idx, desc in enumerate(evidenceDesc):
-        if desc == var:
-            return evidence[idx]
-    return None
+def getVarSample(table, evidence):
+    if not evidence:
+        return selectElem(table)
+
+    for desc, prob in table:
+        if desc in evidence:
+            return getElem(desc, table)
+    return selectElem(table)
 
 def getElem(var, dist):
     for desc, prob in dist:
@@ -20,50 +22,28 @@ def getElem(var, dist):
             return (desc, prob)
 
 def selectElem(table):
-    gen = rand()
+    randVal = rand()
     for desc, prob in table:
-        gen -= prob
-        if gen <= 0:
+        randVal -= prob
+        if randVal <= 0:
             return (desc, prob)
+    return table[-1]
 
 def probC(evidence):
-    evidenceVar = getEvidenceVar("c", evidence)
-
-    if evidenceVar is None:
-        return selectElem(cloudy)
-    else:
-        return getElem(evidenceVar, cloudy)
-
-def probR(evidence, probC):
-    evidenceVar = getEvidenceVar("r", evidence)
-
-    desc, prob = probC
-    table = rain[desc]
-
-    if evidenceVar is None:
-        return selectElem(table)
-    else:
-        return getElem(evidenceVar, table)
+    return getVarSample(cloudy, evidence)
 
 def probS(evidence, probC):
-    evidenceVar = getEvidenceVar("s", evidence)
-
     desc, prob = probC
     table = sprinkler[desc]
+    return getVarSample(table, evidence)
 
-    if evidenceVar is None:
-        return selectElem(table)
-    else:
-        return getElem(evidenceVar, table)
+def probR(evidence, probC):
+    desc, prob = probC
+    table = rain[desc]
+    return getVarSample(table, evidence)
 
 def probW(evidence, probS, probR):
-    evidenceVar = getEvidenceVar("w", evidence)
-
     descS, probS = probS
     descR, probR = probR
     table = wetgrass[descS][descR]
-
-    if evidenceVar is None:
-        return selectElem(table)
-    else:
-        return getElem(evidenceVar, table)
+    return getVarSample(table, evidence)

@@ -1,22 +1,19 @@
 from BayesNet import *
 
 def solveQueryWeight(samples, query, evidence):
-    join = query + evidence
+    querySamples = getConsistentSamples(query, samples)
+    numerator = getTotalWeight(querySamples, evidence)
 
-    numeratorSamples = getConsistentSamples(join, samples)
-    numerator = getTotalWeight(numeratorSamples)
-
-    denominatorSamples = getConsistentSamples(evidence, samples)
-    denominator = getTotalWeight(denominatorSamples)
+    denominator = getTotalWeight(samples, evidence)
 
     if denominator == 0:
         return error()
 
     return numerator / denominator
 
-def solveQuery(samples, query, evidence):
-    numeratorSamples = getConsistentSamples(query, samples)
-    numerator = len(numeratorSamples)
+def solveQuery(samples, query):
+    querySamples = getConsistentSamples(query, samples)
+    numerator = len(querySamples)
 
     denominator = len(samples)
 
@@ -31,10 +28,21 @@ def error():
     return 0
 
 def splitQuery(expression):
-    expression = expression.split('|')
-    query = expression[0].split(',')
-    evidence = expression[1].split(',')
+    if '|' in expression:
+        query, evidence = expression.split('|')
+        query = splitByComa(query)
+        evidence = splitByComa(evidence)
+    else:
+        query = splitByComa(expression)
+        evidence = []
+
     return (query, evidence)
+
+def splitByComa(string):
+    if ',' in string:
+        return string.split(',')
+    else:
+        return [string]
 
 def getConsistentSamples(information, samples):
     consistentSamples = []
@@ -53,13 +61,17 @@ def getConsistentSamples(information, samples):
 
     return consistentSamples
 
-def getTotalWeight(samples):
+def getTotalWeight(samples, evidence):
+    if not evidence:
+        return len(samples)
+
     totalWeight = 0
 
     for sample in samples:
         sampleWeight = 1
         for desc, prob in sample:
-            sampleWeight *= prob
+            if desc in evidence:
+                sampleWeight *= prob
         totalWeight += sampleWeight
 
     return totalWeight
