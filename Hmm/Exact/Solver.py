@@ -1,6 +1,6 @@
 import random
 
-from Parameters import *
+from Standars import *
 from Model import *
 
 ghost = None
@@ -8,22 +8,31 @@ ghost = None
 def rand():
     return random.randint(0,100) / 100
 
+def generateGhost():
+    global ghost
+    i = random.randint(0, numRow-1)
+    j = random.randint(0, numRow-1)
+    ghost = (i,j)
+    print(ghost)
+
 def getInitialDist():
     posNum = numRow**2
     prob = 1 / posNum
 
     return [prob for i in range(posNum)]
 
-def generateGhost():
-    global ghost
-    i = random.randint(0,2)
-    j = random.randint(0,2)
-    ghost = (i,j)
+def isGhostThere(pos):
+    return pos == ghost
 
 def useSensor(pos):
     dist = getGhostDistance(pos, ghost)
-    color = selectRandom(model[dist])
-    return translation[color]
+
+    if dist > maxDist:
+        dist = maxDist
+    
+    table = model[dist]
+    colorIdx = selectRandom(table)
+    return translation[colorIdx]
 
 def getGhostDistance(pos, ghost):
     i,j = pos
@@ -108,15 +117,10 @@ def selectRandom(probs):
 
 def moveGhost():
     global ghost
-    table = transition[ghost]
+    table = transition(ghost)
     idx = selectRandom(table)
     ghost = fromIdxToPos(idx)
+    print(ghost)
 
-def fromIdxToPos(idx):
-    i = idx // numRow
-    j = idx - i * numRow
-    return (i,j)
-
-def fromPosToIdx(pos):
-    i,j = pos
-    return j + i*numRow
+def revealGhost():
+    print("The ghost was in", ghost)
