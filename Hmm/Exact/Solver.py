@@ -53,6 +53,10 @@ def getNewDistBase(pos, color, probs):
 
     return normalize(newDist)
 
+def getPosProb(pos, probs):
+    i,j = pos
+    return probs[j+i*numRow]
+
 def getNewDistRec(pos, color, probs):
     newDist = []
 
@@ -88,9 +92,29 @@ def calcCondProb(pos, color, imgGhost):
     idx = translation[color]
     return model[dist][idx]
 
-def getPosProb(pos, probs):
-    i,j = pos
-    return probs[j+i*numRow]
+def calcForwardProb(probs):
+    newProbs = []
+
+    for i in range(numRow):
+        for j in range(numRow):
+            xt = (i,j)
+            result = 0
+            for k in range(numRow):
+                for l in range(numRow):
+                    xt_1 = (k,l)
+
+                    idx = fromPosToIdx(xt_1)
+                    pxt_1 = probs[idx]
+
+                    table = transition(xt_1)
+
+                    idx = fromPosToIdx(xt)
+                    pxt = table[idx]
+
+                    result += pxt * pxt_1
+            newProbs.append(result)
+
+    return newProbs
 
 def normalize(dist):
     total = 0
