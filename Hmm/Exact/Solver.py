@@ -13,7 +13,6 @@ def generateGhost():
     i = random.randint(0, numRow-1)
     j = random.randint(0, numRow-1)
     ghost = (i,j)
-    print(ghost)
 
 def getInitialDist():
     posNum = numRow**2
@@ -39,59 +38,6 @@ def getGhostDistance(pos, ghost):
     gi, gj = ghost
     return abs(i-gi) + abs(j-gj)
 
-def getNewDistBase(pos, color, probs):
-    newDist = []
-
-    for i in range(numRow):
-        for j in range(numRow):
-            imgGhost = (i,j)
-
-            pex = calcCondProb(pos, color, imgGhost)
-            px = getPosProb(imgGhost, probs)
-
-            newDist.append(pex * px)
-
-    return normalize(newDist)
-
-def getPosProb(pos, probs):
-    i,j = pos
-    return probs[j+i*numRow]
-
-def getNewDistRec(pos, color, probs):
-    newDist = []
-
-    for g in range(numRow):
-        for h in range(numRow):
-            imgGhost = (g,h)
-
-            acum = 0
-            for i in range(numRow):
-                for j in range(numRow):
-                    xt1Key = (i,j)
-                    xt1 = j + i * numRow 
-
-                    xt = fromPosToIdx(imgGhost)
-
-                    table = transition[xt1Key]
-
-                    pxt = table[xt]
-                    b = probs[xt1]
-
-                    acum += pxt * b
-
-            pex = calcCondProb(pos, color, imgGhost)
-
-            newDist.append(pex * acum)
-        
-
-    return normalize(newDist)
-
-def calcCondProb(pos, color, imgGhost):
-    dist = getGhostDistance(pos, imgGhost)
-
-    idx = translation[color]
-    return model[dist][idx]
-
 def calcForwardProb(probs):
     newProbs = []
 
@@ -115,6 +61,29 @@ def calcForwardProb(probs):
             newProbs.append(result)
 
     return newProbs
+
+def getNewPosDist(pos, color, probs):                                                          
+    newDist = []                                                                               
+                                                                                               
+    for i in range(numRow):                                                                    
+        for j in range(numRow):                                                                
+            imgGhost = (i,j)                                                                   
+                                                                                               
+            dist = getGhostDistance(pos, imgGhost)                                             
+                                                                                               
+            if dist > maxDist:                                                                 
+                dist = maxDist                                                                 
+                                                                                               
+            table = model[dist]                                                  
+            colorIdx = translation[color]                                                      
+            posIdx = j + i*numRow                                                              
+                                                                                               
+            psf = table[colorIdx]                                                              
+            pf = probs[posIdx]                                                                 
+                                                                                               
+            newDist.append( psf * pf )                                                         
+                                                                                               
+    return normalize(newDist)
 
 def normalize(dist):
     total = 0
@@ -144,7 +113,6 @@ def moveGhost():
     table = transition(ghost)
     idx = selectRandom(table)
     ghost = fromIdxToPos(idx)
-    print(ghost)
 
 def revealGhost():
     print("The ghost was in", ghost)

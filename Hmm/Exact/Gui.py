@@ -10,10 +10,13 @@ class Gui:
 
     def __init__(self):
         self.win = GraphWin("Exact Hmm", size + btnSize, size)
-        self.colors = ["black" for i in range(numRow **2)]
+        self.setBlackColors()
         self.drawGrid()
         self.drawEndBtn("black")
         self.drawNextBtn("black")
+
+    def setBlackColors(self):
+        self.colors = ["black" for i in range(numRow **2)]
 
     def drawEndBtn(self, color):
         p1 = Point(size, 0)

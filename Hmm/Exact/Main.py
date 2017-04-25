@@ -17,7 +17,9 @@ def main():
 
         if pos[1] > numRow-1:
             if pos[0] >= numRow/2:
+                gui.setBlackColors()
                 moveGhost()
+                probs = calcForwardProb(probs)
             else:
                 gui.drawEndBtn("blue")
                 pos = gui.getMouse()
@@ -25,15 +27,10 @@ def main():
                 gui.drawResult(pos, result) 
                 revealGhost()
                 break
-            
-#            color = useSensor(pos)
-#            gui.drawSensorReading(pos, color)
-#
-#        if first:
-#            probs = getNewDistBase(pos, color, probs)
-#            first = False
-#        else:
-#            probs = getNewDistRec(pos, color, probs)
+        else:
+            color = useSensor(pos)
+            gui.drawSensorReading(pos, color)
+            probs = getNewPosDist(pos, color, probs)
 
     gui.getMouse()
 
