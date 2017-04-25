@@ -24,11 +24,13 @@ def parseData(rawData):
         classification = tmpData[-1] # get classification
         del tmpData[-1]
 
-        data = [1] # bias
+#        data = [1] # bias
+        data = [] 
         for element in tmpData:
             data.append(float(element)) # get features values
 
-        data.append(classes[classification]) # get code of the classification
+#        data.append(classes[classification]) # get code of the classification
+        data.append(classification) # get code of the classification
 
         parsedData.append(data) # store the sample
 
