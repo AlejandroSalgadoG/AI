@@ -15,12 +15,12 @@ def main():
     training, heldout, test = divideData(data)
     gui.drawData(training)
 
-    p1 = [3, 3]
-    p2 = [3, 3]
+    p1 = [2, 3]
+    p2 = [3, 4]
 
     weight = [p1,p2]
 
-    gui.drawLine(weight)
+    gui.drawDivision(weight)
 
     gui.getMouse()
 

@@ -51,7 +51,7 @@ class Gui:
     def fromCoorToPoint(self, x,y):
         return Point(rectSize*x, rectSize*(rangeSz-y))
 
-    def drawLine(self, weight):
+    def drawDivision(self, weight):
         P1, P2 = weight
 
         if P1 == P2:
@@ -79,12 +79,12 @@ class Gui:
         line.setWidth(thick)
 
         if P1[0] == P2[0]: # |
-            dy = P2[1] - P1[1]
-            p2 = self.fromCoorToPoint(P1[0]+dy, P1[1])
+            p1 = self.fromCoorToPoint(0, P1[1])
+            p2 = self.fromCoorToPoint(domain, P1[1])
 
         elif P1[1] == P2[1]: # --
-            dx = P2[0] - P1[0]
-            p1 = self.fromCoorToPoint(P2[0], P2[1]+dx)
+            p1 = self.fromCoorToPoint(P1[0], 0)
+            p2 = self.fromCoorToPoint(P1[0], rangeSz)
 
         elif P2[0] < P1[0]: #\
             dx = abs(P2[0] - P1[0])
@@ -93,7 +93,15 @@ class Gui:
             dy2 = (P2[1] - P1[1])**2
             d = math.sqrt( dx2 + dy2 )
 
-            p2 = self.fromCoorToPoint(P1[0]+d, P1[1]+dx)
+            num = P1[1]+dx - P1[1]
+            den = P1[0]+d - P1[0]
+            m = num / den
+            b = P1[1] - m*P1[0]
+
+            ext = m*domain + b
+
+            p1 = self.fromCoorToPoint(0, b)
+            p2 = self.fromCoorToPoint(domain, ext)
 
         else: #/
             dx = abs(P2[0] - P1[0])
@@ -104,7 +112,15 @@ class Gui:
 
             p2 = self.fromCoorToPoint(P1[0]-d, P1[1]+dx)
 
-        
+            num = P1[1]+dx - P1[1]
+            den = P1[0]-d - P1[0]
+            m = num / den
+            b = P1[1] - m*P1[0]
+
+            ext = m*domain + b
+
+            p1 = self.fromCoorToPoint(0, b)
+            p2 = self.fromCoorToPoint(domain, ext)
         
         line = Line(p1,p2)
         line.draw(self.win)
