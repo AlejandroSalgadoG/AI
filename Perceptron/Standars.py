@@ -7,7 +7,10 @@ sizeX = domain*rectSize
 sizeY = rangeSz*rectSize
 
 classes = {
-            "Iris-setosa" : 0,
-            "Iris-versicolor" : 1,
-            "Iris-virginica" : 2
+            "red"  : 0,
+            "blue" : 1,
+            "green" : 2,
+            0 : "red",
+            1 : "blue", 
+            2 : "green" 
           }

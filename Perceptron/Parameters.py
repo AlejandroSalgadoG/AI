@@ -1,6 +1,8 @@
 #dataPath = "/home/alejandro/Downloads/iris.data" 
 dataPath = "./data.dat" 
 
+numClass = 2 
+
 domain = 10
 rangeSz = 10
 

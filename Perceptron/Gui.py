@@ -40,12 +40,13 @@ class Gui:
         return (int(i), int(j))
 
     def drawData(self, data):
-        for x,y, color in data:
+        for x,y, colorId in data:
             p1 = self.fromCoorToPoint(x,y)
 
             point = Circle(p1,radius)
 
             point.draw(self.win)
+            color = classes[colorId]
             point.setFill(color)
 
     def fromCoorToPoint(self, x,y):
@@ -126,5 +127,5 @@ class Gui:
         line = Line(p1,p2)
         line.draw(self.win)
         
-        line.setFill("Red")
+        line.setFill("Green")
         line.setWidth(thick)

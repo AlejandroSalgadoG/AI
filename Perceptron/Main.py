@@ -11,15 +11,16 @@ def main():
     rawData = readDataset(dataPath)
     data = parseData(rawData)
 
+    gui.drawData(data)
 
-    training, heldout, test = divideData(data)
-    gui.drawData(training)
+#    training, heldout, test = divideData(data)
 
     gui.getMouse()
 
-    weight = learn(training)
+    weights = learn(data)
 
-    gui.drawDivision(weight)
+    if numClass == 2:
+        gui.drawDivision(weights[0])
 
     gui.getMouse()
 
