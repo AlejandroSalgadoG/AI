@@ -15,8 +15,9 @@ def learn(data):
 
             if realClass != calcClass:
                 allgood = False
-                weights[realClass] = incrementWeight(sample, weights[realClass])
-                weights[calcClass] = decrementWeight(sample, weights[calcClass])
+                tao = calcTao(weights[realClass], weights[calcClass], sample)
+                weights[realClass] = incrementWeight(sample, weights[realClass], tao)
+                weights[calcClass] = decrementWeight(sample, weights[calcClass], tao)
 
         if allgood:
             learned = True
@@ -42,18 +43,39 @@ def perceptron(sample, weights):
         
     return classification
 
-def incrementWeight(feature, weight):
+def calcTao(goodW, badW, feature):
+    size = len(goodW)
+    diff = [0 for i in range(size)] 
+
+    for i in range(size):
+        diff[i] = badW[i] - goodW[i]
+
+    dot = 0
+    for i in range(size):
+        dot += diff[i] * feature[i]
+
+    num = dot + 1
+
+    dot = 0
+    for i in range(size):
+        dot += feature[i] * feature[i]
+    
+    den = dot * 2
+
+    return num/den
+
+def incrementWeight(feature, weight, tao):
     size = len(feature)
 
     for i in range(size-1):
-        weight[i] += feature[i]
+        weight[i] += tao * feature[i]
 
     return weight
 
-def decrementWeight(feature, weight):
+def decrementWeight(feature, weight, tao):
     size = len(feature)
 
     for i in range(size-1):
-        weight[i] -= feature[i]
+        weight[i] -= tao * feature[i]
 
     return weight
