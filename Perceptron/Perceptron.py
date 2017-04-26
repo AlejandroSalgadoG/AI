@@ -1,6 +1,8 @@
+import time
+
 def learn(data):
     featureSz = len(data[0]) - 1
-    weight = [ 0 for i in range(featureSz)]
+    weight = [ 0 for i in range(featureSz) ]
 
     learned = False
 
@@ -13,8 +15,12 @@ def learn(data):
 
             if realClass != calcClass:
                 allgood = False
-                weight = adjustWeights(realClass, calcClass, sample, weight, featureSz)
+                if calcClass == "red":
+                    weight = adjustWeights("+", sample, weight, featureSz)
+                else:
+                    weight = adjustWeights("-", sample, weight, featureSz)
                 break
+
 
         if allgood:
             learned = True
@@ -27,16 +33,20 @@ def perceptron(sample, weight, size):
         val += sample[i] * weight[i]
 
     if val <= 0:
-        return 0
+        return "red"
     else:
-        return 1
+        return "blue"
 
-def adjustWeights(realClass, calcClass, sample, weight, size):
-    diff = realClass - calcClass
+def adjustWeights(operation, sample, weight, size):
     newWeigth = []
 
-    for i in range(size):
-        newVal = weight[i] + diff * sample[i]
-        newWeigth.append(newVal)
+    if operation == "+":
+        for i in range(size):
+            newVal = weight[i] + sample[i]
+            newWeigth.append(newVal)
+    else:
+        for i in range(size):
+            newVal = weight[i] - sample[i]
+            newWeigth.append(newVal)
 
     return newWeigth

@@ -52,7 +52,8 @@ class Gui:
         return Point(rectSize*x, rectSize*(rangeSz-y))
 
     def drawDivision(self, weight):
-        P1, P2 = weight
+        P1 = weight
+        P2 = [0,0]
 
         if P1 == P2:
             return
