@@ -1,37 +1,37 @@
 from Standars import *
 
 def learn(data):
-    featureSz = len(data[0]) - 1
-    weights = [ [0 for j in range(featureSz)] for i in range(numClass)]
+    featureSz = len(data[0]) - 1 # dont count the classification
+    alphas = [ [0 for j in range(featureSz)] for i in range(numClass)]
 
     learned = False
 
     while not learned:
         allgood = True
 
-        for sample in data:
+        for n, sample in enumerate(data):
             realClass = sample[-1]
-            calcClass = perceptron(sample, weights)
+            calcClass = perceptron(data, sample, alphas)
 
             if realClass != calcClass:
                 allgood = False
-                weights[realClass] = incrementWeight(sample, weights[realClass])
-                weights[calcClass] = decrementWeight(sample, weights[calcClass])
+                alphas[realClass][n] += 1
+                alphas[calcClass][n] -= 1
 
         if allgood:
             learned = True
 
-    return weights
+    return alphas
 
-def perceptron(sample, weights):
+def perceptron(data, sample, alphas):
     first = True
     classification = 0
 
-    for classVal,weight in enumerate(weights):
+    for classVal,alphaArr in enumerate(alphas):
         ans = 0
 
-        for i, val  in enumerate(weight):
-            ans += sample[i] * val
+        for idx, alpha  in enumerate(alphaArr):
+            ans += alpha * K( data[idx], sample)
 
         if first:
             maxVal = ans 
@@ -42,18 +42,22 @@ def perceptron(sample, weights):
         
     return classification
 
-def incrementWeight(feature, weight):
-    size = len(feature)
+def K(x1, x2):
+    dot = 0
+    size = len(x1) - 1
 
-    for i in range(size-1):
-        weight[i] += feature[i]
+    for i in range(size):
+        dot += x1[i] * x2[i]
 
-    return weight
+    return dot
 
-def decrementWeight(feature, weight):
-    size = len(feature)
+def K2(x1, x2):
+    dot = 0
+    size = len(x1) - 1
 
-    for i in range(size-1):
-        weight[i] -= feature[i]
+    for i in range(size):
+        dot += x1[i] * x2[i]
 
-    return weight
+    dot += 1
+
+    return dot**2
