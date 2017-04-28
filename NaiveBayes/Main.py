@@ -20,9 +20,18 @@ def main():
 
     featureNum = len(classData[0][0])
 
+    condProb = []
     for classdata in classData:
+        classProb = []
         for feature in range(featureNum):
             probs = mlSmooth(classdata, feature)
-            print(probs)
+            classProb.append(probs)
+        condProb.append(classProb)
+
+    sample = [1,2]
+
+    classification = naiveBayes(condProb, sample)
+
+    print(translate[classification])
 
 main()
