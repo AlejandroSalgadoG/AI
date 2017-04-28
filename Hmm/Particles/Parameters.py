@@ -1,2 +1,1 @@
-size = 300
-numRow = 3
+numRow = 4

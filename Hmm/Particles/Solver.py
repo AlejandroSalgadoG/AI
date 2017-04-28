@@ -1,6 +1,6 @@
 import random
 
-from Parameters import *
+from Standars import *
 from Model import *
 
 ghost = None
@@ -19,6 +19,7 @@ def generateGhost():
     i = random.randint(0,2)
     j = random.randint(0,2)
     ghost = (i,j)
+    print(ghost)
 
 def useSensor(pos):
     dist = getGhostDistance(pos, ghost)
@@ -30,7 +31,7 @@ def getGhostDistance(pos, ghost):
     gi, gj = ghost
     return abs(i-gi) + abs(j-gj)
 
-def getParticles(particles, probs):
+def distributeParticles(particles, probs):
     part = []
     for i in range(particles):
         idx = selectRandom(probs)
@@ -39,35 +40,58 @@ def getParticles(particles, probs):
 
     return part
 
-def calcCondProb(pos, color, imgGhost):
-    dist = getGhostDistance(pos, imgGhost)
+def redistributeParticles(particles, probs):
+    part = []
+    for i in particles:
+        idx = selectRandom(probs)
+        particle = particles[idx]
+        part.append(particle)
 
-    idx = translation[color]
-    return model[dist][idx]
+    return part
 
-def getParticlesWeight(pos, color):
+def weightParticles(particles, condProbs):
     weights = []
-    for i in range(numRow**2):
-        imgGhost = fromIdxToPos(i)
-        weight = calcCondProb(pos, color, imgGhost)
-        weights.append(weight)
+
+    for particle in particles:
+        idx = fromPosToIdx(particle)
+        prob = condProbs[idx]
+        weights.append(prob)
 
     return weights
-
-def redistributeParticles(particleNum, weights):
-    weights = normalize(weights)
-    return getParticles(particleNum, weights)
 
 def moveParticles(particles):
     newParticles = []
 
     for particle in particles:
-        table = transition[particle]
+        table = transition(particle)
         idx = selectRandom(table)
         pos = fromIdxToPos(idx)
         newParticles.append(pos)
-         
+
     return newParticles
+
+def getNewPosDist(pos, color, probs):
+    newDist = []
+
+    for i in range(numRow):
+        for j in range(numRow):
+            imgGhost = (i,j)
+
+            dist = getGhostDistance(pos, imgGhost)
+
+            if dist > maxDist:
+                dist = maxDist
+
+            table = model[dist]
+            colorIdx = translation[color]
+            posIdx = j + i*numRow
+
+            psf = table[colorIdx]
+            pf = probs[posIdx]
+
+            newDist.append( psf * pf )
+
+    return normalize(newDist)
 
 def getProbs(particles):
     total = len(particles)
@@ -107,15 +131,12 @@ def selectRandom(probs):
 
 def moveGhost():
     global ghost
-    table = transition[ghost]
+    table = transition(ghost)
     idx = selectRandom(table)
     ghost = fromIdxToPos(idx)
 
-def fromIdxToPos(idx):
-    i = idx // numRow
-    j = idx - i * numRow
-    return (i,j)
+def isGhostThere(pos):
+    return pos == ghost
 
-def fromPosToIdx(pos):
-    i,j = pos
-    return j + i*numRow
+def revealGhost():
+    print("The ghost was in", ghost)
