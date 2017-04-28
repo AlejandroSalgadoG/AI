@@ -8,12 +8,9 @@ def main():
     generateGhost()
     probs = getInitialDist()
 
-    first = True
-
     while True:
         gui.drawProb(probs)
         pos = gui.getMouse()
-        
 
         if pos[1] > numRow-1:
             if pos[0] >= numRow/2:

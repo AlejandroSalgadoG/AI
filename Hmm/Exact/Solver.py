@@ -28,7 +28,7 @@ def useSensor(pos):
 
     if dist > maxDist:
         dist = maxDist
-    
+
     table = model[dist]
     colorIdx = selectRandom(table)
     return translation[colorIdx]
@@ -62,27 +62,27 @@ def calcForwardProb(probs):
 
     return newProbs
 
-def getNewPosDist(pos, color, probs):                                                          
-    newDist = []                                                                               
-                                                                                               
-    for i in range(numRow):                                                                    
-        for j in range(numRow):                                                                
-            imgGhost = (i,j)                                                                   
-                                                                                               
-            dist = getGhostDistance(pos, imgGhost)                                             
-                                                                                               
-            if dist > maxDist:                                                                 
-                dist = maxDist                                                                 
-                                                                                               
-            table = model[dist]                                                  
-            colorIdx = translation[color]                                                      
-            posIdx = j + i*numRow                                                              
-                                                                                               
-            psf = table[colorIdx]                                                              
-            pf = probs[posIdx]                                                                 
-                                                                                               
-            newDist.append( psf * pf )                                                         
-                                                                                               
+def getNewPosDist(pos, color, probs):
+    newDist = []
+
+    for i in range(numRow):
+        for j in range(numRow):
+            imgGhost = (i,j)
+
+            dist = getGhostDistance(pos, imgGhost)
+
+            if dist > maxDist:
+                dist = maxDist
+
+            table = model[dist]
+            colorIdx = translation[color]
+            posIdx = j + i*numRow
+
+            psf = table[colorIdx]
+            pf = probs[posIdx]
+
+            newDist.append( psf * pf )
+
     return normalize(newDist)
 
 def normalize(dist):
