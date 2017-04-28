@@ -19,7 +19,6 @@ def generateGhost():
     i = random.randint(0,2)
     j = random.randint(0,2)
     ghost = (i,j)
-    print(ghost)
 
 def useSensor(pos):
     dist = getGhostDistance(pos, ghost)

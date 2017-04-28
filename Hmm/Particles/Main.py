@@ -1,9 +1,10 @@
 #!/bin/python
 
+from Parameters import *
 from Gui import *
 from Solver import *
 
-def main(particleNum):
+def main():
     gui = Gui()
 
     generateGhost()
@@ -40,4 +41,4 @@ def main(particleNum):
 
     gui.getMouse()
         
-main(1000)
+main()
