@@ -1,6 +1,7 @@
 import random
 
 from Parameters import *
+from Standars import *
 
 def rand(lower, upper):
     return random.randint(lower, upper) 
@@ -16,9 +17,23 @@ def parseData(rawData):
     linedData = rawData.split("\n")
     del linedData[-1]
 
-    dividedData = [ line.split(",") for line in linedData]
+    parsedData = []
 
-    return dividedData
+    for line in linedData:
+        tmpData = line.split(",")
+        classification = tmpData[-1] # get classification
+        del tmpData[-1]
+
+#        data = [1] # bias
+        data = [] 
+        for element in tmpData:
+            data.append(float(element)) # get features values
+
+        data.append(classes[classification]) # get code of the classification
+
+        parsedData.append(data) # store the sample
+
+    return parsedData
 
 def divideData(data):
     size = len(data)
@@ -45,3 +60,16 @@ def divideData(data):
         del data[pos]
 
     return train, heldout, test
+
+def getConsistentData(query, dataset):
+    consistentData = []
+    for data in dataset:
+        if data[-1] == query:
+            consistentData.append(data)
+
+    return consistentData
+
+def removeLabel(dataset):
+    for data in dataset:
+        del data[-1]
+    return dataset

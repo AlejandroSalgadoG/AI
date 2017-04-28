@@ -1,5 +1,10 @@
+#classes = {
+#            "Iris-setosa" : 0,
+#            "Iris-versicolor" : 1,
+#            "Iris-virginica" : 2
+#          }
+
 classes = {
-            "Iris-setosa" : 0,
-            "Iris-versicolor" : 1,
-            "Iris-virginica" : 2
+            "red"  : 0,
+            "blue" : 1
           }
