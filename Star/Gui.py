@@ -123,16 +123,16 @@ class Gui:
         pos -= 1
         self.drawRect(pos, color)
 
-    def drawResult(self, guess, real):
-        if guess == real:
+    def drawResult(self, pos, result):
+        if result == 1:
             color,msg = "red", "HIT!"
         else:
             color,msg = "blue", "MISS!"
 
-        guess -= 1
+        pos -= 1
 
-        self.drawRect(guess, color)
-        self.writeMsg(guess, msg, "white")
+        self.drawRect(pos, color)
+        self.writeMsg(pos, msg, "white")
 
     def fromIdxToPos(self, pos):
         i = pos // numRow
