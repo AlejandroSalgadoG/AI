@@ -1,3 +1,5 @@
+import sys
+
 from GuiStandars import *
 from Standars import *
 from Sensor import *
@@ -29,65 +31,68 @@ def getDirection(old, new):
     else:
         return left
 
-def executeCpuAction(p2Gui, tipo, parametro, pos1, pos2):
-    if tipo == move:
-        direction = directions[parametro]
+def executeCpuAction(otherGui, atype, param, ownPos, otherPos):
+    if atype == move:
+        direction = directions[param]
         print("player 1 move", direction)
 
-        return getDirection(pos1, parametro) 
+        return getDirection(ownPos, param) 
 
-    elif tipo == sense:
-        color = useSensor(parametro, pos2)
-        p2Gui.drawSensorReading(parametro, color)
+    elif atype == sense:
+        color = useSensor(param, otherPos)
+        otherGui.drawSensorReading(param, color)
 
         return color
 
-    elif tipo == shoot:
-        if parametro == pos2:
+    elif atype == shoot:
+        if param == otherPos:
             result = 1
         else:
             result = 0
 
-        p2Gui.drawResult(parametro, result)
+        otherGui.drawResult(param, result)
         
         return result
     else:
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
         print("!!!!!!!!!!!! invalid action !!!!!!!!!!!!!!!!!")
+        print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
+        sys.exit(1)
 
-def executeHumanAction(p1Gui, p2Gui, tipo, parametro, pos1, pos2):
-    if tipo == move:
-        p2Gui.drawStar(parametro)
-        return getDirection(pos2, parametro)
+def executeHumanAction(ownGui, otherGui, atype, param, ownPos, otherPos):
+    if atype == move:
+        ownGui.drawStar(param)
+        return getDirection(ownPos, param)
 
-    elif tipo == sense:
-        color = useSensor(parametro, pos1)
-        p1Gui.drawSensorReading(parametro, color)
+    elif atype == sense:
+        color = useSensor(param, otherPos)
+        otherGui.drawSensorReading(param, color)
 
         return color
 
-    elif tipo == shoot:
-        if parametro == pos1:
+    elif atype == shoot:
+        if param == otherPos:
             result = 1
         else:
             result = 0
 
-        p1Gui.drawResult(parametro, result)
+        otherGui.drawResult(param, result)
 
         return result
 
-def opponent(p1Gui, p2Gui):
-    btn = p2Gui.getMouse()
+def opponent(ownGui, otherGui):
+    btn = ownGui.getMouse()
 
     action = buttonCode[btn]
 
     if action == "move":
-        pos = p2Gui.getMouse()
+        pos = ownGui.getMouse()
         return move, pos
 
     elif action == "sense":
-        pos = p1Gui.getMouse()
+        pos = otherGui.getMouse()
         return sense, pos
 
     elif action == "shoot":
-        pos = p1Gui.getMouse()
+        pos = otherGui.getMouse()
         return shoot, pos
