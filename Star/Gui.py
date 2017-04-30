@@ -1,6 +1,6 @@
 from graphics import *
 
-from Standars import *
+from GuiStandars import *
 
 class Gui:
 
@@ -10,7 +10,7 @@ class Gui:
     def __init__(self, name, player):
         self.player = player
         self.win = GraphWin(name, size + btnSize, size)
-        self.drawBlackGrid()
+        self.clean()
         self.setBtnSpace("black")
         self.drawMoveBtn("black")
         self.drawSenseBtn("black")
@@ -73,7 +73,7 @@ class Gui:
         label.setTextColor("white")
         label.draw(self.win)
 
-    def drawBlackGrid(self):
+    def clean(self):
         for pos in range(numRow**2):
             self.drawRect(pos, "black")
 
@@ -90,7 +90,7 @@ class Gui:
         rect.setOutline("white")
 
     def drawProb(self, probs):
-        self.drawBlackGrid()
+        self.clean()
 
         for pos in range(numRow**2):
             strProb = "%.2f" % probs[pos]
@@ -140,7 +140,6 @@ class Gui:
         return (i,j)
 
     def drawStar(self, pos):
-        self.drawBlackGrid()
         pos -= 1
         color = playerColor[self.player]
         self.drawRect(pos, color)

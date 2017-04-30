@@ -1,4 +1,4 @@
-from Standars import *
+from GuiStandars import *
 from Random import *
 
 #P(col | pos)   g     y     o     r
@@ -8,25 +8,24 @@ model = { 0 : [0.05, 0.05, 0.05, 0.85 ],
           3 : [0.85, 0.05, 0.05, 0.05 ],
           4 : [0.85, 0.05, 0.05, 0.05 ] }
 
-translation = { 0 : "green",
-                1 : "yellow",
-                2 : "orange",
-                3 : "red",
-                "green"  : 0,
-                "yellow" : 1,
-                "orange" : 2,
-                "red"    : 3 }
+colors = { 0 : "green",
+           1 : "yellow",
+           2 : "orange",
+           3 : "red",
+           "green"  : 0,
+           "yellow" : 1,
+           "orange" : 2,
+           "red"    : 3 }
 
 def useSensor(pos, star):
     dist = getDistance(pos, star)
-    print(dist)
 
     if dist > maxDist:
         dist = maxDist
 
     table = model[dist]
     colorIdx = selectRandom(table)
-    return translation[colorIdx]
+    return colors[colorIdx]
 
 def getDistance(pos1, pos2):
     i1,j1 = fromIdxToPos(pos1)
