@@ -5,20 +5,16 @@ from Standars import *
 class Gui:
 
     win = None
-    rectSize = size / numRow
-    colors = []
+    player = 0
 
-    def __init__(self, name):
+    def __init__(self, name, player):
+        self.player = player
         self.win = GraphWin(name, size + btnSize, size)
-        self.setBlackColors()
-        self.drawGrid()
+        self.drawBlackGrid()
         self.setBtnSpace("black")
         self.drawMoveBtn("black")
         self.drawSenseBtn("black")
         self.drawShootBtn("black")
-
-    def setBlackColors(self):
-        self.colors = ["black" for i in range(numRow **2)]
 
     def setBtnSpace(self, color):
         p1 = Point(size, 0)
@@ -31,23 +27,23 @@ class Gui:
 
     def drawMoveBtn(self, color):
         p1 = Point(size, 0)
-        p2 = Point(size+btnSize, self.rectSize)
+        p2 = Point(size+btnSize, rectSize)
 
         rect = Rectangle(p1, p2)
         rect.draw(self.win)
         rect.setFill(color)
         rect.setOutline("white")
 
-        x,y = (size + size+btnSize)/2, self.rectSize/2
+        x,y = (size + size+btnSize)/2, rectSize/2
         pos = Point(x,y)
-        
+
         label = Text(pos, "Move")
         label.setTextColor("white")
         label.draw(self.win)
 
     def drawSenseBtn(self, color):
-        p1 = Point(size, self.rectSize*2)
-        p2 = Point(size + btnSize, self.rectSize*3)
+        p1 = Point(size, rectSize*2)
+        p2 = Point(size + btnSize, rectSize*3)
 
         rect = Rectangle(p1, p2)
         rect.draw(self.win)
@@ -56,13 +52,13 @@ class Gui:
 
         x,y = (size + size+btnSize)/2, size/2
         pos = Point(x,y)
-        
+
         label = Text(pos, "Sense")
         label.setTextColor("white")
         label.draw(self.win)
 
     def drawShootBtn(self, color):
-        p1 = Point(size, self.rectSize*4)
+        p1 = Point(size, rectSize*4)
         p2 = Point(size + btnSize, size)
 
         rect = Rectangle(p1, p2)
@@ -70,53 +66,53 @@ class Gui:
         rect.setFill(color)
         rect.setOutline("white")
 
-        x,y = (size + size+btnSize)/2, (self.rectSize*4 + size)/2
+        x,y = (size + size+btnSize)/2, (rectSize*4 + size)/2
         pos = Point(x,y)
-        
+
         label = Text(pos, "Shoot")
         label.setTextColor("white")
         label.draw(self.win)
 
-    def drawGrid(self):
-        for i in range(numRow):
-            for j in range(numRow):
-                colorIdx = j + i*numRow
-                color = self.colors[colorIdx]
+    def drawBlackGrid(self):
+        for pos in range(numRow**2):
+            self.drawRect(pos, "black")
 
-                self.drawRect(i,j, color)
+    def drawRect(self, pos, color):
+        i,j = self.fromIdxToPos(pos)
 
-    def drawRect(self, i,j, color):                                              
-        p1 = Point(j * self.rectSize, i * self.rectSize)                         
-        p2 = Point(p1.x + self.rectSize, p1.y + self.rectSize)                   
-                                                                                 
-        rect = Rectangle(p1,p2)                                                  
-        rect.draw(self.win)                                                      
-                                                                                 
-        rect.setFill(color)                                                      
+        p1 = Point(j * rectSize, i * rectSize)
+        p2 = Point(p1.x + rectSize, p1.y + rectSize)
+
+        rect = Rectangle(p1,p2)
+        rect.draw(self.win)
+
+        rect.setFill(color)
         rect.setOutline("white")
 
     def drawProb(self, probs):
-        self.drawGrid()
+        self.drawBlackGrid()
 
-        for i in range(numRow):
-            for j in range(numRow):
-                pos = j + i*numRow
-                strProb = "%.2f" % probs[pos]
-
-                self.writeMsg(i,j, strProb, "blue")
+        for pos in range(numRow**2):
+            strProb = "%.2f" % probs[pos]
+            self.writeMsg(pos, strProb, "blue")
 
     def getMouse(self):
         point = self.win.getMouse()
 
         j, i = point.x, point.y
-        i = i // self.rectSize
-        j = j // self.rectSize
+        i = i // rectSize
+        j = j // rectSize
 
-        return (int(i), int(j))
+        if j == numRow:
+            return i + numRow**2 + 1
 
-    def writeMsg(self, i,j, msg, color):
-        x,y = j*self.rectSize, i*self.rectSize
-        halfRectSz = self.rectSize / 2
+        return int(j + i*numRow) + 1
+
+    def writeMsg(self, pos, msg, color):
+        i,j = self.fromIdxToPos(pos)
+
+        x,y = j*rectSize, i*rectSize
+        halfRectSz = rectSize / 2
 
         pos = Point(x + halfRectSz, y + halfRectSz)
         label = Text(pos, msg)
@@ -124,16 +120,27 @@ class Gui:
         label.draw(self.win)
 
     def drawSensorReading(self, pos, color):
-        i,j = pos
-        pos = j+i*numRow
-        self.colors[pos] = color
+        pos -= 1
+        self.drawRect(pos, color)
 
-    def drawResult(self, pos, result):                                           
-        if result:                                                               
-            color,msg = "red", "HIT!"                                            
-        else:                                                                    
-            color,msg = "blue", "MISS!"                                          
-                                                                                 
-        i,j = pos                                                                
-        self.drawRect(i,j, color)                                                
-        self.writeMsg(i,j, msg, "white")
+    def drawResult(self, guess, real):
+        if guess == real:
+            color,msg = "red", "HIT!"
+        else:
+            color,msg = "blue", "MISS!"
+
+        guess -= 1
+
+        self.drawRect(guess, color)
+        self.writeMsg(guess, msg, "white")
+
+    def fromIdxToPos(self, pos):
+        i = pos // numRow
+        j = pos - i * numRow
+        return (i,j)
+
+    def drawStar(self, pos):
+        self.drawBlackGrid()
+        pos -= 1
+        color = playerColor[self.player]
+        self.drawRect(pos, color)

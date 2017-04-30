@@ -1,13 +1,17 @@
-from Parameters import *
+numRow = 5
+maxDist = 4
 
-size = numRow*100
 btnSize = 50
+size = numRow*100
+rectSize = size / numRow
 
-def fromPosToIdx(pos):
-    i,j = pos
-    return j + i*numRow
+playerColor = {
+                1 : "gray",
+                2 : "purple"
+              }
 
-def fromIdxToPos(idx):
-    i = idx // numRow
-    j = idx - i * numRow
-    return (i,j)
+buttonCode = {
+               26 : "move",
+               28 : "sense",
+               30 : "shoot"
+             }
