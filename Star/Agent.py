@@ -13,4 +13,4 @@ class Agent:
         print("resultado =", resultado_accion)
         print("acction oponente =", accion_oponente)
 
-        return 5,3
+        return shoot,accion_oponente[1]

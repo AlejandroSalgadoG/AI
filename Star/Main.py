@@ -29,7 +29,9 @@ def main():
         result1 = executeHumanAction(p1Gui, p2Gui, type1, param1, pos1, pos2)
 
         if type1 == move:
+            direction = p1Gui.getDirection(pos1, param1)
             pos1 = param1
+            param1 = direction
 
         p1Gui.clean()
         p1Gui.drawStar(pos1)

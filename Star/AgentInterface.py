@@ -4,39 +4,23 @@ from GuiStandars import *
 from Standars import *
 from Sensor import *
 
-directions = {                                                                   
-               "up"    : 1,                                                        
-               "right" : 2,                                                        
-               "down"  : 3,                                                        
-               "left"  : 4,                                                        
-               1 : "up",                                                           
-               2 : "right",                                                        
-               3 : "down",                                                         
-               4 : "left"                                                          
+directions = {
+               "up"    : 1,
+               "right" : 2,
+               "down"  : 3,
+               "left"  : 4,
+               1 : "up",
+               2 : "right",
+               3 : "down",
+               4 : "left"
              }
-
-def getDirection(old, new):
-    i1 = old // numRow
-    j1 = old - i1 * numRow
-
-    i2 = new // numRow
-    j2 = new - i2 * numRow
-
-    if i1 > i2:
-        return up
-    elif j1 < j2:
-        return right
-    elif i1 < i2:
-        return down
-    else:
-        return left
 
 def executeCpuAction(otherGui, atype, param, ownPos, otherPos):
     if atype == move:
         direction = directions[param]
         print("player 1 move", direction)
 
-        return getDirection(ownPos, param) 
+        return None
 
     elif atype == sense:
         color = useSensor(param, otherPos)
@@ -51,7 +35,7 @@ def executeCpuAction(otherGui, atype, param, ownPos, otherPos):
             result = 0
 
         otherGui.drawResult(param, result)
-        
+
         return result
     else:
         print("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
@@ -62,7 +46,7 @@ def executeCpuAction(otherGui, atype, param, ownPos, otherPos):
 def executeHumanAction(ownGui, otherGui, atype, param, ownPos, otherPos):
     if atype == move:
         ownGui.drawStar(param)
-        return getDirection(ownPos, param)
+        return None
 
     elif atype == sense:
         color = useSensor(param, otherPos)

@@ -1,6 +1,7 @@
 from graphics import *
 
 from GuiStandars import *
+from Standars import *
 
 class Gui:
 
@@ -143,3 +144,16 @@ class Gui:
         pos -= 1
         color = playerColor[self.player]
         self.drawRect(pos, color)
+
+    def getDirection(self, old, new):
+        i1, j1 = self.fromIdxToPos(old)
+        i2, j2 = self.fromIdxToPos(new)
+
+        if i1 > i2:
+            return up
+        elif j1 < j2:
+            return right
+        elif i1 < i2:
+            return down
+        else:
+            return left
