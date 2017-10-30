@@ -11,19 +11,14 @@ float* initialize_rand_samples(int seed, int range, int size){
     return h_samples;
 }
 
-float* initialize_rand_centroids(int seed, float * h_samples, int k, int samples, int features){
-    srand(seed);
-
+float* initialize_centroids(float * h_samples, int k, int features){
     float * h_centroids = new float[k*features];
 
-    int random;
     float *centroid, *sample;
 
     for(int i=0;i<k;i++){
-        random = rand() % samples;
-
         centroid = &h_centroids[i*features];
-        sample = &h_samples[random*features];
+        sample = &h_samples[i*features];
 
         memcpy(centroid, sample, sizeof(float) *features);
     }
