@@ -1,5 +1,4 @@
 #include <iostream>
-#include <stdio.h>
 #include <cuda_runtime.h>
 
 #include "CudaUtilities.h"
@@ -41,12 +40,12 @@ void centroid_calculation(float * d_samples, float * d_centroids, int * d_class,
 }
 
 __global__
-void compare_classes(int * d_class, int * d_past_class, int samples, bool * are_equal){
+void compare_classes(int * d_class, int * d_past_class, int samples, bool * d_are_equal){
     int sample_idx = threadIdx.x + blockDim.x * blockIdx.x;
 
     if(sample_idx >= samples) return;
 
-    if(d_class[sample_idx] != d_past_class[sample_idx]) *are_equal = false;
+    if(d_class[sample_idx] != d_past_class[sample_idx]) *d_are_equal = false;
 }
 
 __global__
@@ -64,7 +63,7 @@ void centroid_movement(float * d_samples, float * d_centroids, int * d_class, in
 
     if(kfeature_idx >= features*k) return;
 
-    int feat = threadIdx.x % features;
+    int feat = kfeature_idx % features;
     int centroid = kfeature_idx / features;
 
     float numerator=0, denominator=0;
