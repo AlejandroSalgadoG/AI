@@ -14,7 +14,27 @@ void calc_centroid_euclidean(float * d_samples, float * d_centroids, int * d_cla
 
     if(sample_idx >= samples) return;
 
-    d_class[sample_idx] = 1;
+    float * sample = &d_samples[sample_idx*features];
+    float * centroid;
+
+    int classification = 0;
+    float result, best_result;
+
+    for(int i=0;i<k;i++){
+        centroid = &d_centroids[i*features]; 
+
+        result = 0;
+        for(int j=0;j<features;j++) result += pow(sample[j] - centroid[j], 2);
+        result = sqrt(result);
+
+        if(i == 0) best_result = result;
+        else if(result < best_result){
+            classification = i;
+            best_result = result;
+        }
+    }
+
+    d_class[sample_idx] = classification;
 }
 
 kernel_dim get_kernel_dimensions(int samples){
@@ -23,7 +43,7 @@ kernel_dim get_kernel_dimensions(int samples){
     //properties.maxThreadsPerBlock;
 
     dim3 block_size(2,1,1);
-    dim3 thread_size(10,1,1);
+    dim3 thread_size(5,1,1);
 
     struct kernel_dim dimension;
     dimension.blk_size = block_size;
@@ -52,7 +72,7 @@ int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, 
     cout << endl << "Starting kmeans kernel...";
     calc_centroid_euclidean<<<kernel.blk_size, kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
     cout << "done" << endl << endl;
-
+    
     cudaMemcpy(h_class, d_class, sizeof(int)*samples, cudaMemcpyDeviceToHost);
 
     cudaFree(d_class);

@@ -3,7 +3,7 @@
 
 int main(int argc, char *argv[]){
     int features = 2;
-    int samples = 19;
+    int samples = 9;
 
     int k = 2;
     int seed = 1;
