@@ -9,10 +9,13 @@ cudaDeviceProp get_device_properties(){
 }
 
 kernel_dim get_vertical_kernel_dimensions(cudaDeviceProp device_prop, int samples){
-    //properties.maxThreadsPerBlock;
+    int max_threads = device_prop.maxThreadsPerBlock; 
 
-    dim3 block_size(2,1,1);
-    dim3 thread_size(5,1,1);
+    int blk_size = max_threads / samples;
+    if (max_threads % samples != 0) blk_size++;
+
+    dim3 block_size(blk_size,1,1);
+    dim3 thread_size(max_threads,1,1);
 
     struct kernel_dim dimension;
     dimension.blk_size = block_size;
@@ -22,9 +25,13 @@ kernel_dim get_vertical_kernel_dimensions(cudaDeviceProp device_prop, int sample
 }
 
 kernel_dim get_horizontal_kernel_dimensions(cudaDeviceProp device_prop, int features, int k){
+    int max_threads = device_prop.maxThreadsPerBlock; 
 
-    dim3 block_size(1,1,1);
-    dim3 thread_size(features*k,1,1);
+    int blk_size = max_threads / features*k;
+    if (max_threads % features*k != 0) blk_size++;
+
+    dim3 block_size(blk_size,1,1);
+    dim3 thread_size(max_threads,1,1);
 
     struct kernel_dim dimension;
     dimension.blk_size = block_size;
