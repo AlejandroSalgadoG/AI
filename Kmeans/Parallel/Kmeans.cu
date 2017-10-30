@@ -50,6 +50,15 @@ void compare_classes(int * d_class, int * d_past_class, int samples, bool * are_
 }
 
 __global__
+void copy_classes(int * d_class, int * d_past_class, int samples){
+    int sample_idx = threadIdx.x + blockDim.x * blockIdx.x;
+
+    if(sample_idx >= samples) return;
+
+    d_past_class[sample_idx] = d_class[sample_idx];
+}
+
+__global__
 void centroid_movement(float * d_samples, float * d_centroids, int * d_class, int samples, int features, int k){
     int kfeature_idx = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -89,8 +98,8 @@ int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, 
     cudaMemcpy(d_centroids, h_centroids, sizeof(float) * centroids_size, cudaMemcpyHostToDevice);
 
     cudaDeviceProp device_prop = get_device_properties();
-    kernel_dim dist_kernel = get_calculation_kernel_dimensions(device_prop, samples);
-    kernel_dim cent_kernel = get_movement_kernel_dimensions(device_prop, features, k);
+    kernel_dim vertical_kernel = get_vertical_kernel_dimensions(device_prop, samples);
+    kernel_dim horizontal_kernel = get_horizontal_kernel_dimensions(device_prop, features, k);
 
     int iteration = 0;
 
@@ -104,16 +113,16 @@ int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, 
     while(!h_are_equal && iteration++ < max_iterations){
         cout << "iteration " << iteration << endl;
 
-        centroid_calculation<<<dist_kernel.blk_size, dist_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
+        centroid_calculation<<<vertical_kernel.blk_size, vertical_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
 
         cudaMemcpy(d_are_equal, &h_d_are_equal_initilizer, sizeof(bool), cudaMemcpyHostToDevice);
-        compare_classes<<<dist_kernel.blk_size, dist_kernel.thr_size>>>(d_class, d_past_class, samples, d_are_equal);
+        compare_classes<<<vertical_kernel.blk_size, vertical_kernel.thr_size>>>(d_class, d_past_class, samples, d_are_equal);
         cudaMemcpy(&h_are_equal, d_are_equal, sizeof(bool), cudaMemcpyDeviceToHost);
 
         if(!h_are_equal){
-            cudaMemcpy(d_past_class, d_class, sizeof(float)*samples, cudaMemcpyDeviceToDevice);
+            copy_classes<<<vertical_kernel.blk_size, vertical_kernel.thr_size>>>(d_class, d_past_class, samples);
 
-            centroid_movement<<<cent_kernel.blk_size, cent_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
+            centroid_movement<<<horizontal_kernel.blk_size, horizontal_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
         }
     }
     cout << endl << "done" << endl << endl;

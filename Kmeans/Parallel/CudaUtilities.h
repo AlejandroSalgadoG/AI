@@ -6,5 +6,5 @@ struct kernel_dim{
 };
 
 cudaDeviceProp get_device_properties();
-kernel_dim get_calculation_kernel_dimensions(cudaDeviceProp device_prop, int samples);
-kernel_dim get_movement_kernel_dimensions(cudaDeviceProp device_prop, int features, int k);
+kernel_dim get_vertical_kernel_dimensions(cudaDeviceProp device_prop, int samples);
+kernel_dim get_horizontal_kernel_dimensions(cudaDeviceProp device_prop, int features, int k);
