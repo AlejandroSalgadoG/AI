@@ -2,16 +2,11 @@
 #include "Kmeans.h"
 
 int main(int argc, char *argv[]){
-    int features = 2;
-    int samples = 9;
+    int samples, features, k, max_iterations;
 
-    int k = 5;
-    int seed = 1;
-    int rand_range = 10;
+    get_parameters(&samples, &features, &k, &max_iterations);
 
-    int max_iterations = 10;
-
-    float * h_samples = initialize_rand_samples(seed, rand_range, features*samples);
+    float * h_samples = get_samples(samples, features);
     float * h_centroids = initialize_centroids(h_samples, k, features);
     int * h_class = new int[samples];
 
