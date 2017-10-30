@@ -1,3 +1,3 @@
 #pragma once
 
-void kmeans(float * d_samples, int samples, int features);
+int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, int features, int k);

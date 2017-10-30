@@ -1,46 +1,21 @@
-#include <iostream>
-#include <cuda_runtime.h>
-
+#include "Utilities.h"
 #include "Kmeans.h"
 
-using namespace std;
-
 int main(int argc, char *argv[]){
+    int features = 2;
+    int samples = 19;
 
-    int features = 20;
-    int samples = 20;
+    int k = 2;
+    int seed = 1;
+    int rand_range = 10;
 
-    int size = features * samples;
+    float * h_samples = initialize_rand_samples(seed, rand_range, features*samples);
+    float * h_centroids = initialize_rand_centroids(seed, h_samples, k, samples, features);
+    int * h_class = new int[samples];
 
-    srand(1);
-
-    float * h_samples = new float[size];
-    for(int i=0;i<size;i++)
-        h_samples[i] = (rand() % 100);
-
-    for(int i=0;i<samples;i++){
-    	for(int j=0;j<features;j++)
-			cout << h_samples[j+i*20] << " ";
-		cout << endl;
-	}
-
-    float * d_samples;
-    cudaMalloc(&d_samples, sizeof(float) * size);
-	cudaMemcpy(d_samples, h_samples, sizeof(float) * size, cudaMemcpyHostToDevice);
-
-	cout << endl << "Starting kernel...";
-	kmeans(d_samples, samples, features);
-	cout << "done" << endl << endl;
-
-	cudaMemcpy(h_samples, d_samples, sizeof(float) * size, cudaMemcpyDeviceToHost);
-
-    for(int i=0;i<samples;i++){
-    	for(int j=0;j<features;j++)
-			cout << h_samples[j+i*20] << " ";
-		cout << endl;
-	}
-
-    cudaFree(d_samples);
+    print_samples(h_samples, features, samples);
+    h_class = kmeans(h_samples, h_centroids, h_class, samples, features, k);
+    print_labeled_samples(h_samples, h_class, features, samples);
 
     return 0;
 }
