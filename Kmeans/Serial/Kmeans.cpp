@@ -74,6 +74,7 @@ int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, 
     bool are_equal = false;
     int iteration = 0;
 
+    cout << endl << "Starting kmeans" << endl << endl;
     while(!are_equal && iteration++ < max_iterations){
         cout << "iteration " << iteration << endl;
 
@@ -87,6 +88,7 @@ int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, 
             move_centroids(h_samples, h_centroids, h_class, samples, features, k);
         }
     }
+    cout << endl << "done" << endl << endl;
 
     return h_class;
 }

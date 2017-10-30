@@ -1,4 +1,5 @@
 #include <iostream>
+#include <stdio.h>
 #include <cuda_runtime.h>
 
 #include "CudaUtilities.h"
@@ -40,6 +41,15 @@ void centroid_calculation(float * d_samples, float * d_centroids, int * d_class,
 }
 
 __global__
+void compare_classes(int * d_class, int * d_past_class, int samples, bool * are_equal){
+    int sample_idx = threadIdx.x + blockDim.x * blockIdx.x;
+
+    if(sample_idx >= samples) return;
+
+    if(d_class[sample_idx] != d_past_class[sample_idx]) *are_equal = false;
+}
+
+__global__
 void centroid_movement(float * d_samples, float * d_centroids, int * d_class, int samples, int features, int k){
     int kfeature_idx = threadIdx.x + blockDim.x * blockIdx.x;
 
@@ -60,18 +70,21 @@ void centroid_movement(float * d_samples, float * d_centroids, int * d_class, in
     d_centroids[feat + centroid*features] = numerator/denominator;
 }
 
-int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, int features, int k){
+int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, int features, int k, int max_iterations){
     int samples_size = features * samples;
     int centroids_size = features * k;
 
     int * d_class;
+    int * d_past_class;
     float * d_samples;
     float * d_centroids;
 
     cudaMalloc(&d_class, sizeof(int) * samples);
+    cudaMalloc(&d_past_class, sizeof(int) * samples);
     cudaMalloc(&d_samples, sizeof(float) * samples_size);
     cudaMalloc(&d_centroids, sizeof(float) * centroids_size);
 
+    cudaMemcpy(d_past_class, h_class, sizeof(float) * samples, cudaMemcpyHostToDevice);
     cudaMemcpy(d_samples, h_samples, sizeof(float) * samples_size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_centroids, h_centroids, sizeof(float) * centroids_size, cudaMemcpyHostToDevice);
 
@@ -79,10 +92,31 @@ int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, 
     kernel_dim dist_kernel = get_calculation_kernel_dimensions(device_prop, samples);
     kernel_dim cent_kernel = get_movement_kernel_dimensions(device_prop, features, k);
 
-    cout << endl << "Starting kmeans kernel...";
-    centroid_calculation<<<dist_kernel.blk_size, dist_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
-    centroid_movement<<<cent_kernel.blk_size, cent_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
-    cout << "done" << endl << endl;
+    int iteration = 0;
+
+    bool *d_are_equal;
+    bool h_are_equal = false;
+    bool h_d_are_equal_initilizer = true;
+
+    cudaMalloc(&d_are_equal, sizeof(bool));
+
+    cout << endl << "Starting kmeans" << endl << endl;
+    while(!h_are_equal && iteration++ < max_iterations){
+        cout << "iteration " << iteration << endl;
+
+        centroid_calculation<<<dist_kernel.blk_size, dist_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
+
+        cudaMemcpy(d_are_equal, &h_d_are_equal_initilizer, sizeof(bool), cudaMemcpyHostToDevice);
+        compare_classes<<<dist_kernel.blk_size, dist_kernel.thr_size>>>(d_class, d_past_class, samples, d_are_equal);
+        cudaMemcpy(&h_are_equal, d_are_equal, sizeof(bool), cudaMemcpyDeviceToHost);
+
+        if(!h_are_equal){
+            cudaMemcpy(d_past_class, d_class, sizeof(float)*samples, cudaMemcpyDeviceToDevice);
+
+            centroid_movement<<<cent_kernel.blk_size, cent_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
+        }
+    }
+    cout << endl << "done" << endl << endl;
 
     cudaMemcpy(h_class, d_class, sizeof(int)*samples, cudaMemcpyDeviceToHost);
 

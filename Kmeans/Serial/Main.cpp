@@ -9,7 +9,7 @@ int main(int argc, char *argv[]){
     int seed = 1;
     int rand_range = 10;
 
-    int max_iterations = 1;
+    int max_iterations = 10;
 
     float * h_samples = initialize_rand_samples(seed, rand_range, features*samples);
     float * h_centroids = initialize_rand_centroids(seed, h_samples, k, samples, features);
