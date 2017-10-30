@@ -1,15 +1,19 @@
 #include <iostream>
 #include <cuda_runtime.h>
 
+#include "CudaUtilities.h"
+
 using namespace std;
 
-struct kernel_dim{
-    dim3 blk_size;
-    dim3 thr_size;
-};
+__device__
+float euclidian_distance(float * sample, float * centroid, int features){
+    float result = 0;
+    for(int j=0;j<features;j++) result += pow(sample[j] - centroid[j], 2);
+    return sqrt(result);
+}
 
 __global__
-void calc_centroid_euclidean(float * d_samples, float * d_centroids, int * d_class, int samples, int features, int k){
+void centroid_calculation(float * d_samples, float * d_centroids, int * d_class, int samples, int features, int k){
     int sample_idx = threadIdx.x + blockDim.x * blockIdx.x;
 
     if(sample_idx >= samples) return;
@@ -21,11 +25,9 @@ void calc_centroid_euclidean(float * d_samples, float * d_centroids, int * d_cla
     float result, best_result;
 
     for(int i=0;i<k;i++){
-        centroid = &d_centroids[i*features]; 
+        centroid = &d_centroids[i*features];
 
-        result = 0;
-        for(int j=0;j<features;j++) result += pow(sample[j] - centroid[j], 2);
-        result = sqrt(result);
+        result = euclidian_distance(sample, centroid, features);
 
         if(i == 0) best_result = result;
         else if(result < best_result){
@@ -37,19 +39,25 @@ void calc_centroid_euclidean(float * d_samples, float * d_centroids, int * d_cla
     d_class[sample_idx] = classification;
 }
 
-kernel_dim get_kernel_dimensions(int samples){
-    //cudaDeviceProp properties;
-    //cudaGetDeviceProperties(&properties,0);
-    //properties.maxThreadsPerBlock;
+__global__
+void centroid_movement(float * d_samples, float * d_centroids, int * d_class, int samples, int features, int k){
+    int kfeature_idx = threadIdx.x + blockDim.x * blockIdx.x;
 
-    dim3 block_size(2,1,1);
-    dim3 thread_size(5,1,1);
+    if(kfeature_idx >= features*k) return;
 
-    struct kernel_dim dimension;
-    dimension.blk_size = block_size;
-    dimension.thr_size = thread_size;
+    int feat = threadIdx.x % features;
+    int centroid = kfeature_idx / features;
 
-    return dimension;
+    float numerator=0, denominator=0;
+
+    for(int i=0;i<samples;i++){
+        if(d_class[i] == centroid){
+            numerator += d_samples[feat + i*features];
+            denominator += 1;
+        }
+    }
+
+    d_centroids[feat + centroid*features] = numerator/denominator;
 }
 
 int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, int features, int k){
@@ -67,12 +75,15 @@ int* kmeans(float * h_samples, float * h_centroids, int * h_class, int samples, 
     cudaMemcpy(d_samples, h_samples, sizeof(float) * samples_size, cudaMemcpyHostToDevice);
     cudaMemcpy(d_centroids, h_centroids, sizeof(float) * centroids_size, cudaMemcpyHostToDevice);
 
-    kernel_dim kernel = get_kernel_dimensions(samples);
+    cudaDeviceProp device_prop = get_device_properties();
+    kernel_dim dist_kernel = get_calculation_kernel_dimensions(device_prop, samples);
+    kernel_dim cent_kernel = get_movement_kernel_dimensions(device_prop, features, k);
 
     cout << endl << "Starting kmeans kernel...";
-    calc_centroid_euclidean<<<kernel.blk_size, kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
+    centroid_calculation<<<dist_kernel.blk_size, dist_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
+    centroid_movement<<<cent_kernel.blk_size, cent_kernel.thr_size>>>(d_samples, d_centroids, d_class, samples, features, k);
     cout << "done" << endl << endl;
-    
+
     cudaMemcpy(h_class, d_class, sizeof(int)*samples, cudaMemcpyDeviceToHost);
 
     cudaFree(d_class);

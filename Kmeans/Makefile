@@ -1,7 +1,7 @@
 CUDA_INCLUDE_PATH=/opt/cuda/include
 NVCC_OPTS=-Wno-deprecated-gpu-targets
 
-Main: Kmeans.o Utilities.o Main.o
+Main: CudaUtilities.o Kmeans.o Utilities.o Main.o
 	nvcc $^ -o Main $(NVCC_OPTS)
 
 Main.o: Main.cpp
@@ -12,6 +12,9 @@ Utilities.o: Utilities.cpp Utilities.h
 
 Kmeans.o: Kmeans.cu Kmeans.h
 	nvcc -c Kmeans.cu $(NVCC_OPTS)
+
+CudaUtilities.o: CudaUtilities.cpp CudaUtilities.h
+	nvcc -c CudaUtilities.cpp $(NVCC_OPTS) 
 
 clean:
 	rm -f *.o Main
