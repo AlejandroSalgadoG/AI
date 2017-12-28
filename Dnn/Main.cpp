@@ -1,5 +1,4 @@
 #include <iostream>
-
 #include "NNet.h"
 
 using namespace std;
@@ -27,11 +26,12 @@ int main(int argc, char *argv[]){
     nnet->set_weights(weights_2, 1);
     nnet->set_activations(new Sigmoid(), 2);
     nnet->set_labels(labels);
+    nnet->set_loss(new LessSquare());
 
     double * ans = nnet->forward();
+    double loss = nnet->loss(ans);
 
-    for(int i=0;i<2;i++)
-        cout << ans[i] << endl;
+    cout << "loss " << loss << endl;
 
     delete nnet;
 }

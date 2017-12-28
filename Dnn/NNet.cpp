@@ -1,3 +1,4 @@
+#include <math.h>
 #include "NNet.h"
 
 NNet::NNet(int * layers, int num_layers){
@@ -28,17 +29,21 @@ void NNet::set_activations(Activation * function, int layer){
     activations[layer] = function;
 }
 
-double* NNet::get_weights(int layer){
-    return W[layer];
-}
-
 void NNet::set_labels(double * y){
     this->y = y;
+}
+
+void NNet::set_loss(Loss * loss_function){
+    this->loss_function = loss_function;
 }
 
 double* NNet::set_bias(double * x, int layer){
     x[layer] = 1;
     return x;
+}
+
+double* NNet::get_weights(int layer){
+    return W[layer];
 }
 
 double* NNet::forward(){
@@ -63,4 +68,8 @@ double* NNet::dot_product(double* w, double * x, double * ans, int layer){
 
 double* NNet::activate(double * x, int layer){
     activations[layer]->activate(x, layers[layer]);
+}
+
+double NNet::loss(double * y_hat){
+    return loss_function->calculate_loss(y, y_hat, layers[num_layers-1]);
 }
