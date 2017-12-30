@@ -4,17 +4,21 @@
 NNet::NNet(int * layers, int num_layers){
     this->layers = layers;
     this->num_layers = num_layers;
+    last_layer = num_layers-1;
+    last_function = num_layers;
 
     W = new double*[num_layers-1]; //only the connections have weights
+    b = new double*[num_layers-1]; //will contain weights updates
     f = new double*[num_layers]; //will contain the value of all neurons
-    activations = new Activation*[num_layers]; //input layer has no activation function
-                                               //so the first element is undefined
+
+    functions = new Function*[num_layers+1]; //will contain activations and loss function
 }
 
 NNet::~NNet(){
     delete[] W;
+    delete[] b;
     delete[] f;
-    delete[] activations;
+    delete[] functions;
 }
 
 void NNet::set_input(double * x){
@@ -25,16 +29,16 @@ void NNet::set_weights(double * w, int layer){
     W[layer] = w;
 }
 
-void NNet::set_activations(Activation * function, int layer){
-    activations[layer] = function;
+void NNet::set_activations(Function * function, int layer){
+    functions[layer] = function;
 }
 
 void NNet::set_labels(double * y){
     this->y = y;
 }
 
-void NNet::set_loss(Loss * loss_function){
-    this->loss_function = loss_function;
+void NNet::set_loss(Function * loss_function){
+    functions[last_function] = loss_function;
 }
 
 void NNet::set_learning_rate(double alpha){
@@ -57,7 +61,7 @@ double* NNet::forward(){
         f[i] = set_bias(f[i], layers[i]);
     }
 
-    return f[num_layers-1]; //return the output of the last layer
+    return f[last_layer]; //return the output of the last layer
 }
 
 double* NNet::dot_product(double* w, double * x, double * ans, int layer){
@@ -71,9 +75,76 @@ double* NNet::dot_product(double* w, double * x, double * ans, int layer){
 }
 
 double* NNet::activate(double * x, int layer){
-    activations[layer]->activate(x, layers[layer]);
+    functions[layer]->evaluate(x, x, layers[layer]);
+    return x;
 }
 
 double NNet::loss(double * y_hat){
-    return loss_function->calculate_loss(y, y_hat, layers[num_layers-1]);
+    double loss;
+    functions[last_function]->evaluate(y_hat, &loss, layers[last_layer]);
+    return loss;
+}
+
+void NNet::backward(){
+
+    double dE_dy, dy_do, dE_do;
+    double do_dz, do_dw, dE_dw;
+    double* w;
+
+    int num_neur_actual, num_neur_next;
+
+    for(int layer=last_layer;layer>0;layer--){ //for each layer
+
+        num_neur_actual = layers[layer]; //height of the matrix
+        num_neur_next = layers[layer-1]+1; //width of the matrix
+        b[layer-1] = new double[num_neur_actual]; //allocate space for backward information
+
+        for(int i=0;i<num_neur_actual;i++){ //for each neuron
+
+            if(layer == last_layer) dE_dy = functions[last_function]->derivative(f[layer], i); //deriv error respect to final output
+            else{
+                dE_dy = 0;
+                for(int j=0;j<num_neur_actual-1;j++){
+                    dE_do = b[layer][i*num_neur_next + 2];
+                    do_dz = W[layer][j*num_neur_next + i];
+                    dE_dy += dE_do * do_dz;
+                }
+            }
+
+            dy_do = functions[layer]->derivative(f[layer], i); //deriv output respect to activation
+            dE_do = dE_dy * dy_do; //deriv error respect to activation
+            b[layer-1][num_neur_actual] = dE_do; //set bias update
+
+            for(int j=0;j<num_neur_next-1;j++){ //for each weight except the bias
+
+                do_dw = f[layer-1][j]; //deriv activation respect to weight
+                dE_dw = dE_do * do_dw; //deriv error respect to weight
+                b[layer-1][i*num_neur_next + j] = dE_do; //set bias update
+            }
+        }
+    }
+}
+
+void NNet::update_weights(){
+
+    double* w;
+    double dE_dw;
+
+    int num_neur_actual, num_neur_next;
+
+    for(int layer=last_layer;layer>0;layer--){ //for each layer
+
+        num_neur_actual = layers[layer]; //height of the matrix
+        num_neur_next = layers[layer-1]+1; //width of the matrix
+
+        for(int i=0;i<num_neur_actual;i++){ //for each neuron
+            for(int j=0;j<num_neur_next;j++){ //for each weight
+
+                dE_dw = b[layer-1][i*num_neur_next + j]; //get weight update
+                w = &W[layer-1][i*num_neur_next + j]; //get position of weight
+                *w = *w - alpha*dE_dw; //update weight
+            }
+        }
+    }
+
 }
