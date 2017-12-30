@@ -37,6 +37,10 @@ void NNet::set_loss(Loss * loss_function){
     this->loss_function = loss_function;
 }
 
+void NNet::set_learning_rate(double alpha){
+    this->alpha = alpha;
+}
+
 double* NNet::set_bias(double * x, int layer){
     x[layer] = 1;
     return x;

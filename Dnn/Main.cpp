@@ -27,6 +27,7 @@ int main(int argc, char *argv[]){
     nnet->set_activations(new Sigmoid(), 2);
     nnet->set_labels(labels);
     nnet->set_loss(new LessSquare());
+    nnet->set_learning_rate(0.5);
 
     double * ans = nnet->forward();
     double loss = nnet->loss(ans);

@@ -9,6 +9,7 @@ class NNet{
     Activation ** activations;
     Loss * loss_function;
 
+    double alpha;
     double ** W;
     double ** f; //structure to maintain forward information
     double * y;
@@ -22,6 +23,7 @@ class NNet{
         void set_activations(Activation * function, int layer);
         void set_labels(double * y);
         void set_loss(Loss * loss_function);
+        void set_learning_rate(double alpha);
         double* set_bias(double * x, int layer);
         double* get_weights(int layer);
 
