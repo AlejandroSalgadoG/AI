@@ -7,7 +7,7 @@ using namespace std;
 int main(int argc, char *argv[]){
 
     int num_layers = 3;
-    int structure[num_layers] = {2,2,2}; //first layer are inputs
+    int layers[num_layers] = {2,2,2}; //first layer are inputs
 
     double input[3] = {0.05, 0.10, 1}; //two inputs plus bias
 
@@ -19,7 +19,7 @@ int main(int argc, char *argv[]){
 
     double labels[2] = {0.01, 0.99};
 
-    NNet * nnet = new NNet(structure, num_layers);
+    NNet * nnet = new NNet(layers, num_layers);
 
     nnet->set_input(input);
     nnet->set_weights(weights_1, 0);

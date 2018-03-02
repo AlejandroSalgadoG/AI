@@ -1,6 +1,10 @@
 #include <math.h>
 #include "NNet.h"
 
+#include <iomanip>
+#include <iostream>
+using namespace std;
+
 NNet::NNet(int * layers, int num_layers){
     this->layers = layers;
     this->num_layers = num_layers;
@@ -12,6 +16,8 @@ NNet::NNet(int * layers, int num_layers){
     f = new double*[num_layers]; //will contain the value of all neurons
 
     functions = new Function*[num_layers+1]; //will contain activations and loss function
+                                             //the first layer are inputs without
+                                             //activation, so the first possition is null
 }
 
 NNet::~NNet(){
@@ -87,39 +93,47 @@ double NNet::loss(double * y_hat){
 
 void NNet::backward(){
 
-    double dE_dy, dy_do, dE_do;
-    double do_dz, do_dw, dE_dw;
+    double dE_dy, dy_do, dE_do, do_dz, do_dw, dE_dw;
     double* w;
 
-    int num_neur_actual, num_neur_next;
+    int num_neur_actual, num_neur_next, num_neur_past;
+    int con_layer, bias_pos;
 
     for(int layer=last_layer;layer>0;layer--){ //for each layer
 
         num_neur_actual = layers[layer]; //height of the matrix
         num_neur_next = layers[layer-1]+1; //width of the matrix
-        b[layer-1] = new double[num_neur_actual]; //allocate space for backward information
+
+        con_layer = layer-1; //index for W and b
+        bias_pos = num_neur_next-1; //bias possition in the matrix of weights
+
+        b[con_layer] = new double[num_neur_actual * num_neur_next]; //allocate space for backward information
 
         for(int i=0;i<num_neur_actual;i++){ //for each neuron
 
             if(layer == last_layer) dE_dy = functions[last_function]->derivative(f[layer], i); //deriv error respect to final output
             else{
-                dE_dy = 0;
-                for(int j=0;j<num_neur_actual-1;j++){
-                    dE_do = b[layer][i*num_neur_next + 2];
-                    do_dz = W[layer][j*num_neur_next + i];
-                    dE_dy += dE_do * do_dz;
+                dE_dy = 0; //reset the deriv error respect to the output
+                num_neur_past = layers[layer+1]; //number of forward paths, bias is not a forward pass
+
+                for(int j=0;j<num_neur_past;j++){ //for each forward path
+                    dE_do = b[con_layer+1][j*num_neur_next + bias_pos]; //dE_do is the change of the bias in the next connection layer
+                    do_dz = W[con_layer+1][j*num_neur_next + i];
+                    dE_dy += dE_do * do_dz; //add the change of the error respect to each path
                 }
             }
 
             dy_do = functions[layer]->derivative(f[layer], i); //deriv output respect to activation
             dE_do = dE_dy * dy_do; //deriv error respect to activation
-            b[layer-1][num_neur_actual] = dE_do; //set bias update
+
+            b[con_layer][i*num_neur_next + bias_pos] = dE_do; //set bias update
 
             for(int j=0;j<num_neur_next-1;j++){ //for each weight except the bias
 
                 do_dw = f[layer-1][j]; //deriv activation respect to weight
                 dE_dw = dE_do * do_dw; //deriv error respect to weight
-                b[layer-1][i*num_neur_next + j] = dE_do; //set bias update
+
+                b[con_layer][i*num_neur_next + j] = dE_dw; //set weight update
             }
         }
     }
