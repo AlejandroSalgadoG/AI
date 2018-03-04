@@ -1,0 +1,118 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+
+\usepackage{tikz}
+
+\begin{document}
+
+    \title{}
+    \author{}
+    \date{}
+
+    Based on https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
+
+    \input{NNet}
+
+    \begin{equation}
+        E = \frac{1}{2} \sum_{i}{(y_i - \overline{y_i})^2} = 
+        \frac{1}{2} \left[ (y_1 - \overline{y_1})^2 + (y_2 - \overline{y_2})^2 \right]
+    \end{equation}
+
+    \begin{equation*}
+        \frac{\partial E}{\partial y_1} = \overline{y_1} - y_1
+        \qquad % horizontal space
+        \frac{\partial E}{\partial y_2} = \overline{y_2} - y_2
+    \end{equation*}
+
+    \begin{equation}
+        \overline{y_1} = \frac{1}{1+ e^{-o_1}}
+        \qquad % horizontal space
+        \overline{y_2} = \frac{1}{1+ e^{-o_2}}
+    \end{equation}
+
+    \begin{equation*}
+        \frac{\partial \overline{y_1}}{\partial o_1} = \overline{y_1} (1 - \overline{y_1})
+        \qquad % horizontal space
+        \frac{\partial \overline{y_2}}{\partial o_2} = \overline{y_2} (1 - \overline{y_2})
+    \end{equation*}
+
+    \begin{equation*}
+        \frac{\partial E}{\partial o_1} = 
+        \frac{\partial E}{\partial \overline{y_1}} \frac{\partial \overline{y_1}}{\partial o_1}
+        \qquad % horizontal space
+        \frac{\partial E}{\partial o_2} =
+        \frac{\partial E}{\partial \overline{y_2}} \frac{\partial \overline{y_2}}{\partial o_2}
+    \end{equation*}
+
+    \begin{equation}
+        o_1 =  z_1 w_{11}^2 + z_2 w_{21}^2 + b_2 w_{31}^2
+        \qquad % horizontal space
+        o_2 =  z_1 w_{12}^2 + z_2 w_{22}^2 + b_2 w_{32}^2
+    \end{equation}
+
+    \begin{equation*}
+        \frac{\partial o_1}{\partial w_{11}^2} = z_1
+        \qquad % horizontal space
+        \frac{\partial o_1}{\partial w_{21}^2} = z_2
+        \qquad % horizontal space
+        \frac{\partial o_1}{\partial z_1} = w_{11}^2
+        \qquad % horizontal space
+        \frac{\partial o_1}{\partial z_2} = w_{21}^2
+    \end{equation*}
+
+    \begin{equation*}
+        \frac{\partial o_2}{\partial w_{12}^2} = z_1
+        \qquad % horizontal space
+        \frac{\partial o_2}{\partial w_{22}^2} = z_2
+        \qquad % horizontal space
+        \frac{\partial o_2}{\partial z_1} = w_{12}^2
+        \qquad % horizontal space
+        \frac{\partial o_2}{\partial z_2} = w_{22}^2
+    \end{equation*}
+
+    \begin{equation*}
+        \frac{\partial E}{\partial z_1} = 
+        \frac{\partial E}{\partial o_1} \frac{\partial o_1}{\partial z_1} +
+        \frac{\partial E}{\partial o_2} \frac{\partial o_2}{\partial z_1}
+    \end{equation*}
+
+    \begin{equation*}
+        \frac{\partial E}{\partial z_2} = 
+        \frac{\partial E}{\partial o_1} \frac{\partial o_1}{\partial z_2} +
+        \frac{\partial E}{\partial o_2} \frac{\partial o_2}{\partial z_2}
+    \end{equation*}
+
+    \begin{equation}
+        z_1 = \frac{1}{1+ e^{-h_1}} 
+        \qquad % horizontal space
+        z_2 = \frac{1}{1+ e^{-h_2}} 
+    \end{equation}
+
+    \begin{equation*}
+        \frac{\partial z_1}{\partial h_1} = z_1 (1 - z_1)
+        \qquad % horizontal space
+        \frac{\partial z_2}{\partial h_2} = z_2 (1 - z_2)
+    \end{equation*}
+
+    \begin{equation}
+        h_1 =  x_1 w_{11}^1 + x_2 w_{21}^1 + b_1 w_{31}^1
+        \qquad % horizontal space
+        h_2 =  x_1 w_{12}^1 + x_2 w_{22}^1 + b_1 w_{32}^1
+    \end{equation}
+
+    \begin{equation*}
+        \frac{\partial h_1}{\partial w_{11}^1} = x_1
+        \qquad % horizontal space
+        \frac{\partial h_1}{\partial w_{21}^1} = x_2
+    \end{equation*}
+
+    \begin{equation*}
+        \frac{\partial h_2}{\partial w_{12}^1} = x_1
+        \qquad % horizontal space
+        \frac{\partial h_2}{\partial w_{22}^1} = x_2
+    \end{equation*}
+
+
+\end{document}

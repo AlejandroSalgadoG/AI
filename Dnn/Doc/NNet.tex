@@ -1,0 +1,40 @@
+\begin{tikzpicture}
+    \tikzstyle{neuron}=[circle,draw=black,minimum size=17pt]
+
+    \node[neuron] (x1) {$x_1$};
+    \node[neuron] (x2) at (0, -2) {$x_2$};
+    \node[neuron] (b1) at (0, -4) {$b_1$};
+
+    \node[neuron] (h1) at (4, 0)  {$h_1$};
+    \node[neuron] (h2) at (4, -2) {$h_2$};
+    \node[neuron] (b2) at (4, -4) {$b_2$};
+
+    \node[neuron] (o1) at (8, 0)  {$o_1$};
+    \node[neuron] (o2) at (8, -2) {$o_2$};
+
+    \draw[->] (x1.east) -- (h1.west) node[midway,above] {$w_{11}^1$};
+    \draw[->] (x1.east) -- (h2.west) node[pos=0.3,above] {$w_{12}^1$};
+    \draw[->] (x2.east) -- (h1.west) node[pos=0.2,above] {$w_{21}^1$};
+    \draw[->] (x2.east) -- (h2.west) node[pos=0.4,above] {$w_{22}^1$};
+    \draw[->] (b1.east) -- (h1.west) node[pos=0.8,right] {$w_{31}^1$};
+    \draw[->] (b1.east) -- (h2.west) node[pos=0.8,below] {$w_{32}^1$};
+
+    \draw[->] (h1.east) -- (o1.west) node[midway,above] {$w_{11}^2$};
+    \draw[->] (h1.east) -- (o2.west) node[pos=0.3,above] {$w_{12}^2$};
+    \draw[->] (h2.east) -- (o1.west) node[pos=0.2,above] {$w_{21}^2$};
+    \draw[->] (h2.east) -- (o2.west) node[pos=0.4,above] {$w_{22}^2$};
+    \draw[->] (b2.east) -- (o1.west) node[pos=0.8,right] {$w_{31}^2$};
+    \draw[->] (b2.east) -- (o2.west) node[pos=0.8,below] {$w_{32}^2$};
+
+    \node at (4.7, 0.7) (z1) {$z_1$};
+    \node at (4.7, -2.7) (z2) {$z_2$};
+
+    \draw[->] (h1) -- (z1);
+    \draw[->] (h2) -- (z2);
+
+    \node at (9.25, 0) (y1) {$\overline{y_1}$};
+    \node at (9.25, -2) (y2) {$\overline{y_2}$};
+
+    \draw[->] (o1) -- (y1);
+    \draw[->] (o2) -- (y2);
+\end{tikzpicture}
