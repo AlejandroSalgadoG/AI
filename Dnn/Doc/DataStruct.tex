@@ -1,0 +1,75 @@
+\begin{equation*}
+    w[1] = \begin{bmatrix}
+           w_{11}^1 & w_{21}^1 & w_{31}^1 \\[0.25cm]
+           w_{12}^1 & w_{22}^1 & w_{32}^1
+           \end{bmatrix}
+    \qquad
+    w[2] = \begin{bmatrix}
+           w_{11}^2 & w_{21}^2 & w_{31}^2 \\[0.25cm]
+           w_{12}^2 & w_{22}^2 & w_{32}^2
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    b[1] = \begin{bmatrix}
+           \frac{\partial E}{\partial w_{11}^1} & \frac{\partial E}{\partial w_{21}^1} & \frac{\partial E}{\partial w_{31}^1} \\[0.5cm]
+           \frac{\partial E}{\partial w_{12}^1} & \frac{\partial E}{\partial w_{22}^1} & \frac{\partial E}{\partial w_{32}^1}
+           \end{bmatrix}
+    \qquad
+    b[2] = \begin{bmatrix}
+           \frac{\partial E}{\partial w_{11}^2} & \frac{\partial E}{\partial w_{21}^2} & \frac{\partial E}{\partial w_{31}^2} \\[0.5cm]
+           \frac{\partial E}{\partial w_{12}^2} & \frac{\partial E}{\partial w_{22}^2} & \frac{\partial E}{\partial w_{32}^2}
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    b[1] = \begin{bmatrix}
+       \frac{\partial E}{\partial z_1} \frac{\partial z_1}{\partial h_1} \frac{\partial h_1}{\partial w_{11}^1} &
+       \frac{\partial E}{\partial z_1} \frac{\partial z_1}{\partial h_1} \frac{\partial h_1}{\partial w_{21}^1} &
+       \frac{\partial E}{\partial z_1} \frac{\partial z_1}{\partial h_1} \frac{\partial h_1}{\partial w_{31}^1}
+       \\[0.5cm]
+
+       \frac{\partial E}{\partial z_2} \frac{\partial z_2}{\partial h_2} \frac{\partial h_2}{\partial w_{12}^1} &
+       \frac{\partial E}{\partial z_2} \frac{\partial z_2}{\partial h_2} \frac{\partial h_2}{\partial w_{22}^1} &
+       \frac{\partial E}{\partial z_2} \frac{\partial z_2}{\partial h_2} \frac{\partial h_2}{\partial w_{32}^1}
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    b[2] = \begin{bmatrix}
+       \frac{\partial E}{\partial \overline{y_1}} \frac{\partial \overline{y_1}}{\partial o_1} \frac{\partial o_1}{\partial w_{11}^2} &
+       \frac{\partial E}{\partial \overline{y_1}} \frac{\partial \overline{y_1}}{\partial o_1} \frac{\partial o_1}{\partial w_{21}^2} &
+       \frac{\partial E}{\partial \overline{y_1}} \frac{\partial \overline{y_1}}{\partial o_1} \frac{\partial o_1}{\partial w_{31}^2}
+       \\[0.5cm]
+
+       \frac{\partial E}{\partial \overline{y_2}} \frac{\partial \overline{y_2}}{\partial o_2} \frac{\partial o_2}{\partial w_{12}^2} &
+       \frac{\partial E}{\partial \overline{y_2}} \frac{\partial \overline{y_2}}{\partial o_2} \frac{\partial o_2}{\partial w_{22}^2} &
+       \frac{\partial E}{\partial \overline{y_2}} \frac{\partial \overline{y_2}}{\partial o_2} \frac{\partial o_2}{\partial w_{32}^2}
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    b[1] = \begin{bmatrix}
+       \frac{\partial E}{\partial h_1} \frac{\partial h_1}{\partial w_{11}^1} &
+       \frac{\partial E}{\partial h_1} \frac{\partial h_1}{\partial w_{21}^1} &
+       \frac{\partial E}{\partial h_1} 
+       \\[0.5cm]
+
+       \frac{\partial E}{\partial h_2} \frac{\partial h_2}{\partial w_{12}^1} &
+       \frac{\partial E}{\partial h_2} \frac{\partial h_2}{\partial w_{22}^1} &
+       \frac{\partial E}{\partial h_2} 
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    b[2] = \begin{bmatrix}
+       \frac{\partial E}{\partial o_1} \frac{\partial o_1}{\partial w_{11}^2} &
+       \frac{\partial E}{\partial o_1} \frac{\partial o_1}{\partial w_{21}^2} &
+       \frac{\partial E}{\partial o_1} 
+       \\[0.5cm]
+
+       \frac{\partial E}{\partial o_2} \frac{\partial o_2}{\partial w_{12}^2} &
+       \frac{\partial E}{\partial o_2} \frac{\partial o_2}{\partial w_{22}^2} &
+       \frac{\partial E}{\partial o_2}
+           \end{bmatrix}
+\end{equation*}

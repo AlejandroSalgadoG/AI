@@ -1,4 +1,4 @@
-Main.pdf:  Main.tex
+Main.pdf:  Main.tex DataStruct.tex
 	pdflatex Main.tex
 
 clean:
