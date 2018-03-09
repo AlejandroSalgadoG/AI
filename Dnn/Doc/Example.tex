@@ -1,0 +1,155 @@
+\begin{equation*}
+    x = \begin{bmatrix}
+            0.05 & 0.10
+        \end{bmatrix}
+    \qquad
+    y = \begin{bmatrix}
+            0.01 & 0.99
+        \end{bmatrix}
+    \qquad
+    \alpha = 0.5
+\end{equation*}
+
+\begin{equation*}
+    \overline{y} = \begin{bmatrix}
+                       0.75136507 & 0.772928465
+                   \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    w[1] = \begin{bmatrix}
+               0.15 & 0.20 & 0.35 \\
+               0.25 & 0.30 & 0.35 \\
+           \end{bmatrix}
+    \qquad
+    w[2] = \begin{bmatrix}
+               0.40 & 0.45 & 0.60 \\
+               0.50 & 0.55 & 0.60 \\
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial \overline{y_1}} = 0.74136507
+    \qquad 
+    \frac{\partial E}{\partial \overline{y_2}} = -0.217071535
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial \overline{y_1}}{\partial \overline{o_1}} = 0.186815602
+    \qquad 
+    \frac{\partial \overline{y_2}}{\partial \overline{o_2}} = 0.175510053
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial o_1} = 0.138498562 = \frac{\partial E}{\partial w_{31}^2}
+    \qquad 
+    \frac{\partial E}{\partial o_2} = -0.038098237 = \frac{\partial E}{\partial w_{32}^2}
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial o_1}{\partial w_{11}^2} = 0.593269992 = \frac{\partial o_2}{\partial w_{12}^2}
+    \qquad 
+    \frac{\partial o_1}{\partial w_{21}^2} = 0.596884378 = \frac{\partial o_2}{\partial w_{22}^2}
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial w_{11}^2} = 0.082167041
+    \qquad 
+    \frac{\partial E}{\partial w_{21}^2} = 0.082667628
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial w_{12}^2} = -0.022602541
+    \qquad 
+    \frac{\partial E}{\partial w_{22}^2} = -0.022740242
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial o_1}{\partial z_1} = 0.40
+    \qquad 
+    \frac{\partial o_2}{\partial z_1} = 0.50
+    \qquad 
+    \frac{\partial o_1}{\partial z_2} = 0.45
+    \qquad 
+    \frac{\partial o_2}{\partial z_2} = 0.55
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial o_1} \frac{\partial o_1}{\partial z_1} = 0.055399424
+    \qquad 
+    \frac{\partial E}{\partial o_2} \frac{\partial o_2}{\partial z_1} = -0.0190491185
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial o_1} \frac{\partial o_1}{\partial z_2} = 0.062324353
+    \qquad 
+    \frac{\partial E}{\partial o_2} \frac{\partial o_2}{\partial z_2} = -0.020954030
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial z_1} = 0.0363503055
+    \qquad 
+    \frac{\partial E}{\partial z_2} = 0.041370323
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial z_1}{\partial h_1} = 0.24130071
+    \qquad 
+    \frac{\partial z_2}{\partial h_2} = 0.2406134173
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial h_1} = 0.008771354 = \frac{\partial E}{\partial w_{31}^1}
+    \qquad 
+    \frac{\partial E}{\partial h_2} = 0.009954255 = \frac{\partial E}{\partial w_{32}^1}
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial h_1}{\partial w_{11}^1} = 0.05 = \frac{\partial h_2}{\partial w_{12}^1}
+    \qquad 
+    \frac{\partial h_1}{\partial w_{21}^1} = 0.10 = \frac{\partial h_2}{\partial w_{22}^1}
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial w_{11}^1} = 0.000438568
+    \qquad 
+    \frac{\partial E}{\partial w_{21}^1} = 0.000877135
+\end{equation*}
+
+\begin{equation*}
+    \frac{\partial E}{\partial w_{12}^1} = 0.00049771
+    \qquad 
+    \frac{\partial E}{\partial w_{22}^1} = 0.000995425
+\end{equation*}
+
+\begin{equation*}
+    b[1] = \begin{bmatrix}
+               0.000438568 & 0.000877135 & 0.008771354 \\
+               0.00049771 & 0.000995425 & 0.009954255
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    b[2] = \begin{bmatrix}
+               0.082167041 & 0.082667628 & 0.138498562 \\
+               -0.022602541 & -0.022740242 & -0.038098237
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    w_{ij} = w_{ij} - \alpha b_{ij}
+\end{equation*}
+
+\begin{equation*}
+    w[1] = \begin{bmatrix}
+               0.149780716 & 0.19956143 & 0.345614323 \\
+               0.249751145 & 0.299502287 & 0.345022872
+           \end{bmatrix}
+\end{equation*}
+
+\begin{equation*}
+    w[2] = \begin{bmatrix}
+               0.358916479 & 0.408666186 & 0.530750719 \\
+               0.511301275 & 0.561370121 & 0.6190491185
+           \end{bmatrix}
+\end{equation*}
