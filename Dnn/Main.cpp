@@ -2,6 +2,8 @@
 #include <iomanip>
 #include "NNet.h"
 
+#include <unistd.h>
+
 using namespace std;
 
 int main(int argc, char *argv[]){
@@ -33,10 +35,15 @@ int main(int argc, char *argv[]){
     double loss;
     double* ans;
 
-    for(int i=0;i<1;i++){
+    for(int i=0;i<10000;i++){
         ans = nnet->forward();
         loss = nnet->loss(ans);
-        cout << setprecision(9) << "epoch " << i << ", loss " << loss << endl;
+
+        //printf("epoch %d, loss %f, y = (%f, %f)\n", i, loss, ans[0], ans[1]);
+
+        cout << loss << endl;
+
+        usleep(1000000);
         nnet->backward();
         nnet->update_weights();
     }
