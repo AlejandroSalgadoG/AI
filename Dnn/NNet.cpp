@@ -1,8 +1,9 @@
 #include <math.h>
+#include <iostream>
+#include <fstream>
+
 #include "NNet.h"
 
-#include <iomanip>
-#include <iostream>
 using namespace std;
 
 NNet::NNet(int * layers, int num_layers){
@@ -161,4 +162,35 @@ void NNet::update_weights(){
         }
     }
 
+}
+
+void NNet::save(char const * file_name){
+    ofstream net_file;
+    int num_neur_actual, num_neur_next;
+    int input_layer = 0;
+
+    net_file.open(file_name);
+
+    net_file << " " << num_layers << endl;
+
+    for(int i=input_layer;i<num_layers;i++) // for all layers
+        net_file << " " << layers[i];
+    net_file << endl;
+
+    for(int layer=input_layer;layer<last_layer;layer++){ //for each layer
+
+        num_neur_next = layers[layer+1]; //height of the matrix
+        num_neur_actual = layers[layer]+1; //width of the matrix
+
+        for(int i=0;i<num_neur_next;i++) //for each neuron in the next layer
+            for(int j=0;j<num_neur_actual;j++) //for each neuron in the current layer
+                net_file << " " << W[layer][i*num_neur_actual + j]; //write weight
+    }
+    net_file << endl;
+
+    for(int i=input_layer+1;i<=last_function;i++) //for all activation functions
+        net_file << " " << functions[i]->get_name();
+    net_file << endl;
+
+    net_file.close();
 }

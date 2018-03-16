@@ -34,4 +34,6 @@ class NNet{
         double loss(double* y_hat);
         void backward();
         void update_weights();
+
+        void save(char const* file_name);
 };

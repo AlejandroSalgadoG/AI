@@ -11,7 +11,7 @@ Functions.o: Functions.cpp Functions.h
 	g++ -c $<
 
 clean:
-	rm -f *.o Main
+	rm -f *.o *.net Main
 
 exe:
 	./Main

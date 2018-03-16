@@ -10,6 +10,10 @@ double Sigmoid::derivative(double* x, int element){
     return x[element] * (1 - x[element]);
 }
 
+char const* Sigmoid::get_name(){
+    return "Sigmoid";
+}
+
 LessSquare::LessSquare(double * y){
 	this->y = y;
 }
@@ -23,4 +27,8 @@ void LessSquare::evaluate(double * y_hat, double* loss, int size){
 
 double LessSquare::derivative(double * y_hat, int element){
 	return y_hat[element] - y[element];;
+}
+
+char const* LessSquare::get_name(){
+    return "LessSquare";
 }

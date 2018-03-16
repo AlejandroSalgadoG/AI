@@ -48,5 +48,7 @@ int main(int argc, char *argv[]){
         nnet->update_weights();
     }
 
+    nnet->save("my_net.net");
+
     delete nnet;
 }
