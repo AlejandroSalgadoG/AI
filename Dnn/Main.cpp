@@ -22,6 +22,7 @@ int main(int argc, char *argv[]){
     double labels[2] = {0.01, 0.99};
 
     NNet * nnet = new NNet(layers, num_layers);
+//    NNet * nnet = new NNet("my_net.net");
 
     nnet->set_input(input);
     nnet->set_weights(weights_1, 0);
@@ -48,7 +49,7 @@ int main(int argc, char *argv[]){
         nnet->update_weights();
     }
 
-    nnet->save("my_net.net");
+//    nnet->save("my_net.net");
 
     delete nnet;
 }

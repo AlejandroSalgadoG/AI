@@ -17,6 +17,7 @@ class NNet{
 
     public:
         NNet(int* layers, int num_layers);
+        NNet(char const * file_name);
         ~NNet();
 
         void set_input(double* x);

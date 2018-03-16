@@ -1,6 +1,7 @@
 #include <math.h>
 #include <iostream>
 #include <fstream>
+#include <sstream>
 
 #include "NNet.h"
 
@@ -19,6 +20,58 @@ NNet::NNet(int * layers, int num_layers){
     functions = new Function*[num_layers+1]; //will contain activations and loss function
                                              //the first layer are inputs without
                                              //activation, so the first possition is null
+}
+
+NNet::NNet(char const * file_name){
+    ifstream net_file;
+    istringstream reader;
+    string line;
+    int input_layer = 0;
+
+    net_file.open(file_name);
+
+    getline(net_file, line);
+    reader.str(line);
+    reader >> num_layers;
+    reader.clear();
+
+    layers = new int[num_layers];
+
+    getline(net_file, line);
+    reader.str(line);
+    for(int i=0;i<num_layers;i++)
+        reader >> layers[i];
+    reader.clear();
+
+    last_layer = num_layers-1;
+    last_function = num_layers;
+
+    W = new double*[num_layers-1];
+    b = new double*[num_layers-1];
+    f = new double*[num_layers];
+    functions = new Function*[num_layers+1];
+
+    getline(net_file, line);
+    reader.str(line);
+    for(int layer=input_layer;layer<last_layer;layer++){
+        int num_neur_next = layers[layer+1]; //height of the matrix
+        int num_neur_actual = layers[layer]+1; //width of the matrix
+
+        double * w = new double[num_neur_actual*num_neur_next];
+        for(int i=0;i<num_neur_next;i++)
+            for(int j=0;j<num_neur_actual;j++)
+                reader >> w[i*num_neur_actual + j];
+        W[layer] = w;
+    }
+    reader.clear();
+
+    string function;
+    getline(net_file, line);
+    reader.str(line);
+    for(int layer=input_layer;layer<last_layer+1;layer++)
+        reader >> function;
+
+    net_file.close();
 }
 
 NNet::~NNet(){
