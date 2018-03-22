@@ -11,15 +11,14 @@ NNet::NNet(int * layers, int num_layers){
     this->layers = layers;
     this->num_layers = num_layers;
     last_layer = num_layers-1;
-    last_function = num_layers;
 
     W = new double*[num_layers-1]; //only the connections have weights
     b = new double*[num_layers-1]; //will contain weights updates
     f = new double*[num_layers]; //will contain the value of all neurons
 
-    functions = new Function*[num_layers+1]; //will contain activations and loss function
-                                             //the first layer are inputs without
-                                             //activation, so the first possition is null
+    activations = new Activation*[num_layers]; //will contain activations, the first layer
+                                               //are inputs without activation,
+                                               //so the first possition is null
 }
 
 NNet::NNet(char const * file_name){
@@ -44,12 +43,11 @@ NNet::NNet(char const * file_name){
     reader.clear();
 
     last_layer = num_layers-1;
-    last_function = num_layers;
 
     W = new double*[num_layers-1];
     b = new double*[num_layers-1];
     f = new double*[num_layers];
-    functions = new Function*[num_layers+1];
+    activations = new Activation*[num_layers];
 
     getline(net_file, line);
     reader.str(line);
@@ -68,8 +66,10 @@ NNet::NNet(char const * file_name){
     string function;
     getline(net_file, line);
     reader.str(line);
-    for(int layer=input_layer;layer<last_layer+1;layer++)
+    for(int layer=input_layer;layer<last_layer+1;layer++){
         reader >> function;
+        cout << function << endl;
+    }
 
     net_file.close();
 }
@@ -78,7 +78,8 @@ NNet::~NNet(){
     delete[] W;
     delete[] b;
     delete[] f;
-    delete[] functions;
+    delete[] activations;
+    delete loss_function;
 }
 
 void NNet::set_input(double * x){
@@ -89,16 +90,16 @@ void NNet::set_weights(double * w, int layer){
     W[layer] = w;
 }
 
-void NNet::set_activations(Function * function, int layer){
-    functions[layer] = function;
+void NNet::set_activations(Activation * activation, int layer){
+    activations[layer] = activation;
 }
 
 void NNet::set_labels(double * y){
     this->y = y;
 }
 
-void NNet::set_loss(Function * loss_function){
-    functions[last_function] = loss_function;
+void NNet::set_loss(Loss * loss){
+    loss_function = loss;
 }
 
 void NNet::set_learning_rate(double alpha){
@@ -135,13 +136,13 @@ double* NNet::dot_product(double* w, double * x, double * ans, int layer){
 }
 
 double* NNet::activate(double * x, int layer){
-    functions[layer]->evaluate(x, x, layers[layer]);
+    activations[layer]->evaluate(x, x, layers[layer]);
     return x;
 }
 
 double NNet::loss(double * y_hat){
     double loss;
-    functions[last_function]->evaluate(y_hat, &loss, layers[last_layer]);
+    loss_function->evaluate(y_hat, &loss, layers[last_layer]);
     return loss;
 }
 
@@ -165,7 +166,7 @@ void NNet::backward(){
 
         for(int i=0;i<num_neur_actual;i++){ //for each neuron
 
-            if(layer == last_layer) dE_dy = functions[last_function]->derivative(f[layer], i); //deriv error respect to final output
+            if(layer == last_layer) dE_dy = loss_function->derivative(f[layer], i); //deriv error respect to final output
             else{
                 dE_dy = 0; //reset the deriv error respect to the output
                 num_neur_past = layers[layer+1]; //number of forward paths, bias is not a forward pass
@@ -177,7 +178,7 @@ void NNet::backward(){
                 }
             }
 
-            dy_do = functions[layer]->derivative(f[layer], i); //deriv output respect to activation
+            dy_do = activations[layer]->derivative(f[layer], i); //deriv output respect to activation
             dE_do = dE_dy * dy_do; //deriv error respect to activation
 
             b[con_layer][i*num_neur_next + bias_pos] = dE_do; //set bias update
@@ -241,8 +242,8 @@ void NNet::save(char const * file_name){
     }
     net_file << endl;
 
-    for(int i=input_layer+1;i<=last_function;i++) //for all activation functions
-        net_file << " " << functions[i]->get_name();
+    for(int i=input_layer+1;i<=num_layers;i++) //for all activation functions
+        net_file << " " << activations[i]->get_name();
     net_file << endl;
 
     net_file.close();

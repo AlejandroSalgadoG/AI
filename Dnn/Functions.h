@@ -1,5 +1,8 @@
 #pragma once
 
+#include <map>
+#include <string>
+
 class Function{
     public:
         virtual void evaluate(double*, double*, int) = 0;
@@ -7,14 +10,17 @@ class Function{
         virtual char const* get_name() = 0;
 };
 
-class Sigmoid: public Function{
+class Activation: public Function{};
+class Loss: public Function{};
+
+class Sigmoid: public Activation{
     public:
         void evaluate(double* x, double* ans, int size);
         double derivative(double* x, int element);
         char const* get_name();
 };
 
-class LessSquare: public Function{
+class LessSquare: public Loss{
     double * y;
 
     public:
