@@ -63,13 +63,28 @@ NNet::NNet(char const * file_name){
     }
     reader.clear();
 
+    Function_creator * creator = new Function_creator();
     string function;
     getline(net_file, line);
     reader.str(line);
-    for(int layer=input_layer;layer<last_layer+1;layer++){
+    for(int layer=input_layer+1;layer<num_layers;layer++){
         reader >> function;
-        cout << function << endl;
+        activations[layer] = creator->create_activation(function);
     }
+    reader.clear();
+
+    double labels[2] = {0.01, 0.99};
+    getline(net_file, line);
+    reader.str(line);
+    reader >> function;
+    loss_function = creator->create_loss(function, labels);
+    reader.clear();
+
+    delete creator;
+
+    getline(net_file, line);
+    reader.str(line);
+    reader >> alpha;
 
     net_file.close();
 }
@@ -242,9 +257,13 @@ void NNet::save(char const * file_name){
     }
     net_file << endl;
 
-    for(int i=input_layer+1;i<=num_layers;i++) //for all activation functions
+    for(int i=input_layer+1;i<num_layers;i++) //for all activation functions
         net_file << " " << activations[i]->get_name();
     net_file << endl;
+
+    net_file << " " << loss_function->get_name() << endl;
+
+    net_file << " " << alpha;
 
     net_file.close();
 }

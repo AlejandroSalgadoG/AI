@@ -32,3 +32,27 @@ double LessSquare::derivative(double * y_hat, int element){
 char const* LessSquare::get_name(){
     return "LessSquare";
 }
+
+Function_creator::Function_creator(){
+    activations_map["Sigmoid"] = &Function_creator::create_activation_function<Sigmoid>;
+
+    loss_map["LessSquare"] = &Function_creator::create_loss_function<LessSquare>;
+}
+
+Activation* Function_creator::create_activation(std::string function_name){
+    return (this->*activations_map[function_name])();
+}
+
+Loss* Function_creator::create_loss(std::string function_name, double* target){
+    return (this->*loss_map[function_name])(target);
+}
+
+template<class T>
+Activation* Function_creator::create_activation_function(){
+    return new T();
+}
+
+template<class T>
+Loss* Function_creator::create_loss_function(double* target){
+    return new T(target);
+}

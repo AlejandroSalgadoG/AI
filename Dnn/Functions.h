@@ -29,3 +29,15 @@ class LessSquare: public Loss{
         double derivative(double* y_hat, int element);
         char const* get_name();
 };
+
+class Function_creator{
+    std::map<std::string, Activation* (Function_creator::*)()> activations_map;
+    std::map<std::string, Loss* (Function_creator::*)(double*)> loss_map;
+
+    public:
+        Function_creator();
+        Activation* create_activation(std::string);
+        Loss* create_loss(std::string, double* target);
+        template<class T> Activation* create_activation_function();
+        template<class T> Loss* create_loss_function(double* target);
+};
