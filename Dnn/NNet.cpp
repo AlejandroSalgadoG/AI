@@ -77,7 +77,7 @@ NNet::NNet(char const * file_name){
     getline(net_file, line);
     reader.str(line);
     reader >> function;
-    loss_function = creator->create_loss(function, labels);
+    loss_function = creator->create_loss(function);
     reader.clear();
 
     delete creator;
@@ -109,12 +109,12 @@ void NNet::set_activations(Activation * activation, int layer){
     activations[layer] = activation;
 }
 
-void NNet::set_labels(double * y){
-    this->y = y;
-}
-
 void NNet::set_loss(Loss * loss){
     loss_function = loss;
+}
+
+void NNet::set_labels(double* y){
+    loss_function->set_target(y);
 }
 
 void NNet::set_learning_rate(double alpha){
@@ -155,7 +155,7 @@ double* NNet::activate(double * x, int layer){
     return x;
 }
 
-double NNet::loss(double * y_hat){
+double NNet::loss(double* y_hat){
     double loss;
     loss_function->evaluate(y_hat, &loss, layers[last_layer]);
     return loss;

@@ -29,8 +29,8 @@ int main(int argc, char *argv[]){
     nnet->set_activations(new Sigmoid(), 1);
     nnet->set_weights(weights_2, 1);
     nnet->set_activations(new Sigmoid(), 2);
-    nnet->set_labels(labels);
-    nnet->set_loss(new LessSquare(labels)); 
+    nnet->set_loss(new LessSquare()); 
+    nnet->set_labels(labels); 
     nnet->set_learning_rate(0.5); 
 
     double loss;
@@ -41,7 +41,6 @@ int main(int argc, char *argv[]){
         loss = nnet->loss(ans);
 
         //printf("epoch %d, loss %f, y = (%f, %f)\n", i, loss, ans[0], ans[1]);
-
         cout << loss << endl;
 
         usleep(1000000);

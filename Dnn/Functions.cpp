@@ -21,8 +21,8 @@ void LessSquare::evaluate(double * y_hat, double* loss, int size){
 	*loss /= 2;
 }
 
-LessSquare::LessSquare(double * y){
-	this->y = y;
+void LessSquare::set_target(double * target){
+	y = target;
 }
 
 double LessSquare::derivative(double * y_hat, int element){
@@ -43,8 +43,8 @@ Activation* Function_creator::create_activation(std::string function_name){
     return (this->*activations_map[function_name])();
 }
 
-Loss* Function_creator::create_loss(std::string function_name, double* target){
-    return (this->*loss_map[function_name])(target);
+Loss* Function_creator::create_loss(std::string function_name){
+    return (this->*loss_map[function_name])();
 }
 
 template<class T>
@@ -53,6 +53,6 @@ Activation* Function_creator::create_activation_function(){
 }
 
 template<class T>
-Loss* Function_creator::create_loss_function(double* target){
-    return new T(target);
+Loss* Function_creator::create_loss_function(){
+    return new T();
 }
