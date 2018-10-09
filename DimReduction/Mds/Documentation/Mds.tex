@@ -1,0 +1,293 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+
+\begin{document}
+
+    \section{Mds optimization problem}
+
+    \begin{equation*}
+        \begin{aligned}
+            \underset{y}{\text{min}}  & \sum_{i=1}^n \sum_{j=1}^n ( d^{(x)}_{ij} - d^{(x)}_{ij} )^2 \\
+            & d_{ij}^{(x)} = \lVert x_i - x_j \rVert\\
+            & d_{ij}^{(y)} = \lVert y_i - y_j \rVert
+        \end{aligned}
+    \end{equation*}\\
+
+    if $d_{ij}^{(x)}$ es euclidean, then $d_{ij}^{(x)} = x_i^t x_j$, and hence 
+
+    \begin{equation*}
+        \underset{y}{\text{min}} \sum_{i=1}^n \sum_{j=1}^n ( x_i^t x_j - y_i^t y_j )^2 \\
+    \end{equation*}
+
+    or in matrix form
+
+    \begin{equation*}
+        \underset{Y}{\text{min}} \quad \lVert X^t X - Y^t Y \rVert^2 \\
+    \end{equation*}
+
+    As shown in section \ref{norm_trace}, the norm of a matrix can be transformed
+    to a trace, so the problem can be redefined as
+
+    \begin{equation*}
+        \begin{aligned}
+            A &= X^tX - Y^tY\\
+            \underset{Y}{\text{min}} \quad \lVert X^t X - Y^t Y \rVert^2
+            &=
+            \underset{Y}{\text{min}} \quad \lVert A \rVert^2
+            =
+            \underset{Y}{\text{min}} \quad Tr(A^tA) \\
+        \end{aligned}
+    \end{equation*}\\
+
+    Now
+
+    \begin{equation*}
+        \begin{aligned}
+            A^t &= (X^tX - Y^tY)^t\\
+                &= (X^tX)^t - (Y^tY)^t\\
+                &= X^tX - Y^tY\\
+                &= A
+        \end{aligned}
+    \end{equation*}
+
+    Which means that $A^tA = AA = A^2$, and hence
+
+    \begin{equation*}
+        \underset{Y}{\text{min}} \quad Tr(A^tA)
+        =
+        \underset{Y}{\text{min}} \quad Tr(A^2)  
+        =
+        \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
+    \end{equation*}\\
+
+    now as shown in section \ref{svd_existance}, $X^tX$ and $Y^tY$ can be
+    expresed as
+
+    \begin{equation*}
+        X^tX = V\Lambda V^t \hspace{1cm} Y^tY = Q \hat{\Lambda} Q^t
+    \end{equation*}
+
+    Then 
+
+    \begin{equation*}
+        \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
+        =
+        \underset{Q,\hat{\Lambda}}{\text{min}} \quad Tr[(V\Lambda V^t - Q \hat{\Lambda} Q^t)^2]
+    \end{equation*}
+
+    We know that $V^tV = I = VV^t$, then using the proof presented in section \ref{circular_trace}
+
+    \begin{equation*}
+        \begin{aligned}
+            A =& V\Lambda V^t - Q \hat{\Lambda} Q^t\\
+            Tr[(V^tAV)^2] &= Tr[V^tAVV^tAV]\\
+                          &= Tr[V^tAIAV]\\
+                          &= Tr[AIAVV^t]\\
+                          &= Tr[AIAI]\\
+                          &= Tr[AA]\\
+                          &= Tr[A^2]\\
+        \end{aligned}
+    \end{equation*}\\
+
+    Which implies that
+
+    \begin{equation*}
+        \begin{aligned}
+            Tr[(V^tAV)^2] &= Tr[A^2]\\
+            Tr[(V^t(V\Lambda V^t - Q \hat{\Lambda} Q^t)V)^2] &= Tr[(V\Lambda V^t - Q \hat{\Lambda} Q^t)^2]\\
+            Tr[(V^tV\Lambda V^tV - V^tQ \hat{\Lambda} Q^tV)^2] &=\\
+            Tr[(I\Lambda I - V^tQ \hat{\Lambda} Q^tV)^2] &=\\
+            Tr[(\Lambda - V^tQ \hat{\Lambda} Q^tV)^2] &=\\
+        \end{aligned}
+    \end{equation*}
+
+    Now
+
+    \begin{equation*}
+        \begin{aligned}
+            G &= V^tQ\\
+            Tr[(\Lambda - V^tQ \hat{\Lambda} Q^tV)^2] &= Tr[(\Lambda - G \hat{\Lambda} G^t)^2]\\
+        \end{aligned}
+    \end{equation*}\\
+
+    Which means that the problem can be redefined one more time
+
+    \begin{equation*}
+        \begin{aligned}
+        \underset{Q,\hat{\Lambda}}{\text{min}} \quad Tr[(V\Lambda V^t - Q \hat{\Lambda} Q^t)^2]
+        &=
+        \underset{G,\hat{\Lambda}}{\text{min}} \quad Tr[(\Lambda - G \hat{\Lambda} G^t)^2]
+        \end{aligned}
+    \end{equation*}\\
+
+    Now
+
+    \begin{equation*}
+        \begin{aligned}
+        Tr[(\Lambda - G \hat{\Lambda} G^t)^2]
+        &=
+        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + (G \hat{\Lambda} G^t)^2]\\
+        &=
+        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} G^t G \hat{\Lambda} G^t]\\
+        \end{aligned}
+    \end{equation*}
+
+    But (Knowing that $Q^tQ = I = QQ^t$)
+
+    \begin{equation*}
+        \begin{aligned}
+            G^tG &= (V^tQ)^t V^tQ\\
+                 &= (Q^tV) V^tQ\\
+                 &= Q^tQ\\
+                 &= I\\ \\
+            GG^t &= V^tQ (V^tQ)^t\\
+                 &= V^tQ (Q^tV)\\
+                 &= V^tV\\
+                 &= I\\ \\
+        \end{aligned}
+    \end{equation*}
+
+    Hence
+
+    \begin{equation*}
+        \begin{aligned}
+        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} G^t G \hat{\Lambda} G^t]
+        &=
+        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} \hat{\Lambda} G^t]\\
+        &=
+        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda}^2 G^t]\\
+        &=
+        Tr[\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[G \hat{\Lambda}^2 G^t]\\
+        &=
+        Tr[\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2 G^tG]\\
+        &=
+        Tr[\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2]\\
+        &=
+        Tr[\Lambda^2] + Tr[ \hat{\Lambda}^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t]\\
+        \end{aligned}
+    \end{equation*}
+
+    \subsection{Dark part}
+
+    We know that $\frac{\delta Tr[\Lambda G \hat{\Lambda} G^t]}{\delta G} = 2\Lambda G \hat{\Lambda}$\\\\
+    We also know that $\frac{\delta Tr(\Lambda^2)}{\delta G} = 0 = \frac{\delta Tr(\hat{\Lambda}^2)}{\delta G}$\\\\
+    Finally we know that the answer for a fixed $\hat{\Lambda}$ is $G=I$\\ \\
+
+    Which implies that
+
+    \begin{equation*}
+        \begin{aligned}
+        G = I = V^tQ\\
+        V^tQ = I\\
+        V(V^tQ) = VI\\
+        Q = V
+        \end{aligned}
+    \end{equation*}
+
+    Now, coming back to the original problem 
+
+    \begin{equation*}
+        \begin{aligned}
+            \underset{G,\hat{\Lambda}}{\text{min}} \quad Tr[(\Lambda - G \hat{\Lambda} G^t)^2]
+            &=
+            \underset{\hat{\Lambda}}{\text{min}} \quad Tr[(\Lambda - \hat{\Lambda})^2]
+        \end{aligned}
+    \end{equation*}
+
+    So we can take the first $p$ eigenvalues of $\Lambda$ to define $\hat{\Lambda}$,
+    and finally 
+
+    \begin{equation*}
+        \begin{aligned}
+            Y^tY &= Q \hat{\Lambda} Q^t\\
+            &=
+            V \hat{\Lambda} V^t\\
+            &=
+            V \hat{\Lambda}^{1/2} \hat{\Lambda}^{1/2} V^t\\
+        \end{aligned}
+    \end{equation*}
+
+    which implies that $Y = \hat{\Lambda}^{1/2} V^t$
+
+    \section{Miscellaneous proofs}
+
+    \subsection{Proof of the relationship between the norm and the trace} \label{norm_trace}
+
+    \begin{equation*}
+        \begin{aligned}
+            \lVert A \rVert^2 = \sum_{i=1}^n \sum_{j=1}^n A_{ij}^2
+            \hspace{1cm}
+            Tr(A) = \sum_{i=1}^n A_{ii}
+        \end{aligned}
+    \end{equation*}\\
+
+    Concider a matrix B that is computed as $A^tA$
+
+    \begin{equation*}
+        B = A^tA
+    \end{equation*}
+
+    Then an element of B can be computed as
+
+    \begin{equation*}
+        B_{ij} = \sum_{k=1}^n A_{ik}^t A_{kj} = \sum_{k=1}^n A_{ki} A_{kj} = (A^tA)_{ij}
+    \end{equation*}
+
+    Now, the trace of B will be
+
+    \begin{equation*}
+        \begin{aligned}
+            Tr(B) &= T(A^tA)\\
+                  &= \sum_{i=1}^n (A^tA)_{ii}\\
+                  &= \sum_{i=1}^n \sum_{j=1}^n A_{ij}^t A_{ji}\\
+                  &= \sum_{i=1}^n \sum_{j=1}^n A_{ji} A_{ji}\\
+                  &= \sum_{i=1}^n \sum_{j=1}^n A_{ji}^2 \\
+                  &= \sum_{i=1}^n \sum_{j=1}^n A_{ij}^2 \\
+                  &= \lVert A \rVert^2
+        \end{aligned}
+    \end{equation*}
+
+    Hence
+
+    \begin{equation*}
+        \lVert A \rVert^2 = Tr(A^tA)
+    \end{equation*}
+
+    \subsection{Proof of the circular transformation of the trace} \label{circular_trace}
+
+    Consider a matrix M which is the multiplication of matrices B and C
+
+    \begin{equation*}
+        M = BC
+    \end{equation*}
+
+    Then an element of M is computed as
+
+    \begin{equation*}
+        M_{ij} = \sum_{k=1}^n B_{ik} C_{kj} = BC_{ij}
+    \end{equation*}
+
+    Now, the trace of M will be
+
+    \begin{equation*}
+        \begin{aligned}
+            Tr(M) &= Tr(BC)\\
+                  &= \sum_{i=1}^n BC_{ii}\\
+                  &= \sum_{i=1}^n \sum_{j=1}^n B_{ij} C_{ji}\\
+                  &= \sum_{i=1}^n \sum_{j=1}^n C_{ij} B_{ji}\\
+                  &= \sum_{i=1}^n CB_{ii}\\
+                  &= Tr(CB)
+        \end{aligned}
+    \end{equation*}
+    
+    hence
+
+    \begin{equation*}
+        Tr(BC) = Tr(CB)
+    \end{equation*}
+    
+    \subsection{Proof of the single value decomposition} \label{svd_existance}
+    
+\end{document}
