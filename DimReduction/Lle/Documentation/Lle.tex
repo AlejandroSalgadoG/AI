@@ -1,0 +1,345 @@
+\documentclass{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\begin{document}
+
+    \title{}
+    \author{}
+    \date{}
+
+    \maketitle
+
+    \section{First optimization problem}
+
+    \begin{equation*}
+        \begin{aligned}
+            \underset{w_{ij}}{\text{min}} \quad \sum_{i=1}^n & \lVert x_i - \sum_{j=1}^k w_{ij} x_j \rVert^2 \\
+            & \sum_{j=1}^k w_{ij} = 1
+        \end{aligned}
+    \end{equation*}
+
+    \subsection{Case for an arbitrary $i$}
+
+    define
+
+    \[
+        V_i = 
+        \begin{bmatrix}
+            |      &  |     &       & | \\
+            N(x_i)_1 & N(x_i)_2 & \dots & N(x_i)_k \\
+            |      &  |     &       & |
+        \end{bmatrix}_{d \times k}
+        \hspace{1cm}
+        W_i =
+        \begin{bmatrix}
+            w_{i1}\\
+            w_{i2}\\
+            \dots \\
+            w_{ik}\\
+        \end{bmatrix}_{k \times 1}
+        \hspace{1cm}
+        e = 
+        \begin{bmatrix} 
+        1\\
+        1\\
+        \dots\\
+        1
+        \end{bmatrix}_{k \times 1}
+    \]
+
+    then
+    
+    \begin{equation*}
+        \sum_{j=1}^k w_{ij} x_j = V_i W_i
+    \end{equation*}
+
+    \begin{equation*}
+            \underset{w_{ij}}{\text{min}} \quad \lVert x_i - \sum_{j=1}^k w_{ij} x_j \rVert^2
+            = 
+            \underset{W_i}{\text{min}} \quad \lVert x_i - V_i W_i \rVert^2
+    \end{equation*}
+
+    define
+
+    \[
+        x_i e^t =
+        \begin{bmatrix}
+            x_1 \\
+            x_2 \\
+            \dots \\
+            x_d \\
+        \end{bmatrix}_{d \times 1}
+        \begin{bmatrix}
+            1 & 1 & \dots & 1
+        \end{bmatrix}_{1 \times k}
+        =
+        \begin{bmatrix}
+            |   & |   &       & | \\
+            x_i & x_i & \dots & x_i\\
+            |   & |   &       & |
+        \end{bmatrix}_{d \times k}
+    \]\\
+    
+    Now $x_i$ can be defined as
+
+    \[
+        x_i = x_i e^t W_i =
+        \begin{bmatrix}
+            |   & |   &       & | \\
+            x_i & x_i & \dots & x_i\\
+            |   & |   &       & |
+        \end{bmatrix}_{d \times k}
+        \begin{bmatrix}
+            w_{i1}\\
+            w_{i2}\\
+            \dots \\
+            w_{ik}\\
+        \end{bmatrix}_{k \times 1}
+        =
+        \sum_{j=1}^k x_i w_{ij}
+    \]
+
+    Hence
+
+    \begin{equation*}
+        \begin{aligned}
+            \underset{W_i}{\text{min}} \quad \lVert x_i - V_i W_i \rVert^2
+            &=
+            \underset{W_i}{\text{min}} \quad \lVert x_i e^t W_i - V_i W_i \rVert^2\\
+            &=
+            \underset{W_i}{\text{min}} \quad \lVert (x_i e^t - V_i) W_i \rVert^2\\
+            &=
+            \underset{W_i}{\text{min}} \quad [(x_i e^t - V_i) W_i]^t [(x_i e^t - V_i) W_i]\\
+            &=
+            \underset{W_i}{\text{min}} \quad W_i^t(x_i e^t - V_i)^t (x_i e^t - V_i) W_i\\
+        \end{aligned}
+    \end{equation*}
+
+    Define a matrix $G$ as
+
+    \begin{equation*}
+        G = (x_i e^t - V_i)^t (x_i e^t - V_i)
+    \end{equation*}
+
+    Redefine the problem as
+
+    \begin{equation*}
+            \underset{W_i}{\text{min}} \quad W_i^t(x_i e^t - V_i)^t (x_i e^t - V_i) W_i
+            =
+            \underset{W_i}{\text{min}} \quad W_i^t G W_i
+    \end{equation*}
+
+    To solve this problem the Lagrange multipliers are used. First redefine the
+    restriction as
+
+    \begin{equation*}
+        \sum_{j=1}^k w_{ij} = 1 = e^t W_i
+    \end{equation*}
+
+    Now
+
+    \begin{equation*}
+        \begin{aligned}
+            \mathcal{L}(W_i, \lambda) &= W_i^t G W_i - \lambda (e^t W_i - 1)\\
+            \frac{\delta \mathcal{L}}{\delta W_i} &= 2 G W_i - \lambda e
+        \end{aligned}
+    \end{equation*}
+
+    \begin{equation*}
+        \begin{aligned}
+            2 G W_i - \lambda e &= 0 \\
+            2 G W_i &= \lambda e \\
+            G W_i &= \frac{1}{2} \lambda e \\
+            G^{-1} G W_i &= G^{-1} \frac{1}{2} \lambda e \\
+            W_i &= \frac{1}{2} \lambda G^{-1} e \\
+        \end{aligned}
+    \end{equation*}
+
+    Now if $\lambda$ is wrongly chosen, then the result would be a scaled version
+    of the true value. Then, $\lambda$ can be chosen arbitrarily, and after $W_i$
+    is computed a rescale procedure can be conducted in order to satisfy the
+    restriction.\\
+
+    For simplicity choose $\lambda = 2$, then
+
+    \begin{equation*}
+        \begin{aligned}
+            W_i &= \frac{1}{2} \lambda G^{-1} e = G^{-1} e \\
+            G W_i &= e \\
+        \end{aligned}
+    \end{equation*}
+
+    So the problem is reduced to solve a linear system of equations. Now if
+    after build the matrix G, it turns out that is a singular matrix the
+    following computation can be used to make it invertible
+
+    \begin{equation*}
+            G = G + \sigma I
+    \end{equation*}
+
+    where sigma is a small value.
+
+    \section{Second optimization problem}
+
+    \begin{equation*}
+        \begin{aligned}
+            \underset{y}{\text{min}} \quad \sum_{i=1}^n & \lVert y_i - \sum_{j=1}^n w_{ij} y_j \rVert^2 \\
+            & YY^t = I
+        \end{aligned}
+    \end{equation*}
+
+    Where
+
+    \[
+        Y = 
+        \begin{bmatrix}
+            |   &  |  &       & |   \\
+            y_1 & y_2 & \dots & y_n \\
+            |   &  |  &       & |
+        \end{bmatrix}_{p \times n}
+        \hspace{0.5cm}
+    \]
+
+    Now, define
+
+    \[
+        W = 
+        \begin{bmatrix}
+            |   &  |  &       & |   \\
+            w_1 & w_2 & \dots & w_n \\
+            |   &  |  &       & |
+        \end{bmatrix}_{n \times n}
+        where
+        \hspace{0.5cm}
+        W_i = 
+        \begin{bmatrix}
+            0 \\
+            \vdots \\ 
+            w_1 \\
+            \vdots \\ 
+            w_k \\
+            \vdots \\ 
+            0 \\
+        \end{bmatrix}_{n \times 1}
+    \]
+
+    Where $W_i$ is a vector that contains the value of the weight that correspond
+    to the $j$ neighbor of $x_i$ in the corresponding position, and 0 anywhere
+    else. This means that 
+
+    \begin{equation*}
+        X W_i = \sum_{j=1}^k w_{ij} x_j
+    \end{equation*}
+
+    Rewrite the problem as
+
+    \begin{equation*}
+            \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - \sum_{j=1}^n w_{ij} y_j \rVert^2
+            =
+            \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - Y W_i \rVert^2
+    \end{equation*}
+
+    Also define 
+
+    \[
+        I_i = 
+        \begin{bmatrix}
+            0 \\
+            \vdots \\ 
+            1 \\
+            \vdots \\ 
+            0 \\
+        \end{bmatrix}_{n \times n}
+        \hspace{0.5cm}
+    \]
+
+    Which is a vector that has a $1$ in the $i$ position and $0$ anywhere else.
+    With this new vector we can redefine the problem as
+
+    \begin{equation*}
+            \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - Y W_i \rVert^2
+            =
+            \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert YI_i - Y W_i \rVert^2
+    \end{equation*}
+
+    And now, since this expression is adding the norm of each vector in the
+    matrix, the optimization problem can be rewritten to minimize the norm of
+    the entire matrix
+
+    \begin{equation*}
+            \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert YI_i - Y W_i \rVert^2
+            =
+            \underset{Y}{\text{min}} \quad \lVert YI - Y W \rVert^2
+    \end{equation*}
+
+    So, this optimization problem can be solved as follows
+
+    \begin{equation*}
+        \begin{aligned}
+            \lVert Y I - Y W \rVert^2 &= \lVert Y (I - W) \rVert^2\\
+            &= Tr[(Y [I-W])^t (Y [I-W])]\\
+            &= Tr[(I-W)^t Y^t Y (I-W)]\\
+            &= Tr[(I-W)^t Y^t Y (I-W)]\\
+            &= Tr[(I-W) (I-W)^t Y^t Y]\\
+            &= Tr[Y (I-W) (I-W)^t Y^t]\\
+        \end{aligned}
+    \end{equation*}
+
+    At this point define a matrix $M$ as
+
+    \begin{equation*}
+        M = (I-W) (I-W)^t
+    \end{equation*}
+
+    Redefine the optimization problem as
+
+    \begin{equation*}
+        \begin{aligned}
+            \underset{Y}{\text{min}} \quad \lVert YI - Y W \rVert^2
+            = 
+            \underset{Y}{\text{min}} \quad Tr(Y M Y^t)
+            =
+            \underset{Y}{\text{min}} \quad Tr(M Y^t Y)
+        \end{aligned}
+    \end{equation*}
+
+    To solve this problem the Lagrange multipliers are used.
+
+    \begin{equation*}
+        \begin{aligned}
+            \mathcal{L}(Y, \lambda) &= Tr( M Y^t Y) - \lambda (Y Y^t - I)\\
+            \frac{\delta \mathcal{L}}{\delta W_i} &= Y M^t + Y M - 2 \lambda Y
+        \end{aligned}
+    \end{equation*}
+
+    We know that matrix $M$ is symmetric 
+
+    \begin{equation*}
+        \begin{aligned}
+            M^t &= [(I-W) (I-W)^t]^t\\
+                &= [(I-W)^t]^t (I-W)^t\\
+                &= (I-W) (I-W)^t\\
+                &= M
+        \end{aligned}
+    \end{equation*}
+
+    Hence
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{\delta \mathcal{L}}{\delta W_i} &= Y M^t + Y M - 2 \lambda Y\\
+                                                  &= Y M + Y M - 2 \lambda Y\\
+                                                  &= 2 Y M - 2 \lambda Y \\
+                              2 Y M - 2 \lambda Y &= 0 \\
+                                            2 Y M &= 2 \lambda Y \\
+                                              Y M &= \lambda Y \\
+                                              (Y M)^t &= (\lambda Y)^t \\
+                                              M^t Y^t &= Y^t \lambda \\
+                                              M Y^t &= \lambda Y^t \\
+        \end{aligned}
+    \end{equation*}
+
+\end{document}
