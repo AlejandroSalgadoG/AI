@@ -5,6 +5,85 @@
 
 \begin{document}
 
+    \section{Points from distances}
+
+    The set up of the problem is a matrix of euclidean distances $D$, where each
+    entry is the square of the distance between two points in a $d$ dimensional
+    space.
+
+    \[
+        D =
+        \begin{bmatrix}
+            d_{11}^2 & \cdots & d_{1n}^2\\
+            \vdots   & \ddots & \vdots  \\
+            d_{n1}^2 & \ddots & d_{nn}^2\\
+        \end{bmatrix}_{n x n}
+    \]
+
+    where
+
+    \begin{equation*}
+        d_{ij}^2 = (x_{i1}-x_{j1})^2 - (x_{i2}-x_{j2})^2 \cdots (x_{id}-x_{jd})^2
+    \end{equation*}
+
+    The unknown of the problem is a matrix $X$ that cotains the position of the
+    $n$ points in the $d$ dimensional space.
+
+    \[
+        X =
+        \begin{bmatrix}
+            x_{11} & \cdots & x_{1n}\\
+            \vdots & \ddots & \vdots\\
+            x_{d1} & \ddots & x_{dn}\\
+        \end{bmatrix}_{d x n}
+    \]
+
+    But there is a restriction to make sure that the matrix is centered at 0.
+
+    \begin{equation*} 
+        \sum_{i=1}^n x_{is} = 0 \quad with \quad s = 1, \cdots, d
+    \end{equation*} 
+
+    \subsection{Solution}
+
+    First rewrite each entry of matrix $D$ in a vector form
+
+    \begin{equation*}
+        d_{ij}^2 = (x_i-x_j)^t (x_i-x_j)
+    \end{equation*}
+
+    Then expand distance $d_{ij}^2$
+
+    \begin{equation*}
+        \begin{aligned}
+            (x_i-x_j)^t (x_i-x_j) &= (x_i^t-x_j^t) (x_i-x_j)\\
+                                  &= x_i^t x_i - x_i^t x_j - x_j^t x_i + x_j^t x_j\\
+                         d_{ij}^2 &= x_i^t x_i - 2 x_i^t x_j + x_j^t x_j\\
+        \end{aligned}
+    \end{equation*}
+
+    The goal is to express all the dot products of $x$ vectors in terms of the
+    $d_{ij}^2$ distances. Cinsider the following expression
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{n} \sum_{i=1}^n d_{ij}^2 &= \frac{1}{n} \sum_{i=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
+            &=  \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + \frac{1}{n} \sum_{i=1}^n x_j^t x_j\\
+            &=  \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + \frac{n}{n} x_j^t x_j \\
+            \text{remember that} \quad & \sum_{i=1}^n x_{is} = 0 \quad with \quad s = 1, \cdots, d\\
+            \sum_{i=1}^n x_i^t x_j &= \sum_{i=1}^n \sum_{r=1}^d x_{ir} x_{jr}\\
+                                   &= \sum_{r=1}^d \sum_{i=1}^n x_{ir} x_{jr}\\
+                                   &= \sum_{r=1}^d x_{jr} \sum_{i=1}^n x_{ir}\\
+                                   &= \sum_{r=1}^d x_{jr} 0\\
+                                   &= 0\\
+            \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + x_j^t x_j 
+            &= 
+            \frac{1}{n} \sum_{i=1}^n x_i^t x_i + x_j^t x_j 
+        \end{aligned}
+    \end{equation*}
+
+    hence
+
     \section{Mds optimization problem}
 
     \begin{equation*}
@@ -15,7 +94,7 @@
         \end{aligned}
     \end{equation*}\\
 
-    if $d_{ij}^{(x)}$ es euclidean, then $d_{ij}^{(x)} = x_i^t x_j$, and hence 
+    if $d_{ij}^{(x)}$ es euclidean, then $d_{ij}^{(x)} = x_i^t x_j$, and hence
 
     \begin{equation*}
         \underset{y}{\text{min}} \sum_{i=1}^n \sum_{j=1}^n ( x_i^t x_j - y_i^t y_j )^2 \\
@@ -57,7 +136,7 @@
     \begin{equation*}
         \underset{Y}{\text{min}} \quad Tr(A^tA)
         =
-        \underset{Y}{\text{min}} \quad Tr(A^2)  
+        \underset{Y}{\text{min}} \quad Tr(A^2)
         =
         \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
     \end{equation*}\\
@@ -69,7 +148,7 @@
         X^tX = V\Lambda V^t \hspace{1cm} Y^tY = Q \hat{\Lambda} Q^t
     \end{equation*}
 
-    Then 
+    Then
 
     \begin{equation*}
         \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
@@ -186,7 +265,7 @@
         \end{aligned}
     \end{equation*}
 
-    Now, coming back to the original problem 
+    Now, coming back to the original problem
 
     \begin{equation*}
         \begin{aligned}
@@ -197,7 +276,7 @@
     \end{equation*}
 
     So we can take the first $p$ eigenvalues of $\Lambda$ to define $\hat{\Lambda}$,
-    and finally 
+    and finally
 
     \begin{equation*}
         \begin{aligned}
@@ -281,13 +360,13 @@
                   &= Tr(CB)
         \end{aligned}
     \end{equation*}
-    
+
     hence
 
     \begin{equation*}
         Tr(BC) = Tr(CB)
     \end{equation*}
-    
+
     \subsection{Proof of the single value decomposition} \label{svd_existance}
-    
+
 \end{document}
