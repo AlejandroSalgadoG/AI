@@ -1,22 +1,31 @@
-\documentclass{article}
+\documentclass[12pt,journal]{IEEEtran}
 
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
 
 \begin{document}
 
-    \title{}
-    \author{}
-    \date{}
+\title{A weighted data representation based approach for manifold learning}
+\author{A. Salgado - O. Lucía Quintero M.}
+\maketitle
 
-    \maketitle
+\begin{abstract}
+    We implemented the weighted data representation based in KNN and minimization
+    of the euclidean distance between representation. Finally the local embedding
+    is tested on 3-dimensional manifolds.
+\end{abstract}
 
-    \section{First optimization problem}
+\section{Introduction}
+
+\section{Theorical framework}
+
+\subsection{First optimization problem}
 
     \begin{equation*}
         \begin{aligned}
-            \underset{w_{ij}}{\text{min}} \quad \sum_{i=1}^n & \lVert x_i - \sum_{j=1}^k w_{ij} x_j \rVert^2 \\
+            \underset{w_{ij}}{\text{min}} \quad \sum_{i=1}^n & \lVert x_i - \sum_{j=1}^k w_{ij} N(x_i)_j \rVert^2 \\
             & \sum_{j=1}^k w_{ij} = 1
         \end{aligned}
     \end{equation*}
@@ -32,7 +41,8 @@
             N(x_i)_1 & N(x_i)_2 & \dots & N(x_i)_k \\
             |      &  |     &       & |
         \end{bmatrix}_{d \times k}
-        \hspace{1cm}
+    \]
+    \[
         W_i =
         \begin{bmatrix}
             w_{i1}\\
@@ -53,13 +63,13 @@
     then
     
     \begin{equation*}
-        \sum_{j=1}^k w_{ij} x_j = V_i W_i
+        \sum_{j=1}^k w_{ij} N(x_i)_j = V_i W_i
     \end{equation*}
 
     \begin{equation*}
-            \underset{w_{ij}}{\text{min}} \quad \lVert x_i - \sum_{j=1}^k w_{ij} x_j \rVert^2
+            \underset{w_{ij}}{\text{min}} \lVert x_i - \sum_{j=1}^k w_{ij} N(x_i)_j \rVert^2
             = 
-            \underset{W_i}{\text{min}} \quad \lVert x_i - V_i W_i \rVert^2
+            \underset{W_i}{\text{min}} \lVert x_i - V_i W_i \rVert^2
     \end{equation*}
 
     define
@@ -73,40 +83,27 @@
             x_d \\
         \end{bmatrix}_{d \times 1}
         \begin{bmatrix}
-            1 & 1 & \dots & 1
+            1 & \dots & 1
         \end{bmatrix}_{1 \times k}
         =
         \begin{bmatrix}
-            |   & |   &       & | \\
-            x_i & x_i & \dots & x_i\\
-            |   & |   &       & |
+            |   &       & | \\
+            x_i & \dots & x_i\\
+            |   &       & |
         \end{bmatrix}_{d \times k}
     \]\\
     
     Now $x_i$ can be defined as
 
-    \[
-        x_i = x_i e^t W_i =
-        \begin{bmatrix}
-            |   & |   &       & | \\
-            x_i & x_i & \dots & x_i\\
-            |   & |   &       & |
-        \end{bmatrix}_{d \times k}
-        \begin{bmatrix}
-            w_{i1}\\
-            w_{i2}\\
-            \dots \\
-            w_{ik}\\
-        \end{bmatrix}_{k \times 1}
-        =
-        \sum_{j=1}^k x_i w_{ij}
-    \]
+    \begin{equation*}
+        x_i = x_i e^t W_i
+    \end{equation*}
 
     Hence
 
     \begin{equation*}
         \begin{aligned}
-            \underset{W_i}{\text{min}} \quad \lVert x_i - V_i W_i \rVert^2
+            \underset{W_i}{\text{min}} \lVert x_i - V_i W_i \rVert^2
             &=
             \underset{W_i}{\text{min}} \quad \lVert x_i e^t W_i - V_i W_i \rVert^2\\
             &=
@@ -182,7 +179,7 @@
 
     where sigma is a small value.
 
-    \section{Second optimization problem}
+    \subsection{Second optimization problem}
 
     \begin{equation*}
         \begin{aligned}
@@ -299,9 +296,9 @@
     \begin{equation*}
         \begin{aligned}
             \underset{Y}{\text{min}} \quad \lVert YI - Y W \rVert^2
-            = 
-            \underset{Y}{\text{min}} \quad Tr(Y M Y^t)
-            =
+            &= 
+            \underset{Y}{\text{min}} \quad Tr(Y M Y^t)\\
+            &=
             \underset{Y}{\text{min}} \quad Tr(M Y^t Y)
         \end{aligned}
     \end{equation*}
@@ -341,5 +338,12 @@
                                               M Y^t &= \lambda Y^t \\
         \end{aligned}
     \end{equation*}
+
+
+\section{Algorithm implementation}
+
+\section{Results}
+
+\section{Conclusions}
 
 \end{document}

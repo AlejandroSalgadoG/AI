@@ -1,11 +1,29 @@
-\documentclass{article}
+\documentclass[12pt,journal]{IEEEtran}
 
 \usepackage[utf8]{inputenc}
+\usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{amssymb}
 
 \begin{document}
 
-    \section{Points from distances}
+\title{A theorical-practical approach to manifold learning}
+\author{A. Salgado - O. Lucía Quintero M.}
+\maketitle
+
+\begin{abstract}
+    This work presents an theorical approximation to the problem and provide an
+    algorithmic solution easy and understandable. The approach to the problem is
+    reconsider by the construction of the matrix $D^x$ with KNN. Creating the
+    possibility to improve the results using other ways to calculate the distance
+    matrix
+\end{abstract}
+
+\section{Introduction}
+
+\section{Theorical framework}
+
+    \subsection{Points from distances}
 
     The set up of the problem is a matrix of euclidean distances $D$, where each
     entry is the square of the distance between two points in a $d$ dimensional
@@ -90,10 +108,9 @@
 
     \begin{equation*}
         \begin{aligned}
-            \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j &+ x_j^t x_j 
-            = 
-            \frac{1}{n} \sum_{i=1}^n x_i^t x_i + x_j^t x_j\\
             \frac{1}{n} \sum_{i=1}^n d_{ij}^2
+            &= 
+            \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2(0)}{n} + x_j^t x_j\\
             &= 
             \frac{1}{n} \sum_{i=1}^n x_i^t x_i + x_j^t x_j\\
             x_j^t x_j &= \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i
@@ -120,12 +137,9 @@
             d_{ij}^2 &= x_i^t x_i - 2 x_i^t x_j + x_j^t x_j\\
             2 x_i^t x_j &= x_i^t x_i - d_{ij}^2 + x_j^t x_j\\
             x_i^t x_j &= \frac{1}{2} (x_i^t x_i - d_{ij}^2 + x_j^t x_j)\\
-            &=
-            \frac{1}{2} \left[ \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j - d_{ij}^2 + x_j^t x_j \right]\\
-            &=
-            \frac{1}{2} \left[ \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j - d_{ij}^2 + \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i \right]\\
-            &=
-            \frac{1}{2} \left[ \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - d_{ij}^2 + \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{1}{n} \sum_{j=1}^n x_j^t x_j \right]\\
+            \text{where}\\
+            x_i^t x_i &= \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
+            x_j^t x_j &= \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i
         \end{aligned}
     \end{equation*}
 
@@ -153,11 +167,7 @@
             &= 
             \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
             &= 
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_j +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
-            &= 
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2}{n^2}\sum_{i=1}^n 0 +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
-            &= 
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2}{n^2} 0 +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2(0)}{n^2} +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
             &= 
             \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
             &= 
@@ -250,11 +260,11 @@
 
     \begin{equation*}
         \begin{aligned}
-            A &= X^tX - Y^tY\\
+            A = X^tX &- Y^tY\\
             \underset{Y}{\text{min}} \quad \lVert X^t X - Y^t Y \rVert^2
             &=
-            \underset{Y}{\text{min}} \quad \lVert A \rVert^2
-            =
+            \underset{Y}{\text{min}} \quad \lVert A \rVert^2\\
+            &=
             \underset{Y}{\text{min}} \quad Tr(A^tA) \\
         \end{aligned}
     \end{equation*}\\
@@ -273,11 +283,13 @@
     Which means that $A^tA = AA = A^2$, and hence
 
     \begin{equation*}
-        \underset{Y}{\text{min}} \quad Tr(A^tA)
-        =
-        \underset{Y}{\text{min}} \quad Tr(A^2)
-        =
-        \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
+        \begin{aligned}
+            \underset{Y}{\text{min}} \quad Tr(A^tA)
+            &=
+            \underset{Y}{\text{min}} \quad Tr(A^2)\\
+            &=
+            \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
+        \end{aligned}
     \end{equation*}\\
 
     now as shown in section \ref{spectral_decomp}, $X^tX$ and $Y^tY$ can be
@@ -371,19 +383,19 @@
 
     \begin{equation*}
         \begin{aligned}
-        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} G^t G \hat{\Lambda} G^t]
+        Tr[(\Lambda - G \hat{\Lambda} G^t G)^2 ]
         &=
         Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} \hat{\Lambda} G^t]\\
-        &=
-        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda}^2 G^t]\\
-        &=
-        Tr[\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[G \hat{\Lambda}^2 G^t]\\
-        &=
-        Tr[\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2 G^tG]\\
-        &=
-        Tr[\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2]\\
-        &=
-        Tr[\Lambda^2] + Tr[ \hat{\Lambda}^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t]\\
+        =
+        Tr[&\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda}^2 G^t]\\
+        =
+        Tr[&\Lambda^2]- 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[G \hat{\Lambda}^2 G^t]\\
+        =
+        Tr[&\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2 G^tG]\\
+        =
+        Tr[&\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2]\\
+        =
+        Tr[&\Lambda^2] + Tr[ \hat{\Lambda}^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t]\\
         \end{aligned}
     \end{equation*}
 
@@ -544,6 +556,8 @@
             q_1 & \cdots & q_n\\
              |  &        &  | \\
         \end{bmatrix}
+    \]
+    \[
         =
         \begin{bmatrix}
             q_1^t q_1 & \cdots & q_1^t q_n \\
@@ -618,6 +632,8 @@
             \lambda_1 \mu_1 & \cdots & \lambda_n \mu_n\\
                     |       &        &         |      \\
         \end{bmatrix}\\
+    \]
+    \[
         =
         \begin{bmatrix}
                |  &        &   |  \\
@@ -651,4 +667,11 @@
     \begin{equation*}
         A = S \Lambda S^t
     \end{equation*}
+
+\section{Algorithm implementation}
+
+\section{Results}
+
+\section{Conclusions}
+
 \end{document}
