@@ -63,26 +63,165 @@
     \end{equation*}
 
     The goal is to express all the dot products of $x$ vectors in terms of the
-    $d_{ij}^2$ distances. Cinsider the following expression
+    $d_{ij}^2$ distances. Consider the following expression
 
     \begin{equation*}
         \begin{aligned}
             \frac{1}{n} \sum_{i=1}^n d_{ij}^2 &= \frac{1}{n} \sum_{i=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
             &=  \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + \frac{1}{n} \sum_{i=1}^n x_j^t x_j\\
             &=  \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + \frac{n}{n} x_j^t x_j \\
-            \text{remember that} \quad & \sum_{i=1}^n x_{is} = 0 \quad with \quad s = 1, \cdots, d\\
+        \end{aligned}
+    \end{equation*}
+
+    Remember that
+
+    \begin{equation*}
+        \begin{aligned}
+              \sum_{i=1}^n x_{is} &= 0 \quad with \quad s = 1, \cdots, d\\
             \sum_{i=1}^n x_i^t x_j &= \sum_{i=1}^n \sum_{r=1}^d x_{ir} x_{jr}\\
                                    &= \sum_{r=1}^d \sum_{i=1}^n x_{ir} x_{jr}\\
                                    &= \sum_{r=1}^d x_{jr} \sum_{i=1}^n x_{ir}\\
                                    &= \sum_{r=1}^d x_{jr} 0\\
                                    &= 0\\
-            \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + x_j^t x_j 
-            &= 
-            \frac{1}{n} \sum_{i=1}^n x_i^t x_i + x_j^t x_j 
         \end{aligned}
     \end{equation*}
 
-    hence
+    Hence
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j &+ x_j^t x_j 
+            = 
+            \frac{1}{n} \sum_{i=1}^n x_i^t x_i + x_j^t x_j\\
+            \frac{1}{n} \sum_{i=1}^n d_{ij}^2
+            &= 
+            \frac{1}{n} \sum_{i=1}^n x_i^t x_i + x_j^t x_j\\
+            x_j^t x_j &= \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i
+        \end{aligned}
+    \end{equation*}
+
+    Now in the other hand, the sum over $j$ would be
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{n} \sum_{j=1}^n d_{ij}^2
+            &=
+            \frac{1}{n} \sum_{j=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
+            &= 
+            x_i^t x_i + \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
+            x_i^t x_i &= \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
+        \end{aligned}
+    \end{equation*}
+
+    Finally, the first approximation to the problem can be constructed
+
+    \begin{equation*}
+        \begin{aligned}
+            d_{ij}^2 &= x_i^t x_i - 2 x_i^t x_j + x_j^t x_j\\
+            2 x_i^t x_j &= x_i^t x_i - d_{ij}^2 + x_j^t x_j\\
+            x_i^t x_j &= \frac{1}{2} (x_i^t x_i - d_{ij}^2 + x_j^t x_j)\\
+            &=
+            \frac{1}{2} \left[ \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j - d_{ij}^2 + x_j^t x_j \right]\\
+            &=
+            \frac{1}{2} \left[ \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j - d_{ij}^2 + \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i \right]\\
+            &=
+            \frac{1}{2} \left[ \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - d_{ij}^2 + \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{1}{n} \sum_{j=1}^n x_j^t x_j \right]\\
+        \end{aligned}
+    \end{equation*}
+
+    Notice that
+
+    \begin{equation*}
+        \sum_{i=1}^n x_i^t x_i = \sum_{j=1}^n x_j^t x_j
+    \end{equation*}
+
+    So
+
+    \begin{equation*}
+        \begin{aligned}
+            x_i^t x_j&=
+            \frac{1}{2} \left[ \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - d_{ij}^2 + \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{2}{n} \sum_{i=1}^n x_i^t x_i \right]\\
+        \end{aligned}
+    \end{equation*}
+
+    This is almost expressed in terms of the distances, the only problem is the
+    last term. To express that part consider the following expression
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n d_{ij}^2
+            &= 
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
+            &= 
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_j +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            &= 
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2}{n^2}\sum_{i=1}^n 0 +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            &= 
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2}{n^2} 0 +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            &= 
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            &= 
+            \frac{n}{n^2}\sum_{i=1}^n x_i^t x_i +  \frac{n}{n^2}\sum_{j=1}^n x_j^t x_j\\
+            &= 
+            \frac{1}{n}\sum_{i=1}^n x_i^t x_i +  \frac{1}{n}\sum_{j=1}^n x_j^t x_j\\
+            &= 
+            \frac{2}{n}\sum_{i=1}^n x_i^t x_i\\
+        \end{aligned}
+    \end{equation*}
+
+    Now the expression can be completed
+    \begin{equation*}
+        \begin{aligned}
+            x_i^t x_j
+            &=
+            \frac{1}{2} \left[ \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - d_{ij}^2 + \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n d_{ij}^2 \right]\\
+        \end{aligned}
+    \end{equation*}
+
+    This computation can be expressed in matrix form to simplify the formula.
+    First define
+
+    \[
+        b_{ij} = x_i^t x_j
+        \hspace{1cm}
+        e =
+        \begin{bmatrix}
+            1\\
+            \vdots\\
+            1
+        \end{bmatrix}_{nx1}
+        \hspace{1cm}
+        a_{ij} = -\frac{1}{2} d_{ij}^2
+    \]
+
+    Now a matrix $B$ can be defined as
+
+    \begin{equation*}
+        B = H A H \quad \text{where} \quad H = I - \frac{1}{n} e e^t
+    \end{equation*}
+
+    This formula gives a way to compute all the dot products between the points
+    that makes up the matrix $X$. Because of this the matrix $B$ can also
+    be expressed as
+
+    \begin{equation*}
+        B = X^tX
+    \end{equation*}
+
+    Now, as shown in section \ref{orthogonal}, $B$ can be decomposed using the
+    spectral decomposition. And by doing that the problem can be solved as follows
+
+    \begin{equation*}
+        \begin{aligned}
+            B &= V \Sigma V^t\\
+              &= V \Sigma^{1/2} \Sigma^{1/2} V^t\\
+              &= V \Sigma^{1/2} \Sigma^{1/2} V^t\\
+              &= X^t X\\
+            X & = \Sigma^{1/2} V^t
+        \end{aligned}
+    \end{equation*}
+
+    Which gives a way to compute all the points of the matrix $X$.
 
     \section{Mds optimization problem}
 
@@ -141,7 +280,7 @@
         \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
     \end{equation*}\\
 
-    now as shown in section \ref{svd_existance}, $X^tX$ and $Y^tY$ can be
+    now as shown in section \ref{spectral_decomp}, $X^tX$ and $Y^tY$ can be
     expresed as
 
     \begin{equation*}
@@ -367,6 +506,149 @@
         Tr(BC) = Tr(CB)
     \end{equation*}
 
-    \subsection{Proof of the single value decomposition} \label{svd_existance}
+    \subsection{Relationship between transpose and inverse of an othogonal matrix}
+    \label{orthogonal}
+    
+    Consider an orthogonal matrix $Q$, 
 
+    \[
+        Q =
+        \begin{bmatrix}
+             |  &        &  | \\
+            q_1 & \cdots & q_n\\
+             |  &        &  | \\
+        \end{bmatrix}
+    \]
+
+    Since is orthogonal the following expression holds
+
+    \[
+        q_i q_j = 
+        \begin{cases} 
+           0 & i \neq j \\
+           \lVert q_i \rVert & i = j 
+        \end{cases}
+    \]
+
+    And then
+
+    \[
+        Q^t Q =
+        \begin{bmatrix}
+             - q_1^t - \\
+               \vdots  \\
+             - q_n^t - \\
+        \end{bmatrix}
+        \begin{bmatrix}
+             |  &        &  | \\
+            q_1 & \cdots & q_n\\
+             |  &        &  | \\
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+            q_1^t q_1 & \cdots & q_1^t q_n \\
+              \vdots  & \ddots &  \vdots   \\
+            q_n^t q_1 & \cdots & q_n^t q_n \\
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+          \lVert q_1 \rVert &         0         & \cdots &         0    \\
+                  0         & \lVert q_2 \rVert & \cdots &         0    \\
+               \vdots       &       \vdots      & \ddots &       \vdots \\
+                  0         &         0         & \cdots & \lVert q_n \rVert \\
+        \end{bmatrix}
+    \]
+
+    Which implies that if all the vectors of $Q$ have a length of one ($Q$ is
+    orthonormal), then
+
+    \begin{equation*}
+        Q^t Q = I
+    \end{equation*}
+
+    And if $Q$ is also sqare, then
+
+    \begin{equation*}
+        Q^t = Q^{-1}
+    \end{equation*}
+
+    \subsection{Spectral decomposition for symmetric matrices} \label{spectral_decomp}
+
+    Consider a symmetric matrix $A$, then this matrix will have $n$ orthogonal
+    eigenvalues. Then build a new matrix $S$ that will contain the eigenvalues of
+    $A$ as columns.\\
+
+    Now from the definition of eigenvalues and eigenvectors
+
+    \begin{equation*}
+        A \mu = \lambda \mu
+    \end{equation*}
+
+    If $\mu$ is replaced with $S$ the result would be
+
+    \[
+        A S = A 
+        \begin{bmatrix}
+              |   &        &   |  \\
+            \mu_1 & \cdots & \mu_n\\
+              |   &        &   |  \\
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+             & - x_1^t - &\\
+             &  \vdots   &\\
+             & - x_n^t - &\\
+        \end{bmatrix}
+        \begin{bmatrix}
+              |   &        &   |  \\
+            \mu_1 & \cdots & \mu_n\\
+              |   &        &   |  \\
+        \end{bmatrix}\\
+    \]
+    \[
+        =
+        \begin{bmatrix}
+            x_1^t \mu_1 & \cdots & x_1^t \mu_n\\
+               \vdots   & \ddots &   \vdots   \\
+            x_n^t \mu_1 & \cdots & x_n^t \mu_n\\
+        \end{bmatrix}
+        =
+        \begin{bmatrix}
+                    |       &        &         |      \\
+            \lambda_1 \mu_1 & \cdots & \lambda_n \mu_n\\
+                    |       &        &         |      \\
+        \end{bmatrix}\\
+        =
+        \begin{bmatrix}
+               |  &        &   |  \\
+            \mu_1 & \cdots & \mu_n\\
+               |  &        &   |  \\
+        \end{bmatrix}\\
+        \begin{bmatrix}
+            \lambda_1 &      0    & \cdots &   0 \\
+                0     & \lambda_2 & \cdots &   0 \\
+              \vdots  &   \vdots  & \ddots & \vdots \\
+                0     &      0    & \cdots & \lambda_n \\
+        \end{bmatrix}\\
+    \]
+
+    So, if a new matrix $\Lambda$ is define as a diagonal matrix that contains
+    the eigenvalues of $A$, then the computation can be expressed as
+
+    \begin{equation*}
+        A S = S \Lambda
+    \end{equation*}
+
+    And, since $S$ is invertible
+
+    \begin{equation*}
+        A = S \Lambda S^{-1}
+    \end{equation*}
+
+    Finally, as shown in section \ref{orthogonal}, the inverse of an orthonormal
+    matrix is its traspose, then A can be expressed as
+
+    \begin{equation*}
+        A = S \Lambda S^t
+    \end{equation*}
 \end{document}
