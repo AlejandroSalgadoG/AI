@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+%\usepackage{babelbib}
 
 \begin{document}
 
@@ -12,16 +13,69 @@
 \maketitle
 
 \begin{abstract}
-    We implemented the weighted data representation based in KNN and minimization
-    of the euclidean distance between representation. Finally the local embedding
+    We present a detailed implementation of the local linear embeding
+    algorithm from both a theorical and practical approximation. In this work the
+    dimensionality reduction is achieved by a two step procedure. First a
+    weighted data representation based in $K$ nearest neighbors is calculated, and
+    then a minimization of distance between the data representation and a low
+    dimensionality configuration is conducted. Finally the resulting algorithm
     is tested on 3-dimensional manifolds.
 \end{abstract}
 
 \section{Introduction}
 
+
+Exploratory data analysis and visualization are key issues in a lot of areas
+in science. Gather knowledge about the structure and caracteristics of data
+can lead to great improves in the process of solving problems in science. But a
+good analysis of multidimensinal data can be really hard to achive, and the
+consecuences of mistaken assumptions about the data properties can produce
+dysfunctional solutions.
+
+\vspace{0.25cm}
+
+An approximation to solve this problems are dimensionality reduction techniques.
+These methods provide a way to discover compact representations of
+multidimensional datasets in a low dimensional space. This approaches allow the
+analysis process to be carried out in an easier way and help to reduce the
+probability of getting erroneous results.
+
+\vspace{0.25cm}
+
+However, there are still some issues related to the usage of these methods.
+Assumptions like the use of euclidean distances as a measure in the
+multidimensional space implies that the data is homogeneous or isotropic, and
+this is really often not the case in many real world datasets
+\cite{homogeneous1}, \cite{homogeneous2}. Because of this, the usage of other
+distance metrics is a good option to increase the performance of these approches
+\cite{dist1}, \cite{dist2}.
+
+\vspace{0.25cm}
+
+An appropriate processing method for dimentionality reduction in the case of
+a nonlinear approach can be manifold learning techniques \cite{manifold1},
+\cite{manifold2}. This algorithms seek to generate nonlinear dimensionality
+reductions by exploiting
+
+% missing part
+\cite{lle}
+
+In this work the linear local embeding algorithm is used to perform a
+dimensionality reduction of a multidimentional dataset by a manifold learning
+technique. The first part of the work will carafully describe each part of the
+mathemathical backgound of the method, then the implementation details of the
+algorithm are shown to prepare a results section, and finally some conclusions
+are exposed.
+
 \section{Theorical framework}
 
-\subsection{First optimization problem}
+    As mention before, the problem that we are trying to solve is to find
+    a low dimensional representation of points in a manifold that is in a high
+    dimensional space. In order to achieve this, two steps are considered. The
+    first one is to find a way to represent each point in the original dataset as
+    a linear combination of its $K$ nearest neighbors. This means that the
+    objective is to find a set of weights that minimize the following
+    expression
 
     \begin{equation*}
         \begin{aligned}
@@ -30,12 +84,17 @@
         \end{aligned}
     \end{equation*}
 
-    \subsection{Case for an arbitrary $i$}
+    Where $N(x_i)_j$ represents the $j$-th neighbor of the point $x_i$. The
+    restriction is imposed to get a non trivial solution and ensure that
+    the construction of the points is convex.\\
 
-    define
+    This problem can be solved by optimizing an arbitrary case $i$. The first
+    step is to define the neighborhood matrix of $x_i$, a vector that will
+    conatin the weights of the combination and a special matrix $e$ that will
+    facilitate the process later.
 
     \[
-        V_i = 
+        V_i =
         \begin{bmatrix}
             |      &  |     &       & | \\
             N(x_i)_1 & N(x_i)_2 & \dots & N(x_i)_k \\
@@ -51,8 +110,8 @@
             w_{ik}\\
         \end{bmatrix}_{k \times 1}
         \hspace{1cm}
-        e = 
-        \begin{bmatrix} 
+        e =
+        \begin{bmatrix}
         1\\
         1\\
         \dots\\
@@ -60,19 +119,23 @@
         \end{bmatrix}_{k \times 1}
     \]
 
-    then
-    
+    Whith these tools the linear combinations of neighbors can be expressed as
+
     \begin{equation*}
         \sum_{j=1}^k w_{ij} N(x_i)_j = V_i W_i
     \end{equation*}
 
+    Hence the problem can be rewritten as follows
+
     \begin{equation*}
             \underset{w_{ij}}{\text{min}} \lVert x_i - \sum_{j=1}^k w_{ij} N(x_i)_j \rVert^2
-            = 
+            =
             \underset{W_i}{\text{min}} \lVert x_i - V_i W_i \rVert^2
     \end{equation*}
 
-    define
+    For the next step the objective is to represent $x_i$ as a vector operation.
+    First a matrix in which each column is the $x_i$ point is constructed with
+    the help of the $e$ vector
 
     \[
         x_i e^t =
@@ -92,14 +155,15 @@
             |   &       & |
         \end{bmatrix}_{d \times k}
     \]\\
-    
-    Now $x_i$ can be defined as
+
+    Then using the fact that $W_i$ is used to construct a convex representation
+    of the desired point, $x_i$ can be computed as
 
     \begin{equation*}
         x_i = x_i e^t W_i
     \end{equation*}
 
-    Hence
+    Now the problem can be redefined in terms of matrix and vectors operations
 
     \begin{equation*}
         \begin{aligned}
@@ -115,13 +179,13 @@
         \end{aligned}
     \end{equation*}
 
-    Define a matrix $G$ as
+    The next step is to define a matrix to simplify the objective function
 
     \begin{equation*}
         G = (x_i e^t - V_i)^t (x_i e^t - V_i)
     \end{equation*}
 
-    Redefine the problem as
+    With this matrix the problem can be rewritten as follows
 
     \begin{equation*}
             \underset{W_i}{\text{min}} \quad W_i^t(x_i e^t - V_i)^t (x_i e^t - V_i) W_i
@@ -129,24 +193,25 @@
             \underset{W_i}{\text{min}} \quad W_i^t G W_i
     \end{equation*}
 
-    To solve this problem the Lagrange multipliers are used. First redefine the
-    restriction as
+    An option to solve this problem are Lagrange multipliers. In order to use
+    this method the restriction is redefined
 
     \begin{equation*}
         \sum_{j=1}^k w_{ij} = 1 = e^t W_i
     \end{equation*}
 
-    Now
+    Then a new objective function can be constructed
 
     \begin{equation*}
-        \begin{aligned}
-            \mathcal{L}(W_i, \lambda) &= W_i^t G W_i - \lambda (e^t W_i - 1)\\
-            \frac{\delta \mathcal{L}}{\delta W_i} &= 2 G W_i - \lambda e
-        \end{aligned}
+            \mathcal{L}(W_i, \lambda) = W_i^t G W_i - \lambda (e^t W_i - 1)
     \end{equation*}
 
+    In order to optimize this function its derivative is calculated and then is
+    set to 0
+
     \begin{equation*}
         \begin{aligned}
+            \frac{\delta \mathcal{L}}{\delta W_i} &= 2 G W_i - \lambda e\\
             2 G W_i - \lambda e &= 0 \\
             2 G W_i &= \lambda e \\
             G W_i &= \frac{1}{2} \lambda e \\
@@ -155,35 +220,39 @@
         \end{aligned}
     \end{equation*}
 
-    Now if $\lambda$ is wrongly chosen, then the result would be a scaled version
-    of the true value. Then, $\lambda$ can be chosen arbitrarily, and after $W_i$
-    is computed a rescale procedure can be conducted in order to satisfy the
-    restriction.\\
+    At this point, if $\lambda$ is wrongly chosen, then the result would be a
+    scaled version of the true value. Then, $\lambda$ can be chosen
+    arbitrarily. Then, after $W_i$ is computed a rescale procedure can be
+    conducted in order to satisfy the restriction.\\
 
-    For simplicity choose $\lambda = 2$, then
+    A good choice for the variable is $\lambda = 2$. This leads to the
+    cancellation of the fraction and reduces the problem to find the solution of
+    a linear system of equations
 
     \begin{equation*}
         \begin{aligned}
-            W_i &= \frac{1}{2} \lambda G^{-1} e = G^{-1} e \\
+            W_i = \frac{1}{2} \lambda G^{-1} & e = G^{-1} e \\
             G W_i &= e \\
         \end{aligned}
     \end{equation*}
 
-    So the problem is reduced to solve a linear system of equations. Now if
-    after build the matrix G, it turns out that is a singular matrix the
-    following computation can be used to make it invertible
+    This implies that matrix $G$ must be invertible, and there is no warranty
+    of that. So, if that is the case, a solution is to recalculate $G$ as
 
     \begin{equation*}
-            G = G + \sigma I
+        G \leftarrow G + \sigma I
     \end{equation*}
 
-    where sigma is a small value.
+    where $\sigma$ is a small value.\\
 
-    \subsection{Second optimization problem}
+    This procedure is used to find all the weight values. Then this weights are
+    used to define a configuration of points in a low dimensional space that
+    is as similar as possible to the original dataset. The objective in this
+    point of the problem is minimize the following expression
 
     \begin{equation*}
         \begin{aligned}
-            \underset{y}{\text{min}} \quad \sum_{i=1}^n & \lVert y_i - \sum_{j=1}^n w_{ij} y_j \rVert^2 \\
+            \underset{y}{\text{min}} \quad \sum_{i=1}^n & \lVert y_i - \sum_{j=1}^n w_{ij} N(y_i)_j \rVert^2 \\
             & YY^t = I
         \end{aligned}
     \end{equation*}
@@ -191,7 +260,7 @@
     Where
 
     \[
-        Y = 
+        Y =
         \begin{bmatrix}
             |   &  |  &       & |   \\
             y_1 & y_2 & \dots & y_n \\
@@ -200,54 +269,54 @@
         \hspace{0.5cm}
     \]
 
-    Now, define
+    To solve this problem define
 
     \[
-        W = 
+        W =
         \begin{bmatrix}
             |   &  |  &       & |   \\
-            w_1 & w_2 & \dots & w_n \\
+            W_1 & W_2 & \dots & W_n \\
             |   &  |  &       & |
         \end{bmatrix}_{n \times n}
         where
         \hspace{0.5cm}
-        W_i = 
+        W_i =
         \begin{bmatrix}
             0 \\
-            \vdots \\ 
             w_1 \\
-            \vdots \\ 
+            \vdots \\
             w_k \\
-            \vdots \\ 
             0 \\
         \end{bmatrix}_{n \times 1}
     \]
 
     Where $W_i$ is a vector that contains the value of the weight that correspond
     to the $j$ neighbor of $x_i$ in the corresponding position, and 0 anywhere
-    else. This means that 
+    else.\\
+
+    Using this matrix the linear combinations of points can be calculated as
 
     \begin{equation*}
-        X W_i = \sum_{j=1}^k w_{ij} x_j
+        \sum_{j=1}^k w_{ij} N(y_i)_j = Y W_i
     \end{equation*}
 
-    Rewrite the problem as
+    Which means that the problem can be rewrited as
 
     \begin{equation*}
-            \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - \sum_{j=1}^n w_{ij} y_j \rVert^2
+            \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - \sum_{j=1}^n w_{ij} N(y_i)_j \rVert^2
             =
             \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - Y W_i \rVert^2
     \end{equation*}
 
-    Also define 
+    Now,
 
     \[
-        I_i = 
+        I_i =
         \begin{bmatrix}
             0 \\
-            \vdots \\ 
+            \vdots \\
             1 \\
-            \vdots \\ 
+            \vdots \\
             0 \\
         \end{bmatrix}_{n \times n}
         \hspace{0.5cm}
@@ -296,7 +365,7 @@
     \begin{equation*}
         \begin{aligned}
             \underset{Y}{\text{min}} \quad \lVert YI - Y W \rVert^2
-            &= 
+            &=
             \underset{Y}{\text{min}} \quad Tr(Y M Y^t)\\
             &=
             \underset{Y}{\text{min}} \quad Tr(M Y^t Y)
@@ -312,7 +381,7 @@
         \end{aligned}
     \end{equation*}
 
-    We know that matrix $M$ is symmetric 
+    We know that matrix $M$ is symmetric
 
     \begin{equation*}
         \begin{aligned}
@@ -345,5 +414,8 @@
 \section{Results}
 
 \section{Conclusions}
+
+\bibliographystyle{unsrt}
+\bibliography{Article_lle}
 
 \end{document}
