@@ -4,7 +4,6 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
-%\usepackage{babelbib}
 
 \begin{document}
 
@@ -13,13 +12,13 @@
 \maketitle
 
 \begin{abstract}
-    We present a detailed implementation of the local linear embeding
-    algorithm from both a theorical and practical approximation. In this work the
+    We present a detailed implementation of the local linear embeding algorithm
+    from both a theoretical and practical approximation. In this work the
     dimensionality reduction is achieved by a two step procedure. First a
-    weighted data representation based in $K$ nearest neighbors is calculated, and
-    then a minimization of distance between the data representation and a low
-    dimensionality configuration is conducted. Finally the resulting algorithm
-    is tested on 3-dimensional manifolds.
+    weighted data representation based in $K$ nearest neighbors is calculated,
+    and then a minimization of distance between the data representation and a
+    low dimensionality configuration is conducted. Finally the resulting
+    algorithm is tested on 3-dimensional manifolds.
 \end{abstract}
 
 \section{Introduction}
@@ -34,7 +33,7 @@ dysfunctional solutions.
 
 \vspace{0.25cm}
 
-An approximation to solve this problems are dimensionality reduction techniques.
+An approximation to solve these problems are dimensionality reduction techniques.
 These methods provide a way to discover compact representations of
 multidimensional datasets in a low dimensional space. This approaches allow the
 analysis process to be carried out in an easier way and help to reduce the
@@ -44,7 +43,7 @@ probability of getting erroneous results.
 
 However, there are still some issues related to the usage of these methods.
 Assumptions like the use of euclidean distances as a measure in the
-multidimensional space implies that the data is homogeneous or isotropic, and
+multidimensional space, implies that the data is homogeneous or isotropic, and
 this is really often not the case in many real world datasets
 \cite{homogeneous1}, \cite{homogeneous2}. Because of this, the usage of other
 distance metrics is a good option to increase the performance of these approches
@@ -55,23 +54,36 @@ distance metrics is a good option to increase the performance of these approches
 An appropriate processing method for dimentionality reduction in the case of
 a nonlinear approach can be manifold learning techniques \cite{manifold1},
 \cite{manifold2}. This algorithms seek to generate nonlinear dimensionality
-reductions by exploiting
+reductions by assuming that the data points are samples from a low dimensional
+structure which is embedded in a multidimensional space and hence a simpler
+representation can be constructed. \cite{manifold}
 
-% missing part
-\cite{lle}
+\vspace{0.25cm}
 
-In this work the linear local embeding algorithm is used to perform a
-dimensionality reduction of a multidimentional dataset by a manifold learning
-technique. The first part of the work will carafully describe each part of the
-mathemathical backgound of the method, then the implementation details of the
-algorithm are shown to prepare a results section, and finally some conclusions
-are exposed.
+One example of a manifold learning algorithm is Local Linear Embeding (LLE)
+\cite{lle}. This technique uses the fact that from a local perspective a
+non-linear structure can be aproximated with an euclidean measure. Hence an
+aproximation of a multidimensional manifold in a low dimensional space can be
+conducted by representing small pieces, where the euclidean assumption can hold,
+and then using these pieces together to get a reconstruction as similar as 
+possible to the original manifold.
+
+\vspace{0.25cm}
+
+The objective of this work is to build a theoretical and practical develop of
+the ideas used in the LLE algorithm to build a manifold learning method. For
+this purpose the first part of the work will carafully describe each part of
+the mathemathical backgound of the method, then the implementation details of
+the algorithm are shown to prepare a results section, and finally some
+conclusions are exposed.
 
 \section{Theorical framework}
 
     As mention before, the problem that we are trying to solve is to find
     a low dimensional representation of points in a manifold that is in a high
-    dimensional space. In order to achieve this, two steps are considered. The
+    dimensional space. A theorical approximation of 
+    the method is developed taking as staring point the description given in
+    \cite{proof}. In this method two steps are considered. The
     first one is to find a way to represent each point in the original dataset as
     a linear combination of its $K$ nearest neighbors. This means that the
     objective is to find a set of weights that minimize the following
@@ -89,9 +101,9 @@ are exposed.
     the construction of the points is convex.\\
 
     This problem can be solved by optimizing an arbitrary case $i$. The first
-    step is to define the neighborhood matrix of $x_i$, a vector that will
-    conatin the weights of the combination and a special matrix $e$ that will
-    facilitate the process later.
+    step is to define the neighborhood matrix of $x_i$, also a vector that will
+    conatin the weights of the combination, and finally a special matrix $e$ that
+    is filled with ones.
 
     \[
         V_i =
@@ -221,11 +233,11 @@ are exposed.
     \end{equation*}
 
     At this point, if $\lambda$ is wrongly chosen, then the result would be a
-    scaled version of the true value. Then, $\lambda$ can be chosen
-    arbitrarily. Then, after $W_i$ is computed a rescale procedure can be
+    scaled version of the optimal value. Then, $\lambda$ can be chosen
+    arbitrarily and after $W_i$ is computed, a rescale procedure can be
     conducted in order to satisfy the restriction.\\
 
-    A good choice for the variable is $\lambda = 2$. This leads to the
+    Hence, a good choice for the variable is $\lambda = 2$. This leads to the
     cancellation of the fraction and reduces the problem to find the solution of
     a linear system of equations
 
@@ -245,10 +257,10 @@ are exposed.
 
     where $\sigma$ is a small value.\\
 
-    This procedure is used to find all the weight values. Then this weights are
-    used to define a configuration of points in a low dimensional space that
+    This procedure is used to find all of the weights values. Then these weights
+    are used to define a configuration of points in a low dimensional space that
     is as similar as possible to the original dataset. The objective in this
-    point of the problem is minimize the following expression
+    point is to minimize the following expression
 
     \begin{equation*}
         \begin{aligned}
@@ -269,9 +281,10 @@ are exposed.
         \hspace{0.5cm}
     \]
 
-    To solve this problem define
+    To solve this problem, define
 
     \[
+        \hspace{-0.5cm}
         W =
         \begin{bmatrix}
             |   &  |  &       & |   \\
@@ -279,7 +292,7 @@ are exposed.
             |   &  |  &       & |
         \end{bmatrix}_{n \times n}
         where
-        \hspace{0.5cm}
+        \hspace{0.25cm}
         W_i =
         \begin{bmatrix}
             0 \\
@@ -290,7 +303,7 @@ are exposed.
         \end{bmatrix}_{n \times 1}
     \]
 
-    Where $W_i$ is a vector that contains the value of the weight that correspond
+    Here $W_i$ is a vector that contains the value of the weight that correspond
     to the $j$ neighbor of $x_i$ in the corresponding position, and 0 anywhere
     else.\\
 
@@ -298,9 +311,9 @@ are exposed.
 
     \begin{equation*}
         \sum_{j=1}^k w_{ij} N(y_i)_j = Y W_i
-    \end{equation*}
+    \end{equation*}\\
 
-    Which means that the problem can be rewrited as
+    Which means that the problem can be rewritten as
 
     \begin{equation*}
             \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - \sum_{j=1}^n w_{ij} N(y_i)_j \rVert^2
@@ -308,7 +321,10 @@ are exposed.
             \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - Y W_i \rVert^2
     \end{equation*}
 
-    Now,
+    \vspace{0.25cm}
+
+    Now, just as before, the objective is to express $y_i$ as vectors operations.
+    To achieve this, define
 
     \[
         I_i =
@@ -323,13 +339,15 @@ are exposed.
     \]
 
     Which is a vector that has a $1$ in the $i$ position and $0$ anywhere else.
-    With this new vector we can redefine the problem as
+    With this new vector the problem can redefined as
 
     \begin{equation*}
             \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert y_i - Y W_i \rVert^2
             =
             \underset{y}{\text{min}} \quad \sum_{i=1}^n \lVert YI_i - Y W_i \rVert^2
     \end{equation*}
+
+    \vspace{0.25cm}
 
     And now, since this expression is adding the norm of each vector in the
     matrix, the optimization problem can be rewritten to minimize the norm of
@@ -341,7 +359,7 @@ are exposed.
             \underset{Y}{\text{min}} \quad \lVert YI - Y W \rVert^2
     \end{equation*}
 
-    So, this optimization problem can be solved as follows
+    This optimization problem can be solved as follows
 
     \begin{equation*}
         \begin{aligned}
@@ -398,18 +416,29 @@ are exposed.
         \begin{aligned}
             \frac{\delta \mathcal{L}}{\delta W_i} &= Y M^t + Y M - 2 \lambda Y\\
                                                   &= Y M + Y M - 2 \lambda Y\\
-                                                  &= 2 Y M - 2 \lambda Y \\
-                              2 Y M - 2 \lambda Y &= 0 \\
-                                            2 Y M &= 2 \lambda Y \\
-                                              Y M &= \lambda Y \\
-                                              (Y M)^t &= (\lambda Y)^t \\
-                                              M^t Y^t &= Y^t \lambda \\
-                                              M Y^t &= \lambda Y^t \\
+                                                  &= 2 Y M - 2 \lambda Y
         \end{aligned}
     \end{equation*}
 
+    Finally, by setting this derivative to 0 the solution of the problem can
+    be founded
+
+    \begin{equation*}
+        \begin{aligned}
+            2 Y M - 2 \lambda Y &= 0 \\
+                          2 Y M &= 2 \lambda Y \\
+                            Y M &= \lambda Y \\
+                            (Y M)^t &= (\lambda Y)^t \\
+                            M^t Y^t &= Y^t \lambda \\
+                            M Y^t &= \lambda Y^t \\
+        \end{aligned}
+    \end{equation*}
+
+    Which is a eigenvector problem and can be solved with classical methods. 
 
 \section{Algorithm implementation}
+
+\cite{matlab}
 
 \section{Results}
 
