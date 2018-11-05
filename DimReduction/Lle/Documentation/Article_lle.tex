@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[]{algorithm2e}
+\usepackage{float}
 
 \begin{document}
 
@@ -13,7 +14,7 @@
 \maketitle
 
 \begin{abstract}
-    We present a detailed implementation of the local linear embeding algorithm
+    This work presents a detailed implementation of the local linear embeding algorithm
     from both a theoretical and practical approximation. In this work the
     dimensionality reduction is achieved by a two step procedure. First a
     weighted data representation based in $K$ nearest neighbors is calculated,
@@ -476,7 +477,46 @@ a matrix of points called data of dimensions $n$x$d$.
 
 \section{Results}
 
+The algorithm described in the previous secction was tested with 2 manifolds in
+a 3 dimensional space. Figure \ref{swiss} shows a swiss roll dataset that
+represents the manifold that the method is going to reduce, the resulting
+2 dimensional dataset is shown in Figure \ref{swiss_res}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/swiss_roll.png}
+    \caption{Swiss roll dataset}
+    \label{swiss}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/swiss_roll_result.png}
+    \caption{Swiss roll dataset reduced}
+    \label{swiss_res}
+\end{figure}
+
+Finally in Figure \ref{sphere} a second manifold in form of a 3 dimensional
+sphere is shown, the result of the method is shown in Figure \ref{sphere_res}
+as a 2 dimensional configuration of points.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/sphere.png}
+    \caption{Sphere dataset}
+    \label{sphere}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\linewidth]{images/sphere_result.png}
+    \caption{Sphere dataset reduced}
+    \label{sphere_res}
+\end{figure}
+
 \section{Conclusions}
+
+In this work
 
 \bibliographystyle{unsrt}
 \bibliography{Article_lle}
