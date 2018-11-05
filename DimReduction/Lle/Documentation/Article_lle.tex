@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[]{algorithm2e}
 
 \begin{document}
 
@@ -131,7 +132,7 @@ conclusions are exposed.
         \end{bmatrix}_{k \times 1}
     \]
 
-    Whith these tools the linear combinations of neighbors can be expressed as
+    With these tools the linear combinations of neighbors can be expressed as
 
     \begin{equation*}
         \sum_{j=1}^k w_{ij} N(x_i)_j = V_i W_i
@@ -438,7 +439,40 @@ conclusions are exposed.
 
 \section{Algorithm implementation}
 
-\cite{matlab}
+For the implementation of the method the programing language MATLAB \cite{matlab}
+was used. This tool is specifically desing for matrix operations, which makes it
+an appropriate option to address the problem in an easy way.
+
+\vspace{0.25cm}
+
+The Algorithm \ref{alg1} shows the seudo-code to compute a low
+dimentional representation of a multidimensional manifold that is represented as
+a matrix of points called data of dimensions $n$x$d$.
+
+\begin{algorithm}
+    $n$ = number of points\\
+    $p$ = output dimensions\\
+    $k$ = number of neighbors\\
+    \vspace{0.5cm}
+    $W$ = zeros($n$)\\
+    \For{i in 1:n}{
+        $x_i$ = data($i$)\\
+        $k_i$ = get\_nearest\_neighbors($x_i$, $k$)\\
+        $V_i$ = data($k_i$)\\
+        $G$ = $(x_i e^t - V_i)^t (x_i e^t - V_i)$\\
+        solve($G w_i = e$)\\
+        $W(i)$ = $w_i$ / sum($w_i$)
+    }
+    \vspace{0.5cm}
+    $M$ = $(I-W) * (I-W)^t$\\
+    $V$ = get\_eigenvectors($M$)\\
+    $Y$ = select\_smaller($p$, $V$)
+
+    \vspace{0.5cm}
+
+    \caption{Computation of low dimensional representation}
+    \label{alg1}
+\end{algorithm}
 
 \section{Results}
 
