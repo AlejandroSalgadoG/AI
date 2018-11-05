@@ -26,13 +26,53 @@
 
 \section{Introduction}
 
-Dimensionality reduction is a technique
+Dimensionality reduction is a technique that aims to summarize the information
+of a dataset in the most compact way posible in order to facilitate the analysis
+procedures of the data. These procedures can also be seen as a process to find
+a set of degrees of freedom that econde most of the dataset variability
+\cite{proof}.
 
-\cite{manifold}
+\vspace{0.5cm}
 
+Some of the approximations in these types of methods assume that the data that
+is being analyzed does not exploit all the dimensionality of the space where
+is defined. Due to this fact, another description of the goal that the
+dimensionality reduction techniques have is related to find a meaningful low
+dimensional structure that is hidden in a multidimentional structure.
 \cite{dimension}
 
-\cite{mds}
+\vspace{0.5cm}
+
+A clear example of these type of methods are manifold learning techniques. These
+approximations search for a way to perform a non linear dimensionality reduction,
+which means that they do not assume that the structure of the original dataset
+is encoded based on euclidean distance meassuares. Instead these algorithms try
+to express their relationships in terms of geodesic distances, which are
+distances meassured over the manifold surface. The result of this intend is 
+to preserve the intrinsic structure of the data when the reduction is perfomed,
+allowing to conserve the implicit information that was hidden in the original
+structure of the dataset. \cite{manifold}.
+
+\vspace{0.5cm}
+
+One example of a manifold learning algorithm is called multidimensional
+scaling \cite{mds}, this method addresses the problem by trying to find a low
+dimensional distance matrix that is as close as possible to a multidimensional
+version that encodes the relationship between the points in the original space.
+Then the algorithm uses the founded matrix to build a correspondent configuration
+of points in a low dimentional space that will act as a less complicated
+representation of the original dataset.
+
+\vspace{0.5cm}
+
+This work aims to develop the theorical and practical aspects of the method
+described above, with the objective of build a method that can reduce a
+multidimensional manifold to a low dimensional representation. To achieve this
+in the first part of the work a theorical framework is developed, in order to
+understand all the aspects of the method. Then an implementation section will
+take place, followed by a result section. Later, some conclusions are
+pressented and finally an apendix is added to present some proofs of the
+steps that are used in the theorical framework.
 
 \section{Theorical framework}
 
@@ -141,7 +181,6 @@ Dimensionality reduction is a technique
     Which implies that
 
     \begin{equation*}
-            \hspace{-1cm}
         \begin{aligned}
             Tr[(V^tAV)^2] &= Tr[A^2]\\
             Tr[(V^t(V\Lambda V^t - Q \hat{\Lambda} Q^t)V)^2] &= Tr[(V\Lambda V^t - Q \hat{\Lambda} Q^t)^2]\\
@@ -422,16 +461,16 @@ Dimensionality reduction is a technique
             \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n d_{ij}^2
             &=
             \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
-            &=
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2(0)}{n^2} +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
-            &=
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
-            &=
-            \frac{n}{n^2}\sum_{i=1}^n x_i^t x_i +  \frac{n}{n^2}\sum_{j=1}^n x_j^t x_j\\
-            &=
-            \frac{1}{n}\sum_{i=1}^n x_i^t x_i +  \frac{1}{n}\sum_{j=1}^n x_j^t x_j\\
-            &=
-            \frac{2}{n}\sum_{i=1}^n x_i^t x_i\\
+            =
+            \frac{1}{n^2}&\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2(0)}{n^2} +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            =
+            \frac{1}{n^2}&\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            =
+            \frac{n}{n^2}&\sum_{i=1}^n x_i^t x_i +  \frac{n}{n^2}\sum_{j=1}^n x_j^t x_j\\
+            =
+            \frac{1}{n}&\sum_{i=1}^n x_i^t x_i +  \frac{1}{n}\sum_{j=1}^n x_j^t x_j\\
+            =
+            \frac{2}{n}&\sum_{i=1}^n x_i^t x_i\\
         \end{aligned}
     \end{equation*}
 
@@ -439,6 +478,7 @@ Dimensionality reduction is a technique
     can be expressed in terms of distance operations
 
     \begin{equation*}
+        \hspace{-0.5cm}
         \begin{aligned}
             x_i^t x_j
             &=
