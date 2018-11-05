@@ -5,6 +5,7 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage[]{algorithm2e}
+\usepackage{float}
 
 \begin{document}
 
@@ -36,9 +37,9 @@ Dimensionality reduction is a technique
 \section{Theorical framework}
 
     As mentioned before, one of the goals of this work is to create a theorical
-    development of the multidimentional scaling method. This section shows a
+    development of the multidimentional scaling algorithm. This section shows a
     detail explanation of the therical aspects of the method taking \cite{proof}
-    as a base point.
+    as base point.
 
     \vspace{0.5cm}
 
@@ -58,7 +59,7 @@ Dimensionality reduction is a technique
     \end{equation*}\\
 
     Since each entry of the matrix $D^x$ can be expressed as
-    $d_{ij}^{(x)} = x_i^t x_j$, the problem can be rewritten
+    $d_{ij}^{(x)} = x_i^t x_j$, then the problem can be rewritten as
 
     \begin{equation*}
         \underset{y}{\text{min}} \sum_{i=1}^n \sum_{j=1}^n ( x_i^t x_j - y_i^t y_j )^2 \\
@@ -242,7 +243,7 @@ Dimensionality reduction is a technique
     \end{equation*}
 
     Now, coming back to the original problem this information can be used to
-    simplify the objective function
+    simplify the objective function as follows
 
     \begin{equation*}
         \begin{aligned}
@@ -266,14 +267,18 @@ Dimensionality reduction is a technique
         \end{aligned}
     \end{equation*}
 
-    which implies that $Y = \hat{\Lambda}^{1/2} V^t$.
+    which implies that $Y = \hat{\Lambda}^{1/2} V^t$. Which solves the problem.
 
     \vspace{0.25cm}
 
-    This method gives a way to find a matrix $D$ that encodes the distances
-    between points that are in a low dimensional space. Now a procedure that
+    This method gives a way to find a matrix $D^x$ that encodes the distances
+    between points that are in a low dimensional space. Now, a procedure that
     takes a distance matrix as input and finds a corresponding configuration
-    of points is described. The distance matrix is defined as follows
+    of points is described. 
+
+    \vspace{0.25cm}
+    
+    First, the distance matrix is defined as follows
 
     \[
         D =
@@ -291,7 +296,7 @@ Dimensionality reduction is a technique
     \end{equation*}
 
     The unknown of this problem is a matrix $X$ that cotains the position of the
-    $n$ points in the $d$ dimensional space.
+    $n$ points in a $d$ dimensional space.
 
     \[
         X =
@@ -309,7 +314,7 @@ Dimensionality reduction is a technique
         \sum_{i=1}^n x_{is} = 0 \quad with \quad s = 1, \cdots, d
     \end{equation*}
 
-    the first step to solve the problem is rewrite each entry of matrix $D$ in
+    To solve the problem the first step is rewrite each entry of matrix $D$ in
     a vector form
 
     \begin{equation*}
@@ -327,7 +332,8 @@ Dimensionality reduction is a technique
     \end{equation*}
 
     The goal is to express all the dot products of $x$ vectors in terms of the
-    $d_{ij}^2$ distances. To achieve this goal, consider the following expression
+    $d_{ij}^2$ distances. To achieve this goal, consider the following
+    expressions
 
     \begin{equation*}
         \begin{aligned}
@@ -337,7 +343,7 @@ Dimensionality reduction is a technique
         \end{aligned}
     \end{equation*}
 
-    But, using the restriction, one term can be canceled
+    But, using the restriction, one term must be canceled
 
     \begin{equation*}
         \begin{aligned}
@@ -363,7 +369,7 @@ Dimensionality reduction is a technique
         \end{aligned}
     \end{equation*}
 
-    Now in the other hand, the sum over $j$ would be
+    Now, in the other hand, the sum over $j$ would be
 
     \begin{equation*}
         \begin{aligned}
@@ -384,13 +390,20 @@ Dimensionality reduction is a technique
             d_{ij}^2 &= x_i^t x_i - 2 x_i^t x_j + x_j^t x_j\\
             2 x_i^t x_j &= x_i^t x_i - d_{ij}^2 + x_j^t x_j\\
             x_i^t x_j &= \frac{1}{2} (x_i^t x_i - d_{ij}^2 + x_j^t x_j)\\
-            \text{where}\\
+        \end{aligned}
+    \end{equation*}
+
+    Where the dot products of the left side can be replaced by the expressions
+    shown below
+
+    \begin{equation*}
+        \begin{aligned}
             x_i^t x_i &= \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
             x_j^t x_j &= \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i
         \end{aligned}
     \end{equation*}
 
-    But this expression has a term that can be treated as duplicated, so the
+    But this expression have a term that can be treated as duplicated, so the
     following propertie can be applied to simplify the expression
 
     \begin{equation*}
@@ -401,8 +414,8 @@ Dimensionality reduction is a technique
         \end{aligned}
     \end{equation*}
 
-    This is almost expressed in terms of the distances, the only problem is the
-    last term. To express that part consider the following expression
+    This is almost expressed in terms of distance operations, the only problem
+    is the last term. To express that part consider the following expression
 
     \begin{equation*}
         \begin{aligned}
@@ -422,7 +435,7 @@ Dimensionality reduction is a technique
         \end{aligned}
     \end{equation*}
 
-    Now the goal is completed, and the dot product between the $X$ components
+    Now the goal is completed, and the dot product between the $x$ vectors
     can be expressed in terms of distance operations
 
     \begin{equation*}
@@ -476,10 +489,15 @@ Dimensionality reduction is a technique
         \end{aligned}
     \end{equation*}
 
-    Which gives a way to compute all the points of the matrix $X$ finding a low
+    Which gives a way to compute all the points of the matrix $X$, finding a low
     dimensional representation of the original dataset.
 
 \section{Algorithm implementation}
+
+In this section the implementation details of the method are exposed. The method
+described in the previous section was developed using the Matlab programming
+language \cite{matlab}. Algorithm \ref{alg1} shows a seudo-code of the
+implemented method.
 
 \begin{algorithm}
     $n$ = number of points\\
@@ -495,9 +513,10 @@ Dimensionality reduction is a technique
         $G(i,k_i)$ = $D_e$($i$, $k_i$)\\
         $G(k_i,i)$ = $D_e$($i$, $k_i$)\\
     }
-    \vspace{0.5cm}
-    $H$ = $I - \frac{1}{n} e e^t$\\
     $D^x$ = compute\_distances($G$)\\
+    \vspace{0.5cm}
+    $e$ = vector\_ones($n$)\\
+    $H$ = $I - \frac{1}{n} e e^t$\\
     $A$ = -$\frac{1}{2}$ pow\_elementwise($D^x$,2)\\
     $B$ = $HAH$\\
     $V$ = get\_eigenvectors($B$)\\
@@ -511,14 +530,46 @@ Dimensionality reduction is a technique
     \label{alg1}
 \end{algorithm}
 
-\cite{matlab}
+This algorithm is divided in two main parts. The first one computes the initial
+distance matrix, that represents the geodesic distance in the multidimensional
+manifold. This computation is achieved by solving the shortest path problem
+between all the pairs of nodes in a graph that represents the manifold. This
+graph is constructed by taking each point as a node, and building an arc from
+each node to its $k$ nearest neighbors. As a last step, the weight of each arc
+is initialized as the euclidean distance between the two nodes connected.
+
+\vspace{0.5cm}
+
+And finally the procedure described in the theorical framework can be executed
+to get a low dimensional representation of the original multidimensional
+manifold.
 
 \section{Results}
+
+The method described in the previuos section was tested with 3 dimensional
+manifolds in order to allow the visualization of the intial manifold and be able
+to compare the quality of the resulting solution. Figure \ref{swiss} shows
+a swiss roll dataset that was used as the multidimentional manifold. Figure
+\ref{swiss_res} shows the result of the devolped method.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/swiss_roll.png}
+    \caption{Swiss roll dataset}
+    \label{swiss}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.7\linewidth]{images/swiss_roll_result.png}
+    \caption{Swiss roll dataset reduced}
+    \label{swiss_res}
+\end{figure}
 
 \section{Conclusions}
 
 
-    \section{Apendix}
+\section{Apendix}
 
     \subsection{Proof of the relationship between the norm and the trace} \label{norm_trace}
 
@@ -589,7 +640,7 @@ Dimensionality reduction is a technique
         \end{aligned}
     \end{equation*}
 
-    hence
+    Hence
 
     \begin{equation*}
         Tr(BC) = Tr(CB)
