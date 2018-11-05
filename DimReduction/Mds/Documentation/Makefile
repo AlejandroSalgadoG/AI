@@ -1,4 +1,8 @@
-Article_mds.pdf:  Article_mds.tex
+Article_mds.pdf: Article_mds.tex Article_mds.bib
+	pdflatex Article_mds.tex
+	bibtex Article_mds
+	pdflatex Article_mds.tex
+	pdflatex Article_mds.tex
 	pdflatex Article_mds.tex
 
 clean:

@@ -4,6 +4,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage[]{algorithm2e}
 
 \begin{document}
 
@@ -12,228 +13,41 @@
 \maketitle
 
 \begin{abstract}
-    This work presents an theorical approximation to the problem and provide an
-    algorithmic solution easy and understandable. The approach to the problem is
-    reconsider by the construction of the matrix $D^x$ with KNN. Creating the
-    possibility to improve the results using other ways to calculate the distance
-    matrix
+    This work presents an theorical and practical approximation to the problem
+    of non-linear dimensionality reduction using the multidimensional scaling
+    method and provide an algorithmic implementation easy and understandable. In
+    this approach a distance matrix $D^x$ is constructed to approximate the
+    distance over a manifold by solving shortest path problems over a graph that
+    represents a multidimensional structure. This matrix is used as input to the
+    method, which is tested with 3 dimensional manifolds. This technique gives a
+    way to improve the results using other ways to calculate the distance matrix.
 \end{abstract}
 
 \section{Introduction}
 
+Dimensionality reduction is a technique
+
+\cite{manifold}
+
+\cite{dimension}
+
+\cite{mds}
+
 \section{Theorical framework}
 
-    \subsection{Points from distances}
+    As mentioned before, one of the goals of this work is to create a theorical
+    development of the multidimentional scaling method. This section shows a
+    detail explanation of the therical aspects of the method taking \cite{proof}
+    as a base point.
 
-    The set up of the problem is a matrix of euclidean distances $D$, where each
+    \vspace{0.5cm}
+
+    The set up of the problem is a distance matrix $D^x$, where each
     entry is the square of the distance between two points in a $d$ dimensional
-    space.
-
-    \[
-        D =
-        \begin{bmatrix}
-            d_{11}^2 & \cdots & d_{1n}^2\\
-            \vdots   & \ddots & \vdots  \\
-            d_{n1}^2 & \ddots & d_{nn}^2\\
-        \end{bmatrix}_{n x n}
-    \]
-
-    where
-
-    \begin{equation*}
-        d_{ij}^2 = (x_{i1}-x_{j1})^2 - (x_{i2}-x_{j2})^2 \cdots (x_{id}-x_{jd})^2
-    \end{equation*}
-
-    The unknown of the problem is a matrix $X$ that cotains the position of the
-    $n$ points in the $d$ dimensional space.
-
-    \[
-        X =
-        \begin{bmatrix}
-            x_{11} & \cdots & x_{1n}\\
-            \vdots & \ddots & \vdots\\
-            x_{d1} & \ddots & x_{dn}\\
-        \end{bmatrix}_{d x n}
-    \]
-
-    But there is a restriction to make sure that the matrix is centered at 0.
-
-    \begin{equation*} 
-        \sum_{i=1}^n x_{is} = 0 \quad with \quad s = 1, \cdots, d
-    \end{equation*} 
-
-    \subsection{Solution}
-
-    First rewrite each entry of matrix $D$ in a vector form
-
-    \begin{equation*}
-        d_{ij}^2 = (x_i-x_j)^t (x_i-x_j)
-    \end{equation*}
-
-    Then expand distance $d_{ij}^2$
-
-    \begin{equation*}
-        \begin{aligned}
-            (x_i-x_j)^t (x_i-x_j) &= (x_i^t-x_j^t) (x_i-x_j)\\
-                                  &= x_i^t x_i - x_i^t x_j - x_j^t x_i + x_j^t x_j\\
-                         d_{ij}^2 &= x_i^t x_i - 2 x_i^t x_j + x_j^t x_j\\
-        \end{aligned}
-    \end{equation*}
-
-    The goal is to express all the dot products of $x$ vectors in terms of the
-    $d_{ij}^2$ distances. Consider the following expression
-
-    \begin{equation*}
-        \begin{aligned}
-            \frac{1}{n} \sum_{i=1}^n d_{ij}^2 &= \frac{1}{n} \sum_{i=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
-            &=  \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + \frac{1}{n} \sum_{i=1}^n x_j^t x_j\\
-            &=  \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + \frac{n}{n} x_j^t x_j \\
-        \end{aligned}
-    \end{equation*}
-
-    Remember that
-
-    \begin{equation*}
-        \begin{aligned}
-              \sum_{i=1}^n x_{is} &= 0 \quad with \quad s = 1, \cdots, d\\
-            \sum_{i=1}^n x_i^t x_j &= \sum_{i=1}^n \sum_{r=1}^d x_{ir} x_{jr}\\
-                                   &= \sum_{r=1}^d \sum_{i=1}^n x_{ir} x_{jr}\\
-                                   &= \sum_{r=1}^d x_{jr} \sum_{i=1}^n x_{ir}\\
-                                   &= \sum_{r=1}^d x_{jr} 0\\
-                                   &= 0\\
-        \end{aligned}
-    \end{equation*}
-
-    Hence
-
-    \begin{equation*}
-        \begin{aligned}
-            \frac{1}{n} \sum_{i=1}^n d_{ij}^2
-            &= 
-            \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2(0)}{n} + x_j^t x_j\\
-            &= 
-            \frac{1}{n} \sum_{i=1}^n x_i^t x_i + x_j^t x_j\\
-            x_j^t x_j &= \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i
-        \end{aligned}
-    \end{equation*}
-
-    Now in the other hand, the sum over $j$ would be
-
-    \begin{equation*}
-        \begin{aligned}
-            \frac{1}{n} \sum_{j=1}^n d_{ij}^2
-            &=
-            \frac{1}{n} \sum_{j=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
-            &= 
-            x_i^t x_i + \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
-            x_i^t x_i &= \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
-        \end{aligned}
-    \end{equation*}
-
-    Finally, the first approximation to the problem can be constructed
-
-    \begin{equation*}
-        \begin{aligned}
-            d_{ij}^2 &= x_i^t x_i - 2 x_i^t x_j + x_j^t x_j\\
-            2 x_i^t x_j &= x_i^t x_i - d_{ij}^2 + x_j^t x_j\\
-            x_i^t x_j &= \frac{1}{2} (x_i^t x_i - d_{ij}^2 + x_j^t x_j)\\
-            \text{where}\\
-            x_i^t x_i &= \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
-            x_j^t x_j &= \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i
-        \end{aligned}
-    \end{equation*}
-
-    Notice that
-
-    \begin{equation*}
-        \sum_{i=1}^n x_i^t x_i = \sum_{j=1}^n x_j^t x_j
-    \end{equation*}
-
-    So
-
-    \begin{equation*}
-        \begin{aligned}
-            x_i^t x_j&=
-            \frac{1}{2} \left[ \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - d_{ij}^2 + \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{2}{n} \sum_{i=1}^n x_i^t x_i \right]\\
-        \end{aligned}
-    \end{equation*}
-
-    This is almost expressed in terms of the distances, the only problem is the
-    last term. To express that part consider the following expression
-
-    \begin{equation*}
-        \begin{aligned}
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n d_{ij}^2
-            &= 
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
-            &= 
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2(0)}{n^2} +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
-            &= 
-            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
-            &= 
-            \frac{n}{n^2}\sum_{i=1}^n x_i^t x_i +  \frac{n}{n^2}\sum_{j=1}^n x_j^t x_j\\
-            &= 
-            \frac{1}{n}\sum_{i=1}^n x_i^t x_i +  \frac{1}{n}\sum_{j=1}^n x_j^t x_j\\
-            &= 
-            \frac{2}{n}\sum_{i=1}^n x_i^t x_i\\
-        \end{aligned}
-    \end{equation*}
-
-    Now the expression can be completed
-    \begin{equation*}
-        \begin{aligned}
-            x_i^t x_j
-            &=
-            \frac{1}{2} \left[ \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - d_{ij}^2 + \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n d_{ij}^2 \right]\\
-        \end{aligned}
-    \end{equation*}
-
-    This computation can be expressed in matrix form to simplify the formula.
-    First define
-
-    \[
-        b_{ij} = x_i^t x_j
-        \hspace{1cm}
-        e =
-        \begin{bmatrix}
-            1\\
-            \vdots\\
-            1
-        \end{bmatrix}_{nx1}
-        \hspace{1cm}
-        a_{ij} = -\frac{1}{2} d_{ij}^2
-    \]
-
-    Now a matrix $B$ can be defined as
-
-    \begin{equation*}
-        B = H A H \quad \text{where} \quad H = I - \frac{1}{n} e e^t
-    \end{equation*}
-
-    This formula gives a way to compute all the dot products between the points
-    that makes up the matrix $X$. Because of this the matrix $B$ can also
-    be expressed as
-
-    \begin{equation*}
-        B = X^tX
-    \end{equation*}
-
-    Now, as shown in section \ref{orthogonal}, $B$ can be decomposed using the
-    spectral decomposition. And by doing that the problem can be solved as follows
-
-    \begin{equation*}
-        \begin{aligned}
-            B &= V \Sigma V^t\\
-              &= V \Sigma^{1/2} \Sigma^{1/2} V^t\\
-              &= V \Sigma^{1/2} \Sigma^{1/2} V^t\\
-              &= X^t X\\
-            X & = \Sigma^{1/2} V^t
-        \end{aligned}
-    \end{equation*}
-
-    Which gives a way to compute all the points of the matrix $X$.
-
-    \section{Mds optimization problem}
+    space. The goal of this part is to find a distance matrix in a low
+    dimensional space that is as similar as possible to the multidimensional one.
+    This means that the problem can be expressed in mathematical terms as the
+    following optimization problem
 
     \begin{equation*}
         \begin{aligned}
@@ -243,20 +57,21 @@
         \end{aligned}
     \end{equation*}\\
 
-    if $d_{ij}^{(x)}$ es euclidean, then $d_{ij}^{(x)} = x_i^t x_j$, and hence
+    Since each entry of the matrix $D^x$ can be expressed as
+    $d_{ij}^{(x)} = x_i^t x_j$, the problem can be rewritten
 
     \begin{equation*}
         \underset{y}{\text{min}} \sum_{i=1}^n \sum_{j=1}^n ( x_i^t x_j - y_i^t y_j )^2 \\
     \end{equation*}
 
-    or in matrix form
+    For simplicity it can also be expressed in terms of matrix opperations
 
     \begin{equation*}
         \underset{Y}{\text{min}} \quad \lVert X^t X - Y^t Y \rVert^2 \\
     \end{equation*}
 
-    As shown in section \ref{norm_trace}, the norm of a matrix can be transformed
-    to a trace, so the problem can be redefined as
+    In section \ref{norm_trace}, it was shown that the norm of a matrix can be
+    transformed to a trace, so the problem can be redefined once again
 
     \begin{equation*}
         \begin{aligned}
@@ -267,9 +82,9 @@
             &=
             \underset{Y}{\text{min}} \quad Tr(A^tA) \\
         \end{aligned}
-    \end{equation*}\\
+    \end{equation*}
 
-    Now
+    Now, if the transpose of the matrix $A$ is considered, the result would be
 
     \begin{equation*}
         \begin{aligned}
@@ -280,7 +95,7 @@
         \end{aligned}
     \end{equation*}
 
-    Which means that $A^tA = AA = A^2$, and hence
+    which means that $A^tA = AA = A^2$, and hence
 
     \begin{equation*}
         \begin{aligned}
@@ -290,16 +105,16 @@
             &=
             \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
         \end{aligned}
-    \end{equation*}\\
+    \end{equation*}
 
-    now as shown in section \ref{spectral_decomp}, $X^tX$ and $Y^tY$ can be
+    In section \ref{spectral_decomp}, it was shown that $X^tX$ and $Y^tY$ can be
     expresed as
 
     \begin{equation*}
         X^tX = V\Lambda V^t \hspace{1cm} Y^tY = Q \hat{\Lambda} Q^t
     \end{equation*}
 
-    Then
+    Then, the problem can be transformed
 
     \begin{equation*}
         \underset{Y}{\text{min}} \quad Tr[(X^tX - Y^tY)^2]
@@ -307,7 +122,8 @@
         \underset{Q,\hat{\Lambda}}{\text{min}} \quad Tr[(V\Lambda V^t - Q \hat{\Lambda} Q^t)^2]
     \end{equation*}
 
-    We know that $V^tV = I = VV^t$, then using the proof presented in section \ref{circular_trace}
+    Now, since $V^tV = I = VV^t$, then using the proof presented in section
+    \ref{circular_trace} the following propertie can be deducted
 
     \begin{equation*}
         \begin{aligned}
@@ -319,11 +135,12 @@
                           &= Tr[AA]\\
                           &= Tr[A^2]\\
         \end{aligned}
-    \end{equation*}\\
+    \end{equation*}
 
     Which implies that
 
     \begin{equation*}
+            \hspace{-1cm}
         \begin{aligned}
             Tr[(V^tAV)^2] &= Tr[A^2]\\
             Tr[(V^t(V\Lambda V^t - Q \hat{\Lambda} Q^t)V)^2] &= Tr[(V\Lambda V^t - Q \hat{\Lambda} Q^t)^2]\\
@@ -333,45 +150,51 @@
         \end{aligned}
     \end{equation*}
 
-    Now
+    At this point, a new matrix $G$ can be defined to simplify the expression
 
     \begin{equation*}
         \begin{aligned}
             G &= V^tQ\\
             Tr[(\Lambda - V^tQ \hat{\Lambda} Q^tV)^2] &= Tr[(\Lambda - G \hat{\Lambda} G^t)^2]\\
         \end{aligned}
-    \end{equation*}\\
+    \end{equation*}
 
-    Which means that the problem can be redefined one more time
+    Hence the problem can be redefined one more time
 
     \begin{equation*}
+        \hspace{-0.5cm}
         \begin{aligned}
         \underset{Q,\hat{\Lambda}}{\text{min}} \quad Tr[(V\Lambda V^t - Q \hat{\Lambda} Q^t)^2]
         &=
         \underset{G,\hat{\Lambda}}{\text{min}} \quad Tr[(\Lambda - G \hat{\Lambda} G^t)^2]
         \end{aligned}
-    \end{equation*}\\
+    \end{equation*}
 
-    Now
+    Now, using that knowledge, the main expression can be expanded
 
     \begin{equation*}
         \begin{aligned}
         Tr[(\Lambda - G \hat{\Lambda} G^t)^2]
         &=
         Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + (G \hat{\Lambda} G^t)^2]\\
-        &=
-        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} G^t G \hat{\Lambda} G^t]\\
+        =
+        &Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} G^t G \hat{\Lambda} G^t]\\
         \end{aligned}
     \end{equation*}
 
-    But (Knowing that $Q^tQ = I = QQ^t$)
+    But, knowing that $Q^tQ = I = QQ^t$, the following properties can be developed
 
     \begin{equation*}
         \begin{aligned}
             G^tG &= (V^tQ)^t V^tQ\\
                  &= (Q^tV) V^tQ\\
                  &= Q^tQ\\
-                 &= I\\ \\
+                 &= I
+        \end{aligned}
+    \end{equation*}
+
+    \begin{equation*}
+        \begin{aligned}
             GG^t &= V^tQ (V^tQ)^t\\
                  &= V^tQ (Q^tV)\\
                  &= V^tV\\
@@ -379,7 +202,7 @@
         \end{aligned}
     \end{equation*}
 
-    Hence
+    So, the following transformations can be made to the problem
 
     \begin{equation*}
         \begin{aligned}
@@ -399,13 +222,15 @@
         \end{aligned}
     \end{equation*}
 
-    \subsection{Dark part}
+    Which takes us to the \textbf{DARK PART!}\\
 
     We know that $\frac{\delta Tr[\Lambda G \hat{\Lambda} G^t]}{\delta G} = 2\Lambda G \hat{\Lambda}$\\\\
     We also know that $\frac{\delta Tr(\Lambda^2)}{\delta G} = 0 = \frac{\delta Tr(\hat{\Lambda}^2)}{\delta G}$\\\\
-    Finally we know that the answer for a fixed $\hat{\Lambda}$ is $G=I$\\ \\
+    Finally we know that the answer for a fixed $\hat{\Lambda}$ is $G=I$\\
 
-    Which implies that
+    \textbf{END OF DARK PART}\\
+
+    This result implies that
 
     \begin{equation*}
         \begin{aligned}
@@ -416,7 +241,8 @@
         \end{aligned}
     \end{equation*}
 
-    Now, coming back to the original problem
+    Now, coming back to the original problem this information can be used to
+    simplify the objective function
 
     \begin{equation*}
         \begin{aligned}
@@ -426,8 +252,9 @@
         \end{aligned}
     \end{equation*}
 
-    So we can take the first $p$ eigenvalues of $\Lambda$ to define $\hat{\Lambda}$,
-    and finally
+    To minimize the resulting expression, the first $p$ eigenvalues of $\Lambda$
+    can be used to define $\hat{\Lambda}$. And finally the solution to the
+    problem can be found by the following procedure
 
     \begin{equation*}
         \begin{aligned}
@@ -439,9 +266,259 @@
         \end{aligned}
     \end{equation*}
 
-    which implies that $Y = \hat{\Lambda}^{1/2} V^t$
+    which implies that $Y = \hat{\Lambda}^{1/2} V^t$.
 
-    \section{Miscellaneous proofs}
+    \vspace{0.25cm}
+
+    This method gives a way to find a matrix $D$ that encodes the distances
+    between points that are in a low dimensional space. Now a procedure that
+    takes a distance matrix as input and finds a corresponding configuration
+    of points is described. The distance matrix is defined as follows
+
+    \[
+        D =
+        \begin{bmatrix}
+            d_{11}^2 & \cdots & d_{1n}^2\\
+            \vdots   & \ddots & \vdots  \\
+            d_{n1}^2 & \ddots & d_{nn}^2\\
+        \end{bmatrix}_{n x n}
+    \]
+
+    where
+
+    \begin{equation*}
+        d_{ij}^2 = (x_{i1}-x_{j1})^2 - (x_{i2}-x_{j2})^2 \cdots (x_{id}-x_{jd})^2
+    \end{equation*}
+
+    The unknown of this problem is a matrix $X$ that cotains the position of the
+    $n$ points in the $d$ dimensional space.
+
+    \[
+        X =
+        \begin{bmatrix}
+            x_{11} & \cdots & x_{1n}\\
+            \vdots & \ddots & \vdots\\
+            x_{d1} & \ddots & x_{dn}\\
+        \end{bmatrix}_{d x n}
+    \]
+
+    But there is a restriction to make sure that the matrix is centered at 0 and
+    avoid indeterminations due to the fact that any point can be choosed as center.
+
+    \begin{equation*}
+        \sum_{i=1}^n x_{is} = 0 \quad with \quad s = 1, \cdots, d
+    \end{equation*}
+
+    the first step to solve the problem is rewrite each entry of matrix $D$ in
+    a vector form
+
+    \begin{equation*}
+        d_{ij}^2 = (x_i-x_j)^t (x_i-x_j)
+    \end{equation*}
+
+    Then, each component $d_{ij}^2$ can be expanded as follows
+
+    \begin{equation*}
+        \begin{aligned}
+            (x_i-x_j)^t (x_i-x_j) &= (x_i^t-x_j^t) (x_i-x_j)\\
+                                  &= x_i^t x_i - x_i^t x_j - x_j^t x_i + x_j^t x_j\\
+                         d_{ij}^2 &= x_i^t x_i - 2 x_i^t x_j + x_j^t x_j\\
+        \end{aligned}
+    \end{equation*}
+
+    The goal is to express all the dot products of $x$ vectors in terms of the
+    $d_{ij}^2$ distances. To achieve this goal, consider the following expression
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{n} \sum_{i=1}^n d_{ij}^2 &= \frac{1}{n} \sum_{i=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
+            &=  \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + \frac{1}{n} \sum_{i=1}^n x_j^t x_j\\
+            &=  \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2}{n} \sum_{i=1}^n x_i^t x_j + \frac{n}{n} x_j^t x_j \\
+        \end{aligned}
+    \end{equation*}
+
+    But, using the restriction, one term can be canceled
+
+    \begin{equation*}
+        \begin{aligned}
+              \sum_{i=1}^n x_{is} &= 0 \quad with \quad s = 1, \cdots, d\\
+            \sum_{i=1}^n x_i^t x_j &= \sum_{i=1}^n \sum_{r=1}^d x_{ir} x_{jr}\\
+                                   &= \sum_{r=1}^d \sum_{i=1}^n x_{ir} x_{jr}\\
+                                   &= \sum_{r=1}^d x_{jr} \sum_{i=1}^n x_{ir}\\
+                                   &= \sum_{r=1}^d x_{jr} 0\\
+                                   &= 0\\
+        \end{aligned}
+    \end{equation*}
+
+    Hence
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{n} \sum_{i=1}^n d_{ij}^2
+            &=
+            \frac{1}{n} \sum_{i=1}^n x_i^t x_i - \frac{2(0)}{n} + x_j^t x_j\\
+            &=
+            \frac{1}{n} \sum_{i=1}^n x_i^t x_i + x_j^t x_j\\
+            x_j^t x_j &= \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i
+        \end{aligned}
+    \end{equation*}
+
+    Now in the other hand, the sum over $j$ would be
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{n} \sum_{j=1}^n d_{ij}^2
+            &=
+            \frac{1}{n} \sum_{j=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
+            &=
+            x_i^t x_i + \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
+            x_i^t x_i &= \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
+        \end{aligned}
+    \end{equation*}
+
+    Finally, the first approximation to the solution of the problem can be
+    constructed
+
+    \begin{equation*}
+        \begin{aligned}
+            d_{ij}^2 &= x_i^t x_i - 2 x_i^t x_j + x_j^t x_j\\
+            2 x_i^t x_j &= x_i^t x_i - d_{ij}^2 + x_j^t x_j\\
+            x_i^t x_j &= \frac{1}{2} (x_i^t x_i - d_{ij}^2 + x_j^t x_j)\\
+            \text{where}\\
+            x_i^t x_i &= \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n} \sum_{j=1}^n x_j^t x_j\\
+            x_j^t x_j &= \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{1}{n} \sum_{i=1}^n x_i^t x_i
+        \end{aligned}
+    \end{equation*}
+
+    But this expression has a term that can be treated as duplicated, so the
+    following propertie can be applied to simplify the expression
+
+    \begin{equation*}
+        \begin{aligned}
+            \sum_{i=1}^n x_i^t x_i &= \sum_{j=1}^n x_j^t x_j\\
+            x_i^t x_j =
+            \frac{1}{2} \Bigg [ \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - d_{ij}^2 + &\frac{1}{n} \sum_{i=1}^n d_{ij}^2 - \frac{2}{n} \sum_{i=1}^n x_i^t x_i \Bigg ]\\
+        \end{aligned}
+    \end{equation*}
+
+    This is almost expressed in terms of the distances, the only problem is the
+    last term. To express that part consider the following expression
+
+    \begin{equation*}
+        \begin{aligned}
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n d_{ij}^2
+            &=
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n [x_i^t x_i - 2 x_i^t x_j + x_j^t x_j]\\
+            &=
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i - \frac{2(0)}{n^2} +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            &=
+            \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n x_i^t x_i +  \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^nx_j^t x_j\\
+            &=
+            \frac{n}{n^2}\sum_{i=1}^n x_i^t x_i +  \frac{n}{n^2}\sum_{j=1}^n x_j^t x_j\\
+            &=
+            \frac{1}{n}\sum_{i=1}^n x_i^t x_i +  \frac{1}{n}\sum_{j=1}^n x_j^t x_j\\
+            &=
+            \frac{2}{n}\sum_{i=1}^n x_i^t x_i\\
+        \end{aligned}
+    \end{equation*}
+
+    Now the goal is completed, and the dot product between the $X$ components
+    can be expressed in terms of distance operations
+
+    \begin{equation*}
+        \begin{aligned}
+            x_i^t x_j
+            &=
+            \frac{1}{2} \left[ \frac{1}{n} \sum_{i=1}^n d_{ij}^2 - d_{ij}^2 + \frac{1}{n} \sum_{j=1}^n d_{ij}^2 - \frac{1}{n^2}\sum_{i=1}^n \sum_{j=1}^n d_{ij}^2 \right]\\
+        \end{aligned}
+    \end{equation*}
+
+    This computation can also be expressed in matrix form to simplify the formula.
+    First the following definitions must take place
+
+    \[
+        b_{ij} = x_i^t x_j
+        \hspace{1cm}
+        e =
+        \begin{bmatrix}
+            1\\
+            \vdots\\
+            1
+        \end{bmatrix}_{nx1}
+        \hspace{1cm}
+        a_{ij} = -\frac{1}{2} d_{ij}^2
+    \]
+
+    Then, a matrix $B$ can be defined as
+
+    \begin{equation*}
+        B = H A H \quad \text{where} \quad H = I - \frac{1}{n} e e^t
+    \end{equation*}
+
+    This formula gives a way to compute all the dot products between the points
+    that makes up the matrix $X$. Because of this, the matrix $B$ can also
+    be expressed as
+
+    \begin{equation*}
+        B = X^tX
+    \end{equation*}
+
+    Now, as shown in section \ref{orthogonal}, $B$ can be decomposed using the
+    spectral decomposition. And by doing that the problem can be solved as follows
+
+    \begin{equation*}
+        \begin{aligned}
+            B &= V \Sigma V^t\\
+              &= V \Sigma^{1/2} \Sigma^{1/2} V^t\\
+              &= V \Sigma^{1/2} \Sigma^{1/2} V^t\\
+              &= X^t X\\
+            X & = \Sigma^{1/2} V^t
+        \end{aligned}
+    \end{equation*}
+
+    Which gives a way to compute all the points of the matrix $X$ finding a low
+    dimensional representation of the original dataset.
+
+\section{Algorithm implementation}
+
+\begin{algorithm}
+    $n$ = number of points\\
+    $p$ = output dimensions\\
+    $k$ = number of neighbors\\
+    \vspace{0.5cm}
+    $D_e$ = compute\_euclidean\_distance(data)\\
+    $G$ = zeros($n$) //graph adjacency matrix\\
+    \vspace{0.5cm}
+    \For{i in 1:n}{
+        $x_i$ = data($i$)\\
+        $k_i$ = get\_nearest\_neighbors($x_i$, $k$)\\
+        $G(i,k_i)$ = $D_e$($i$, $k_i$)\\
+        $G(k_i,i)$ = $D_e$($i$, $k_i$)\\
+    }
+    \vspace{0.5cm}
+    $H$ = $I - \frac{1}{n} e e^t$\\
+    $D^x$ = compute\_distances($G$)\\
+    $A$ = -$\frac{1}{2}$ pow\_elementwise($D^x$,2)\\
+    $B$ = $HAH$\\
+    $V$ = get\_eigenvectors($B$)\\
+    $\Lambda$ = get\_eigenvalues($B$)\\
+    $V$, $\Lambda$ = select\_smallers($p$, $V$, $\Lambda$)\\
+    $Y$ = $\Lambda^{1/2} V^t$
+
+    \vspace{0.5cm}
+
+    \caption{Computation of low dimensional representation}
+    \label{alg1}
+\end{algorithm}
+
+\cite{matlab}
+
+\section{Results}
+
+\section{Conclusions}
+
+
+    \section{Apendix}
 
     \subsection{Proof of the relationship between the norm and the trace} \label{norm_trace}
 
@@ -453,13 +530,13 @@
         \end{aligned}
     \end{equation*}\\
 
-    Concider a matrix B that is computed as $A^tA$
+    Consider a matrix B that is computed as $A^tA$
 
     \begin{equation*}
         B = A^tA
     \end{equation*}
 
-    Then an element of B can be computed as
+    Then, an element of B can be computed as
 
     \begin{equation*}
         B_{ij} = \sum_{k=1}^n A_{ik}^t A_{kj} = \sum_{k=1}^n A_{ki} A_{kj} = (A^tA)_{ij}
@@ -520,8 +597,8 @@
 
     \subsection{Relationship between transpose and inverse of an othogonal matrix}
     \label{orthogonal}
-    
-    Consider an orthogonal matrix $Q$, 
+
+    Consider an orthogonal matrix $Q$,
 
     \[
         Q =
@@ -535,10 +612,10 @@
     Since is orthogonal the following expression holds
 
     \[
-        q_i q_j = 
-        \begin{cases} 
+        q_i q_j =
+        \begin{cases}
            0 & i \neq j \\
-           \lVert q_i \rVert & i = j 
+           \lVert q_i \rVert & i = j
         \end{cases}
     \]
 
@@ -601,7 +678,7 @@
     If $\mu$ is replaced with $S$ the result would be
 
     \[
-        A S = A 
+        A S = A
         \begin{bmatrix}
               |   &        &   |  \\
             \mu_1 & \cdots & \mu_n\\
@@ -668,10 +745,7 @@
         A = S \Lambda S^t
     \end{equation*}
 
-\section{Algorithm implementation}
-
-\section{Results}
-
-\section{Conclusions}
+\bibliographystyle{unsrt}
+\bibliography{Article_mds}
 
 \end{document}
