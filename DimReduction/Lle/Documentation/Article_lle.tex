@@ -14,9 +14,9 @@
 \maketitle
 
 \begin{abstract}
-    This work presents a detailed implementation of the local linear embeding algorithm
-    from both a theoretical and practical approximation. In this work the
-    dimensionality reduction is achieved by a two step procedure. First a
+    This work presents a detailed implementation of the local linear embeding
+    algorithm from both a theoretical and practical approximation. In this work
+    the dimensionality reduction is achieved by a two step procedure. First a
     weighted data representation based in $K$ nearest neighbors is calculated,
     and then a minimization of distance between the data representation and a
     low dimensionality configuration is conducted. Finally the resulting
@@ -516,7 +516,16 @@ as a 2 dimensional configuration of points.
 
 \section{Conclusions}
 
-In this work
+In this work a theorical and practical develop of the local linear embeding
+algorithm was described. During the process it was found that althought the
+problems started with a quite complicated setup, the development of the problem
+allowed to generate great simplifications that reduced the original problem to
+just solve a linear system of equations and an eigenvector problem. These
+simplifications made possible the creation of a relatively simple algorithm that
+can detect low dimensional manifolds in multidimensional spaces. This statement
+is supported in the results section where 3 dimensional manifolds were
+simplified to dimension 2 but preserving the intrinsic structure of the original
+dataset.
 
 \bibliographystyle{unsrt}
 \bibliography{Article_lle}
