@@ -1,12 +1,12 @@
 rng(10); 
 colordef white;
  
-n = 1000;
-[x y z] = build_swiss_roll(n);
+n = 1500;
+[x y z] = build_s_curve(n);
 data = [x y z];
 
 colors = get_cuadrant_colors(x,z);
-plot_swiss_roll(x,y,z, colors, [-15 15]);
+plot_swiss_roll(x,y,z, colors, [-2 2]);
 
 k = 14;
 p = 2;
@@ -33,6 +33,5 @@ B = H * A * H;
 L_half = sqrt(L);
 Y_full = V * L_half;
 Y = Y_full(:,1:p);
-size(colors)
 
-plot_swiss_roll(Y(:,1),Y(:,1),zeros(n,1), colors, [-45 60])
+plot_swiss_roll(Y(:,1),Y(:,1),zeros(n,1), colors, [-6 6])
