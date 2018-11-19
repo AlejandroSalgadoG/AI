@@ -16,7 +16,7 @@
 \begin{abstract}
     This work presents an theorical and practical approximation to the problem
     of non-linear dimensionality reduction using the multidimensional scaling
-    method and provide an algorithmic implementation easy and understandable. In
+    method and provides an algorithmic implementation easy and understandable. In
     this approach a distance matrix $D^x$ is constructed to approximate the
     distance over a manifold by solving shortest path problems over a graph that
     represents a multidimensional structure. This matrix is used as input to the
@@ -36,7 +36,7 @@ a set of degrees of freedom that econde most of the dataset variability
 
 Some of the approximations in these types of methods assume that the data that
 is being analyzed does not exploit all the dimensionality of the space where
-is defined. Due to this fact, another description of the goal that the
+it is defined. Due to this fact, another description of the goal that the
 dimensionality reduction techniques have is related to find a meaningful low
 dimensional structure that is hidden in a multidimensional structure.
 \cite{dimension}
@@ -46,7 +46,7 @@ dimensional structure that is hidden in a multidimensional structure.
 A clear example of these type of methods are manifold learning techniques. These
 approximations search for a way to perform a non linear dimensionality reduction,
 which means that they do not assume that the structure of the original dataset
-is encoded based on euclidean distance meassuares. Instead these algorithms try
+is encoded based on euclidean distance meassures. Instead these algorithms try
 to express their relationships in terms of geodesic distances, which are
 distances meassured over the manifold surface. The result of this intend is
 to preserve the intrinsic structure of the data when the reduction is perfomed,
@@ -68,7 +68,7 @@ representation of the original dataset.
 This work aims to develop the theorical and practical aspects of the method
 described above, with the objective of build a method that can reduce a
 multidimensional manifold to a low dimensional representation. To achieve this
-in the first part of the work a theorical framework is developed, in order to
+in the first part of the work a theorical framework is developed in order to
 understand all the aspects of the method. Then an implementation section will
 take place, followed by a result section. Later, some conclusions are
 pressented and finally an apendix is added to present some proofs of the
@@ -78,7 +78,7 @@ steps that are used in the theorical framework.
 
     As mentioned before, one of the goals of this work is to create a theorical
     development of the multidimensional scaling algorithm. This section shows a
-    detail explanation of the therical aspects of the method taking \cite{proof}
+    detail explanation of the theorical aspects of the method taking \cite{proof}
     as base point.
 
     \vspace{0.5cm}
@@ -210,65 +210,69 @@ steps that are used in the theorical framework.
         \end{aligned}
     \end{equation*}
 
-    Now, using that knowledge, the main expression can be expanded
+    Now, since this is a quadratic expression, a minimum can be found by making
+    $\Lambda$ as close as possible to $G \hat{\Lambda} G^t$. Then $G$ must be
+    an identity matrix.\\ 
 
-    \begin{equation*}
-        \begin{aligned}
-        Tr[(\Lambda - G \hat{\Lambda} G^t)^2]
-        &=
-        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + (G \hat{\Lambda} G^t)^2]\\
-        =
-        &Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} G^t G \hat{\Lambda} G^t]\\
-        \end{aligned}
-    \end{equation*}
-
-    But, knowing that $Q^tQ = I = QQ^t$, the following properties can be developed
-
-    \begin{equation*}
-        \begin{aligned}
-            G^tG &= (V^tQ)^t V^tQ\\
-                 &= (Q^tV) V^tQ\\
-                 &= Q^tQ\\
-                 &= I
-        \end{aligned}
-    \end{equation*}
-
-    \begin{equation*}
-        \begin{aligned}
-            GG^t &= V^tQ (V^tQ)^t\\
-                 &= V^tQ (Q^tV)\\
-                 &= V^tV\\
-                 &= I\\ \\
-        \end{aligned}
-    \end{equation*}
-
-    So, the following transformations can be made to the problem
-
-    \begin{equation*}
-        \begin{aligned}
-        Tr[(\Lambda - G \hat{\Lambda} G^t G)^2 ]
-        &=
-        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} \hat{\Lambda} G^t]\\
-        =
-        Tr[&\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda}^2 G^t]\\
-        =
-        Tr[&\Lambda^2]- 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[G \hat{\Lambda}^2 G^t]\\
-        =
-        Tr[&\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2 G^tG]\\
-        =
-        Tr[&\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2]\\
-        =
-        Tr[&\Lambda^2] + Tr[ \hat{\Lambda}^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t]\\
-        \end{aligned}
-    \end{equation*}
-
-    Which takes us to the \textbf{DARK PART!}\\
-
-    We know that $\frac{\delta Tr[\Lambda G \hat{\Lambda} G^t]}{\delta G} = 2\Lambda G \hat{\Lambda}$\\\\
-    We also know that $\frac{\delta Tr(\Lambda^2)}{\delta G} = 0 = \frac{\delta Tr(\hat{\Lambda}^2)}{\delta G}$\\\\
-    Finally we know that the answer for a fixed $\hat{\Lambda}$ is $G=I$\\
-
-    \textbf{END OF DARK PART}\\
+%    Now, using that knowledge, the main expression can be expanded
+%
+%    \begin{equation*}
+%        \begin{aligned}
+%        Tr[(\Lambda - G \hat{\Lambda} G^t)^2]
+%        &=
+%        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + (G \hat{\Lambda} G^t)^2]\\
+%        =
+%        &Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} G^t G \hat{\Lambda} G^t]\\
+%        \end{aligned}
+%    \end{equation*}
+%
+%    But, knowing that $Q^tQ = I = QQ^t$, the following properties can be developed
+%
+%    \begin{equation*}
+%        \begin{aligned}
+%            G^tG &= (V^tQ)^t V^tQ\\
+%                 &= (Q^tV) V^tQ\\
+%                 &= Q^tQ\\
+%                 &= I
+%        \end{aligned}
+%    \end{equation*}
+%
+%    \begin{equation*}
+%        \begin{aligned}
+%            GG^t &= V^tQ (V^tQ)^t\\
+%                 &= V^tQ (Q^tV)\\
+%                 &= V^tV\\
+%                 &= I\\ \\
+%        \end{aligned}
+%    \end{equation*}
+%
+%    So, the following transformations can be made to the problem
+%
+%    \begin{equation*}
+%        \begin{aligned}
+%        Tr[(\Lambda - G \hat{\Lambda} G^t G)^2 ]
+%        &=
+%        Tr[\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda} \hat{\Lambda} G^t]\\
+%        =
+%        Tr[&\Lambda^2 - 2 \Lambda G \hat{\Lambda} G^t + G \hat{\Lambda}^2 G^t]\\
+%        =
+%        Tr[&\Lambda^2]- 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[G \hat{\Lambda}^2 G^t]\\
+%        =
+%        Tr[&\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2 G^tG]\\
+%        =
+%        Tr[&\Lambda^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t] + Tr[ \hat{\Lambda}^2]\\
+%        =
+%        Tr[&\Lambda^2] + Tr[ \hat{\Lambda}^2] - 2 Tr[\Lambda G \hat{\Lambda} G^t]\\
+%        \end{aligned}
+%    \end{equation*}
+%
+%    Which takes us to the \textbf{DARK PART!}\\
+%
+%    We know that $\frac{\delta Tr[\Lambda G \hat{\Lambda} G^t]}{\delta G} = 2\Lambda G \hat{\Lambda}$\\\\
+%    We also know that $\frac{\delta Tr(\Lambda^2)}{\delta G} = 0 = \frac{\delta Tr(\hat{\Lambda}^2)}{\delta G}$\\\\
+%    Finally we know that the answer for a fixed $\hat{\Lambda}$ is $G=I$\\
+%
+%    \textbf{END OF DARK PART}\\
 
     This result implies that
 
@@ -293,7 +297,7 @@ steps that are used in the theorical framework.
     \end{equation*}
 
     To minimize the resulting expression, the first $p$ eigenvalues of $\Lambda$
-    can be used to define $\hat{\Lambda}$. And finally the solution to the
+    can be used to define $\hat{\Lambda}$. Finally, the solution to the
     problem can be found by the following procedure
 
     \begin{equation*}
@@ -306,7 +310,7 @@ steps that are used in the theorical framework.
         \end{aligned}
     \end{equation*}
 
-    which implies that $Y = \hat{\Lambda}^{1/2} V^t$. Which solves the problem.
+    which implies that $Y = \hat{\Lambda}^{1/2} V^t$. And that solves the problem.
 
     \vspace{0.25cm}
 
@@ -353,7 +357,7 @@ steps that are used in the theorical framework.
         \sum_{i=1}^n x_{is} = 0 \quad with \quad s = 1, \cdots, d
     \end{equation*}
 
-    To solve the problem the first step is rewrite each entry of matrix $D$ in
+    To solve this problem the first step is rewrite each entry of matrix $D$ in
     a vector form
 
     \begin{equation*}
@@ -590,50 +594,53 @@ The method described in the previuos section was tested with 3 dimensional
 manifolds in order to allow the visualization of the intial manifold and be able
 to compare the quality of the resulting solution. Figure \ref{swiss} shows
 a swiss roll dataset that was used as the multidimensional manifold. Figure
-\ref{swiss_res} shows the result of the devolped method. Finally in Figure
-\ref{s_curve} there is a s curve dataset and Figure \ref{s_curve_res} shows its
+\ref{swiss_res} shows the result of the devolped method. Finally in Figure       
+\ref{s_curve} there is a s curve dataset and Figure \ref{s_curve_res} shows its  
 corresponding simplified output.
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{images/swiss_roll.png}
+    \includegraphics[width=0.7\linewidth]{images/swiss_roll.png}
     \caption{Swiss roll dataset}
     \label{swiss}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=0.9\linewidth]{images/swiss_roll_result.png}
+    \includegraphics[width=0.6\linewidth]{images/swiss_roll_result.png}
     \caption{Swiss roll dataset reduced}
     \label{swiss_res}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{images/s_curve.png}
-    \caption{S curve dataset}
-    \label{s_curve}
-\end{figure}
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=0.9\linewidth]{images/s_curve_result.png}
-    \caption{S curve dataset reduced}
-    \label{s_curve_res}
+\begin{figure}[H]                                                                
+    \centering                                                                   
+    \includegraphics[width=0.9\linewidth]{images/s_curve.png}                    
+    \caption{S curve dataset}                                                    
+    \label{s_curve}                                                              
+\end{figure}                                                                     
+                                                                                 
+\begin{figure}[H]                                                                
+    \centering                                                                   
+    \includegraphics[width=0.9\linewidth]{images/s_curve_result.png}             
+    \caption{S curve dataset reduced}                                            
+    \label{s_curve_res}                                                          
 \end{figure}
 
 \section{Conclusions}
 
 In this work a theorical and practical development of the multidimensional
-scaling method was permed. During the process it was found that what seemed like
+scaling method was conducted. During the process it was found that what seemed like
 a fairly complicated problem, can be simplified to simple matrix operations
 with the help of some concepts from linear algebra. Thanks to that theorical
 framework, the construction of a relatively simple algorithm that can detect
-low dimensional manifolds embedded in multidimensional spaces was possible.
-Finally the results shown that this technique has the ability to make
+low dimensional manifolds embedded in multidimensional spaces became possible.
+The results shown that this technique has the ability to make
 contributions to the analysis proces of multidimensional datasets by
-simplifying its features but preserving the intrinsic structure.
-
+simplifying its features but preserving the intrinsic structure. Finally, as
+future work, this method can be improved by creating new ways to compute the
+matrix $D^x$. It would be interesting to implement this method using GPU
+computations to improve its performance and use it as a mechanism of
+data preprocessing in machine learning algorithms.
 
 \section{Apendix}
 
@@ -773,7 +780,7 @@ simplifying its features but preserving the intrinsic structure.
         Q^t Q = I
     \end{equation*}
 
-    And if $Q$ is also sqare, then
+    And if $Q$ is also square, then
 
     \begin{equation*}
         Q^t = Q^{-1}
@@ -841,7 +848,7 @@ simplifying its features but preserving the intrinsic structure.
         \end{bmatrix}\\
     \]
 
-    So, if a new matrix $\Lambda$ is define as a diagonal matrix that contains
+    So, if a new matrix $\Lambda$ is defined as a diagonal matrix that contains
     the eigenvalues of $A$, then the computation can be expressed as
 
     \begin{equation*}
