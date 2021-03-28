@@ -1,15 +1,22 @@
-import alsaaudio
+import wave
+import pyaudio
 
-filename = "output.dat"
-device = "default:CARD=PCH"
+filename = 'output.wav'
 
-f = open(filename, 'rb')
+chunk = 1024 
+fs = 44100
+seconds = 3
+n_frames = int(fs / chunk * seconds) 
+data_size = n_frames * chunk
+sample_format = pyaudio.paInt16  # 16 bits per sample
 
-out = alsaaudio.PCM(alsaaudio.PCM_PLAYBACK, 
-                    channels=1, rate=44100, format=alsaaudio.PCM_FORMAT_S16_LE,
-                    periodsize=160, device=device)
+audio = pyaudio.PyAudio()
+stream = audio.open(format = sample_format, channels = 1, rate = fs, output = True)
 
-data = f.read(320)
-while data:
-    out.write(data)
-    data = f.read(320)
+wf = wave.open(filename, 'rb')
+for i in range(n_frames):
+    data = wf.readframes(chunk)
+    stream.write(data)
+
+stream.close()
+audio.terminate()
