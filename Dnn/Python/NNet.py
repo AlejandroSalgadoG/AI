@@ -3,8 +3,8 @@ import numpy as np
 # Ejemplo de una red neuronal simple
 # https://mattmazur.com/2015/03/17/a-step-by-step-backpropagation-example/
 
-from Functions import sigmoid, d_sigmoid, mse, d_mse, add_bias # importar las funciones con sus respectivas derivadas
-                                                               # add_bias esta explicado en el archivo de funciones
+from Functions import *
+
 class NNet:
     # Este es el constructor de la clase, recibe una lista que contenga el numero
     # de neuronas que se quieren en cada capa sin tener en cuenta el bias.
@@ -68,9 +68,8 @@ class NNet:
     # de data como entrada. Por ultimo, eta es un numero que indica la tasa
     # de aprendizaje de la red
     def train(self, data, label, weights, eta):
-        updates = np.zeros_like(weights) # crea un arreglo con las mismas dimensiones
-                                         # de los pesos para guardar las actualizaciones
-                                         # que se deben hacer en cada paso
+        updates = [[]] * self.n_layers # crea un arreglo con las misma cantidad de capas que los pesos para guardar
+                                       # actualizaciones que se deben hacer en cada paso
 
         y_bar, inter_data = self.test_prediction(data, weights) # Aqui se puede ver que resultado esta sacando la red con la
                                                                 # entrada indicada en data y los pesos definidos en weights
@@ -131,7 +130,9 @@ class NNet:
             # sin la ultima posicion). Las transpuestas son para que la operacion matricial sea valida y el vector resultante sea de dimension
             # 1xN como el primer vector de error
 
-        return error, weights-updates # retorna el error calculado y los pesos actualizados
+        new_weights = [ weight - update for weight, update in zip( weights, updates ) ] # Realiza la actualizacion de pesos
+
+        return error, new_weights # retorna el error calculado y los pesos actualizados
 
     def init_random_weights(self, low=0, high=1):
-        return np.array([ np.random.uniform( low, high, size=(self.arch[i]+1, self.arch[i+1]) ) for i in range(self.n_layers) ])
+        return [ np.random.uniform( low, high, size=(self.arch[i]+1, self.arch[i+1]) ) for i in range(self.n_layers) ]
