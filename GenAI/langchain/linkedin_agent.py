@@ -5,6 +5,9 @@ from langchain_core.tools import Tool
 from langchain_ollama import ChatOllama
 
 
+from web_search_tool import get_profile_url_tavily
+
+
 def linkedin_lookup_agent(name: str) -> str:
     llm = ChatOllama(model="llama3.1")
 
@@ -15,7 +18,7 @@ def linkedin_lookup_agent(name: str) -> str:
     tools = [
         Tool(
             name="Crawl Google 4 linkedin profile page",
-            func="?",
+            func=get_profile_url_tavily,
             description="useful to get linkedin page URL",
         )
     ]
