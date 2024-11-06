@@ -2,6 +2,7 @@ from langchain_core.prompts import PromptTemplate
 from langchain_ollama import ChatOllama
 
 from linkedin_scraper import scrape_linkedin_profile
+from linkedin_agent import linkedin_lookup_agent
 
 if __name__ == "__main__":
     summary_template = """
@@ -15,7 +16,8 @@ if __name__ == "__main__":
 
     chain = prompt_template | llm
 
-    linkedin_data = scrape_linkedin_profile("https://www.linkedin.com/in/eden-marco")
+    linkedin_url = linkedin_lookup_agent(name="Eden Marco Udemy")
+    linkedin_data = scrape_linkedin_profile(linkedin_url)
     res = chain.invoke(input={"information": linkedin_data})
     print(res)
 
