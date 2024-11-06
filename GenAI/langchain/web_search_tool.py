@@ -1,3 +1,5 @@
+import re
+
 from langchain_community.tools.tavily_search import TavilySearchResults
 
 
@@ -22,3 +24,8 @@ def get_profile_url_tavily(name: str, mock: bool = True) -> dict[str, str]:
 
     search = TavilySearchResults()
     return search.run(name)
+
+def handle_tavily_response(response: str) -> str:
+    if match := re.search("https://www.linkedin.com/in/[a-z\-]+", response):
+        return match.group(0)
+    return "unable to find url in provided information"
