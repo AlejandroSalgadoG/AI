@@ -33,3 +33,8 @@ def linkedin_lookup_agent(name: str) -> str:
     )
 
     return result["output"]
+
+
+if __name__ == '__main__':
+    linkedin_url = linkedin_lookup_agent(name="Eden Marco Udemy")
+    print(linkedin_url)
