@@ -27,6 +27,7 @@ source venv/bin/activate
 ```
 ollama pull llama3.1
 ollama pull bakllava
+ollama pull llama3.2-vision
 ```
 
 ## Execution
@@ -35,4 +36,10 @@ To extract data from The Batch
 
 ```
 python populate_db.py
+```
+
+To execute Rag in headless mode
+
+```
+python rag.py "<query>"
 ```
