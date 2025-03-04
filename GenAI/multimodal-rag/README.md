@@ -14,6 +14,7 @@
 * langchain-text-splitters==0.3.6
 * langchain-chroma==0.2.2
 * beautifulsoup4==4.13.3
+* streamlit==1.42.2
 
 ## Setup
 
