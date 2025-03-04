@@ -28,3 +28,11 @@ source venv/bin/activate
 ollama pull llama3.1
 ollama pull bakllava
 ```
+
+## Execution
+
+To extract data from The Batch
+
+```
+python populate_db.py
+```
