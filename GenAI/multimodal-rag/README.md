@@ -12,6 +12,7 @@
 * langchain-text-splitters==0.3.6
 * langchain-community==0.3.18
 * langchain-text-splitters==0.3.6
+* langchain-chroma==0.2.2
 * beautifulsoup4==4.13.3
 
 ## Setup
