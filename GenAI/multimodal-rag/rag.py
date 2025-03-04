@@ -52,15 +52,22 @@ class RagLlm:
 
 class RagMultimodal:
     def __init__(self):
+        self.last_context = []
         self.chain = (
             {
-                "context": Storage().retriever | RunnableLambda(self.split_image_text_types),
+                "context": Storage().retriever
+                | RunnableLambda(self._save_context)
+                | RunnableLambda(self.split_image_text_types),
                 "question": RunnablePassthrough(),
             }
             | RunnableLambda(self.create_prompt)
             | ChatOllama(temperature=0, model="llama3.2-vision")
             | StrOutputParser()
         )
+
+    def _save_context(self, docs: list[bytes]) -> list[bytes]:
+        self.last_context = [doc.decode("utf-8") for doc in docs]
+        return docs
 
     def looks_like_base64(self, data: str) -> bool:
         return re.match("^[A-Za-z0-9+/]+[=]{0,2}$", data) is not None

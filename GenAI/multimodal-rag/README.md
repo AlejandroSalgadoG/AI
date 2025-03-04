@@ -15,6 +15,7 @@
 * langchain-chroma==0.2.2
 * beautifulsoup4==4.13.3
 * streamlit==1.42.2
+* deepeval==2.4.9
 
 ## Setup
 
