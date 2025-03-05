@@ -7,6 +7,7 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel, Field
 
 from definitions import RagDocument, RagDocumentList, WebData
+from logs import logger
 
 
 text_summary_prompt = """
@@ -28,6 +29,7 @@ class Summary(BaseModel):
 
 class TextSummarizer:
     def __init__(self):
+        logger.info("Initializing text summarizer")
         self.model = ChatOllama(temperature=0, model="llama3.1")
         self.summary_parser = PydanticOutputParser(pydantic_object=Summary)
         self.text_splitter = RecursiveCharacterTextSplitter(
@@ -43,8 +45,13 @@ class TextSummarizer:
         return summarize_chain.batch(text_chunks, {"max_concurrency": 5})
 
     def apply(self, web_data: WebData) -> RagDocumentList:
+        logger.info(f"Start to construct text summaries for {web_data.text.metadata["source"]}")
+
         text_chunks = self.text_splitter.split_text(web_data.text.get_data_with_title())
+        logger.info(f"Text divided in {len(text_chunks)} chunks")
+
         summaries = self.summarize(text_chunks) 
+        logger.info(f"Text summaries completed")
 
         return RagDocumentList(
             [

@@ -15,6 +15,7 @@ from langchain_community.document_loaders import WebBaseLoader
 from PIL import Image
 
 from definitions import WebData, WebImage, WebText
+from logs import logger
 
 
 def iter_dates(start_date: date, delta: timedelta, n: int) -> list[date]:
@@ -44,15 +45,23 @@ def get_articles_url(date: date) -> list[str]:
     date_str = date.strftime("%b-%d-%Y").lower()
     url = urljoin(base_url, "the-batch/tag/", date_str)
 
+    logger.info(f"Starting article retrival for date {date_str}")
+
     urls = []
     if response := get_request(url):
+        logger.info(f"Index acquired {url}")
+
         bs = BeautifulSoup(response.content, "html.parser")
         href_regex = re.compile("/the-batch/(?!tag|issue)")
 
         for article in bs.find_all("article"):
             if tag := article.find("a", href=href_regex):
                 url = urljoin(base_url, tag["href"])
+                logger.info(f"Article found at {url}")
                 urls.append(url)
+
+    if not urls:
+        logger.info("No articles found")
 
     return urls
 
@@ -96,6 +105,7 @@ class MultimodalWebLoader(WebBaseLoader):
         for img in header.find_all("img", src=src_regex):
             image_url = urljoin(base_url, img["src"])
             if response := get_request(image_url):
+                logger.info(f"Image found at {image_url}")
                 image = resize_image(response.content, size=(680, 385))
                 images.append(
                     WebImage(
@@ -103,6 +113,9 @@ class MultimodalWebLoader(WebBaseLoader):
                         metadata={"url": image_url, "description": img.get("alt")},
                     )
                 )
+
+        if not images:
+            logger.info(f"No images found")
 
         return images
 
@@ -115,13 +128,16 @@ class MultimodalWebLoader(WebBaseLoader):
         if not data:
             return None
 
+        logger.info(f"Found {len(data)} paragraphs")
         return "\n".join(data)
 
     def load_web_path(self, web_path: str) -> WebData | None:
+        logger.info(f"Starting scraping of {web_path}")
         soup = self._scrape(web_path, bs_kwargs=self.bs_kwargs)
 
         data = self.get_text(soup)
         if data is None:
+            logger.info("Unable to find paragraphs")
             return None
 
         return WebData(
@@ -136,6 +152,8 @@ class MultimodalWebLoader(WebBaseLoader):
         for web_path in self.web_paths:
             if web_data := self.load_web_path(web_path):
                 yield web_data
+            else:
+                logger.info(f"Skiping {web_path}")
 
     def load_web_paths(self) -> list[WebData]:
         return list(self.lazy_load_web_paths())

@@ -4,6 +4,7 @@ from langchain_core.messages import HumanMessage
 from langchain_ollama import ChatOllama
 
 from definitions import RagDocument, RagDocumentList, WebData
+from logs import logger
 
 
 image_summary_prompt = """
@@ -15,6 +16,7 @@ Give a concise summary of the image that is well optimized for retrieval.
 
 class ImageSummarizer:
     def __init__(self):
+        logger.info("Initializing image summarizer")
         self.model = ChatOllama(model="bakllava")
 
     def summarize(self, data_b64: str) -> str:
@@ -36,12 +38,14 @@ class ImageSummarizer:
     def apply(self, web_data: WebData) -> RagDocumentList:
         documents = []
         for web_image in web_data.images:
+            logger.info(f"Start to construct image summary for {web_image.metadata["url"]}")
             document = RagDocument(
                 uuid=str(uuid.uuid4()),
                 summary=self.summarize(web_image.data_b64),
                 page_content=web_image.data_b64,
                 metadta=web_image.metadata,
             )
+            logger.info(f"Summary: {document.summary}")
             documents.append(document)
         return RagDocumentList(documents)
 
