@@ -122,9 +122,16 @@ class RagMultimodal:
 
 
 if __name__ == '__main__':
-    import sys
+    from argparse import ArgumentParser
+
+    arg_parser = ArgumentParser(
+        prog="rag.py",
+        description="script to execute multimodal rag example",
+    )
+    arg_parser.add_argument("query", help="query to execute")
+
+    args = arg_parser.parse_args()
 
     rag = RagMultimodal()
-    query = sys.argv[1]
-    result = rag.chain.invoke(query)
+    result = rag.chain.invoke(args.query)
     print(result)
