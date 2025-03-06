@@ -23,11 +23,6 @@
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-```
-
-## Commands
-
-```
 ollama pull llama3.1
 ollama pull bakllava
 ollama pull llama3.2-vision
