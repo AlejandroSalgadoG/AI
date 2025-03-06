@@ -46,3 +46,9 @@ To execute Rag in headless mode
 ```
 python rag.py "<query>"
 ```
+
+To execute Rag with UI
+
+```
+streamlit run ui.py
+```
