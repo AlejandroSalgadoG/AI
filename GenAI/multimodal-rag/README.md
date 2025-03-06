@@ -38,7 +38,8 @@ ollama pull llama3.2-vision
 To extract data from The Batch
 
 ```
-python populate_db.py
+python populate_db.py -h  # for execution instructions
+python populate_db.py <start_date> <num_issues>
 ```
 
 To execute Rag in headless mode
