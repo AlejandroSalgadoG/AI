@@ -26,6 +26,7 @@ pip install -r requirements.txt
 ollama pull llama3.1
 ollama pull bakllava
 ollama pull llama3.2-vision
+ollama pull deepseek-r1:1.5b
 ```
 
 ## Execution
@@ -47,4 +48,11 @@ To execute Rag with UI
 
 ```
 streamlit run ui.py
+```
+
+## Test
+
+```
+deepeval set-ollama deepseek-r1:1.5b
+deepeval test run test_rag.py
 ```
