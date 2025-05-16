@@ -91,7 +91,7 @@ class MultimodalWebLoader(WebBaseLoader):
 
     def get_images(self, soup: BeautifulSoup, url: str) -> list[WebImage]:
         base_url = baseurl(url)
-        src_regex = re.compile(f"/_next/image")
+        src_regex = re.compile("/_next/image")
 
         article = soup.find("article")
         if article is None:
@@ -115,7 +115,7 @@ class MultimodalWebLoader(WebBaseLoader):
                 )
 
         if not images:
-            logger.info(f"No images found")
+            logger.info("No images found")
 
         return images
 
