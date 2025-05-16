@@ -23,7 +23,7 @@ Text: {element}
 class Summary(BaseModel):
     content: str = Field(description="summary")
 
-    def to_dict(self) -> dict[str, list[str]]:
+    def to_dict(self) -> dict[str, str]:
         return {"summary": self.content}
 
 

@@ -98,8 +98,8 @@ class RagMultimodal:
                 texts.append(doc)
         return {"images": images_b64, "texts": texts}
 
-    def create_prompt(self, data_dict: dict[str, dict[str, list[str]] | str]) -> list[HumanMessage]:
-        messages = []
+    def create_prompt(self, data_dict: dict[str, dict[str, list[str]]]) -> list[HumanMessage]:
+        messages: list[str | dict] = []
 
         for image in data_dict["context"]["images"]:
             messages.append(
