@@ -60,3 +60,9 @@ streamlit run ui.py
 deepeval set-ollama deepseek-r1:1.5b
 deepeval test run test_rag.py
 ```
+
+## Lint
+
+```
+bash lint.sh
+```
