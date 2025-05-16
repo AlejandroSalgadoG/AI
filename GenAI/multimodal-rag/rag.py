@@ -35,18 +35,19 @@ Context:
 
 
 class RagLlm:
-   def __init__(self):
+    def __init__(self):
         self.chain = (
             {
-               "context": Storage().get_vector_store_retriver() | RunnableLambda(self.parse_retrived),
-               "question": RunnablePassthrough(),
+                "context": Storage().get_vector_store_retriver()
+                | RunnableLambda(self.parse_retrived),
+                "question": RunnablePassthrough(),
             }
             | PromptTemplate.from_template(prompt_llm)
             | ChatOllama(temperature=0, model="llama3.1")
             | StrOutputParser()
         )
 
-   def parse_retrived(self, data: list[Document]) -> str:
+    def parse_retrived(self, data: list[Document]) -> str:
         return "\n".join([d.page_content for d in data])
 
 
@@ -98,7 +99,9 @@ class RagMultimodal:
                 texts.append(doc)
         return {"images": images_b64, "texts": texts}
 
-    def create_prompt(self, data_dict: dict[str, dict[str, list[str]]]) -> list[HumanMessage]:
+    def create_prompt(
+        self, data_dict: dict[str, dict[str, list[str]]]
+    ) -> list[HumanMessage]:
         messages: list[str | dict] = []
 
         for image in data_dict["context"]["images"]:
@@ -114,14 +117,14 @@ class RagMultimodal:
             "text": prompt_multimodal.format(
                 context="\n".join(data_dict["context"]["texts"]),
                 question=data_dict["question"],
-            )
+            ),
         }
         messages.append(text_message)
 
         return [HumanMessage(content=messages)]
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from argparse import ArgumentParser
 
     arg_parser = ArgumentParser(

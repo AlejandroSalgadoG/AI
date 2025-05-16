@@ -14,8 +14,11 @@ def test_correctness():
     correctness_metric = GEval(
         name="Correctness",
         criteria="Determine if the 'actual output' is correct based on the 'expected output'.",
-        evaluation_params=[LLMTestCaseParams.ACTUAL_OUTPUT, LLMTestCaseParams.EXPECTED_OUTPUT],
-        threshold=0.5
+        evaluation_params=[
+            LLMTestCaseParams.ACTUAL_OUTPUT,
+            LLMTestCaseParams.EXPECTED_OUTPUT,
+        ],
+        threshold=0.5,
     )
 
     rag = RagMultimodal()
@@ -57,4 +60,6 @@ def test_rag():
         retrieval_context=rag.last_context,
     )
 
-    assert_test(test_case, [ans_relevancy_metric, faithfulness_metric, relevancy_metric])
+    assert_test(
+        test_case, [ans_relevancy_metric, faithfulness_metric, relevancy_metric]
+    )

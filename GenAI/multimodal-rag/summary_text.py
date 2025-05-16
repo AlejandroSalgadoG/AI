@@ -33,19 +33,27 @@ class TextSummarizer:
         self.model = ChatOllama(temperature=0, model="llama3.1")
         self.summary_parser = PydanticOutputParser(pydantic_object=Summary)
         self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=2000, chunk_overlap=0, separators=["\n", "."], keep_separator=False,
+            chunk_size=2000,
+            chunk_overlap=0,
+            separators=["\n", "."],
+            keep_separator=False,
         )
 
     def summarize(self, text_chunks: list[str]) -> list[Summary]:
         prompt = PromptTemplate.from_template(
             text_summary_prompt,
-            partial_variables={"format_instructions": self.summary_parser.get_format_instructions()},
+            partial_variables={
+                "format_instructions": self.summary_parser.get_format_instructions()
+            },
         )
-        summarize_chain = {"element": lambda x: x} | prompt | self.model | self.summary_parser
+        summarize_chain = (
+            {"element": lambda x: x} | prompt | self.model | self.summary_parser
+        )
         return summarize_chain.batch(text_chunks, {"max_concurrency": 5})
 
     def apply(self, web_data: WebData) -> RagDocumentList:
-        logger.info(f"Start to construct text summaries for {web_data.text.metadata["source"]}")
+        source = web_data.text.metadata["source"]
+        logger.info(f"Start to construct text summaries for {source}")
 
         text_chunks = self.text_splitter.split_text(web_data.text.get_data_with_title())
         logger.info(f"Text divided in {len(text_chunks)} chunks")
@@ -66,7 +74,7 @@ class TextSummarizer:
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from scraper import MultimodalWebLoader
 
     articles_url = [

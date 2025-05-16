@@ -62,6 +62,7 @@ def get_str_from_tag_or_none(tag: Tag, attr: str) -> str | None:
     value = tag.get(attr)
     return value if isinstance(value, str) else None
 
+
 def get_str_from_tag(tag: Tag, attr: str, default: str) -> str:
     value = get_str_from_tag_or_none(tag, attr)
     return default if value is None else value
@@ -114,7 +115,9 @@ class MultimodalWebLoader(WebBaseLoader):
             metadata["language"] = get_str_from_tag(html, "lang", "No language found.")
 
         if description := find_tag(soup, "meta", attrs={"name": "description"}):
-            metadata["description"] = get_str_from_tag(description, "content", "No description found.")
+            metadata["description"] = get_str_from_tag(
+                description, "content", "No description found."
+            )
 
         return metadata
 
@@ -142,7 +145,9 @@ class MultimodalWebLoader(WebBaseLoader):
                             data_b64=base64.b64encode(image).decode("utf-8"),
                             metadata={
                                 "url": image_url,
-                                "description": get_str_from_tag(img, "alt", "no description found.")
+                                "description": get_str_from_tag(
+                                    img, "alt", "no description found."
+                                ),
                             },
                         )
                     )
@@ -192,7 +197,7 @@ class MultimodalWebLoader(WebBaseLoader):
         return list(self.lazy_load_web_paths())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     dates = iter_dates(start_date=date(2025, 2, 26), delta=timedelta(days=7), n=1)
 
     data = []
