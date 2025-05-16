@@ -34,11 +34,16 @@ def get_arg_parser():
         "start_date",
         help="wednesday date from when to start scraping. Format dd-mm-yyyy",
         type=valid_start_date,
+        nargs="?",
+        default="14-05-2025",
     )
+
     parser.add_argument(
         "num_issues",
         help="number of batchs to scrape starting from <start_date> and going backwards. Int",
         type=valid_num_issues,
+        nargs="?",
+        default=1,
     )
     return parser
 
