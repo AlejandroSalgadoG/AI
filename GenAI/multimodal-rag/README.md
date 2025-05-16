@@ -16,6 +16,7 @@
 * beautifulsoup4==4.13.3
 * streamlit==1.42.2
 * deepeval==2.4.9
+* ruff==0.11.10
 
 ## Setup
 

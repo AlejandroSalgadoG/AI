@@ -50,8 +50,8 @@ class TextSummarizer:
         text_chunks = self.text_splitter.split_text(web_data.text.get_data_with_title())
         logger.info(f"Text divided in {len(text_chunks)} chunks")
 
-        summaries = self.summarize(text_chunks) 
-        logger.info(f"Text summaries completed")
+        summaries = self.summarize(text_chunks)
+        logger.info("Text summaries completed")
 
         return RagDocumentList(
             [
