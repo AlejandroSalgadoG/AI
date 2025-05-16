@@ -11,6 +11,7 @@ from requests.models import Response
 from urllib.parse import urljoin as urljoin_bin, urlsplit
 
 from bs4 import BeautifulSoup
+from bs4.element import Tag
 from langchain_community.document_loaders import WebBaseLoader
 from PIL import Image
 
@@ -22,7 +23,7 @@ def iter_dates(start_date: date, delta: timedelta, n: int) -> list[date]:
     return [start_date - delta * i for i in range(n)]
 
 
-def urljoin(*args: list[str]) -> str:
+def urljoin(*args: str) -> str:
     return reduce(urljoin_bin, args)
 
 
@@ -37,6 +38,33 @@ def get_request(url: str) -> Response | None:
         warnings.warn(f"unable to get response from {url}")
         return None
     return response
+
+
+def find_all_tags(soup: BeautifulSoup, tag: str) -> list[Tag]:
+    return [t for t in soup.find_all(tag) if isinstance(t, Tag)]
+
+
+def find_tag(soup: BeautifulSoup, tag: str, **kwargs) -> Tag | None:
+    t = soup.find(tag, **kwargs)
+    return t if isinstance(t, Tag) else None
+
+
+def find_within_tag(tag: Tag, tag_name: str, **kwargs) -> Tag | None:
+    sub_tag = tag.find(tag_name, **kwargs)
+    return sub_tag if isinstance(sub_tag, Tag) else None
+
+
+def find_all_within_tag(tag: Tag, attr: str, **kwargs) -> list[Tag]:
+    return [t for t in tag.find_all(attr, **kwargs) if isinstance(t, Tag)]
+
+
+def get_str_from_tag_or_none(tag: Tag, attr: str) -> str | None:
+    value = tag.get(attr)
+    return value if isinstance(value, str) else None
+
+def get_str_from_tag(tag: Tag, attr: str, default: str) -> str:
+    value = get_str_from_tag_or_none(tag, attr)
+    return default if value is None else value
 
 
 def get_articles_url(date: date) -> list[str]:
@@ -54,11 +82,12 @@ def get_articles_url(date: date) -> list[str]:
         bs = BeautifulSoup(response.content, "html.parser")
         href_regex = re.compile("/the-batch/(?!tag|issue)")
 
-        for article in bs.find_all("article"):
-            if tag := article.find("a", href=href_regex):
-                url = urljoin(base_url, tag["href"])
-                logger.info(f"Article found at {url}")
-                urls.append(url)
+        for article in find_all_tags(bs, "article"):
+            if tag := find_within_tag(article, "a", href=href_regex):
+                if href := get_str_from_tag_or_none(tag, "href"):
+                    url = urljoin(base_url, href)
+                    logger.info(f"Article found at {url}")
+                    urls.append(url)
 
     if not urls:
         logger.info("No articles found")
@@ -69,7 +98,7 @@ def get_articles_url(date: date) -> list[str]:
 def resize_image(image: bytes, size: tuple[int, int]) -> bytes:
     img = Image.open(io.BytesIO(image))
     buffered = io.BytesIO()
-    resized_img = img.resize(size, Image.LANCZOS)
+    resized_img = img.resize(size, Image.Resampling.LANCZOS)
     resized_img.save(buffered, format=img.format)
     return buffered.getvalue()
 
@@ -78,14 +107,14 @@ class MultimodalWebLoader(WebBaseLoader):
     def build_metadata(self, soup: BeautifulSoup, url: str) -> dict[str, str]:
         metadata = {"source": url}
 
-        if title := soup.find("title"):
+        if title := find_tag(soup, "title"):
             metadata["title"] = title.get_text()
 
-        if html := soup.find("html"):
-            metadata["language"] = html.get("lang", "No language found.")
+        if html := find_tag(soup, "html"):
+            metadata["language"] = get_str_from_tag(html, "lang", "No language found.")
 
-        # if description := soup.find("meta", attrs={"name": "description"}):
-        #     metadata["description"] = description.get("content", "No description found.")
+        if description := find_tag(soup, "meta", attrs={"name": "description"}):
+            metadata["description"] = get_str_from_tag(description, "content", "No description found.")
 
         return metadata
 
@@ -93,26 +122,30 @@ class MultimodalWebLoader(WebBaseLoader):
         base_url = baseurl(url)
         src_regex = re.compile("/_next/image")
 
-        article = soup.find("article")
+        article = find_tag(soup, "article")
         if article is None:
             return []
 
-        header = article.find("header")
+        header = find_within_tag(article, "header")
         if header is None:
             return []
 
         images = []
-        for img in header.find_all("img", src=src_regex):
-            image_url = urljoin(base_url, img["src"])
-            if response := get_request(image_url):
-                logger.info(f"Image found at {image_url}")
-                image = resize_image(response.content, size=(680, 385))
-                images.append(
-                    WebImage(
-                        data_b64=base64.b64encode(image).decode("utf-8"),
-                        metadata={"url": image_url, "description": img.get("alt")},
+        for img in find_all_within_tag(header, "img", src=src_regex):
+            if src := get_str_from_tag_or_none(img, "src"):
+                image_url = urljoin(base_url, src)
+                if response := get_request(image_url):
+                    logger.info(f"Image found at {image_url}")
+                    image = resize_image(response.content, size=(680, 385))
+                    images.append(
+                        WebImage(
+                            data_b64=base64.b64encode(image).decode("utf-8"),
+                            metadata={
+                                "url": image_url,
+                                "description": get_str_from_tag(img, "alt", "no description found.")
+                            },
+                        )
                     )
-                )
 
         if not images:
             logger.info("No images found")
@@ -120,11 +153,11 @@ class MultimodalWebLoader(WebBaseLoader):
         return images
 
     def get_text(self, soup: BeautifulSoup) -> str | None:
-        article = soup.find("article")
+        article = find_tag(soup, "article")
         if article is None:
             return None
 
-        data = [p.get_text() for p in article.find_all("p")]
+        data = [p.get_text() for p in find_all_within_tag(article, "p")]
         if not data:
             return None
 

@@ -1,6 +1,11 @@
-from deepeval import assert_test
-from deepeval.metrics import AnswerRelevancyMetric, FaithfulnessMetric, ContextualRelevancyMetric, GEval 
-from deepeval.test_case import LLMTestCase, LLMTestCaseParams
+from deepeval import assert_test  # type: ignore[import-untyped]
+from deepeval.metrics import (  # type: ignore[import-untyped]
+    AnswerRelevancyMetric,
+    FaithfulnessMetric,
+    ContextualRelevancyMetric,
+    GEval,
+)
+from deepeval.test_case import LLMTestCase, LLMTestCaseParams  # type: ignore[import-untyped]
 
 from rag import RagMultimodal
 
@@ -51,6 +56,5 @@ def test_rag():
         actual_output=actual_output,
         retrieval_context=rag.last_context,
     )
- 
+
     assert_test(test_case, [ans_relevancy_metric, faithfulness_metric, relevancy_metric])
- 

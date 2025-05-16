@@ -40,10 +40,10 @@ class RagDocument(UuidDocument):
 class RagDocumentList:
     documents: list[RagDocument]
 
-    def get_content_docs(self) -> UuidDocument:
+    def get_content_docs(self) -> list[UuidDocument]:
         return [doc.get_content_doc() for doc in self.documents]
 
-    def get_summary_docs(self) -> UuidDocument:
+    def get_summary_docs(self) -> list[UuidDocument]:
         return [doc.get_summary_doc() for doc in self.documents]
 
 
