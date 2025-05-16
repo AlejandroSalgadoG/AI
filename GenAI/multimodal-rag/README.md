@@ -17,6 +17,7 @@
 * streamlit==1.42.2
 * deepeval==2.4.9
 * ruff==0.11.10
+* black==25.1.0
 * mypy==1.15.0
 * requests==2.32.3
 

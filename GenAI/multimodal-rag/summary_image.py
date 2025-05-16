@@ -38,7 +38,8 @@ class ImageSummarizer:
     def apply(self, web_data: WebData) -> RagDocumentList:
         documents = []
         for web_image in web_data.images:
-            logger.info(f"Start to construct image summary for {web_image.metadata["url"]}")
+            url = web_image.metadata["url"]
+            logger.info(f"Start to construct image summary for {url}")
             document = RagDocument(
                 uuid=str(uuid.uuid4()),
                 summary=self.summarize(web_image.data_b64),
@@ -50,7 +51,7 @@ class ImageSummarizer:
         return RagDocumentList(documents)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     from scraper import MultimodalWebLoader
 
     articles_url = [

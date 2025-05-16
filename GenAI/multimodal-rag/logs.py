@@ -4,7 +4,7 @@ import datetime
 now = datetime.datetime.now().strftime("%d-%m-%y_%H-%M-%S")
 
 log_format = "%(asctime)s [%(levelname)s]  %(message)s"
-log_d_format = '%m/%d/%Y %I:%M:%S %p'
+log_d_format = "%m/%d/%Y %I:%M:%S %p"
 
 logging.basicConfig(
     format=log_format,

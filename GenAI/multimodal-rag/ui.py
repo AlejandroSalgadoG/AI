@@ -1,10 +1,12 @@
 import streamlit as st
 from rag import RagMultimodal
 
+
 @st.cache_resource
 def initialization_function():
     rag = RagMultimodal()
     return rag
+
 
 rag = initialization_function()
 

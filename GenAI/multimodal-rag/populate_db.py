@@ -48,14 +48,18 @@ def get_arg_parser():
     return parser
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     arg_parser = get_arg_parser()
     args = arg_parser.parse_args()
 
     storage = Storage()
     text_summarizer = TextSummarizer()
     image_summarizer = ImageSummarizer()
-    dates = iter_dates(start_date=args.start_date, delta=timedelta(days=7), n=args.num_issues)
+    dates = iter_dates(
+        start_date=args.start_date,
+        delta=timedelta(days=7),
+        n=args.num_issues,
+    )
 
     for d in dates:
         if articles_url := get_articles_url(d):

@@ -14,8 +14,19 @@ class UuidDocument(Document):
 class RagDocument(UuidDocument):
     summary: str
 
-    def __init__(self, page_content: str, uuid: str, summary: str, **kwargs: Any) -> None:
-        super().__init__(page_content=page_content, uuid=uuid, summary=summary, **kwargs)
+    def __init__(
+        self,
+        page_content: str,
+        uuid: str,
+        summary: str,
+        **kwargs: Any,
+    ) -> None:
+        super().__init__(
+            page_content=page_content,
+            uuid=uuid,
+            summary=summary,
+            **kwargs,
+        )
 
     def get_content_doc(self) -> UuidDocument:
         metadata = self.metadata.copy()
