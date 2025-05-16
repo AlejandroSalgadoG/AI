@@ -128,7 +128,13 @@ if __name__ == '__main__':
         prog="rag.py",
         description="script to execute multimodal rag example",
     )
-    arg_parser.add_argument("query", help="query to execute")
+    arg_parser.add_argument(
+        "query",
+        help="query to execute",
+        nargs="?",
+        type=str,
+        default="what do you know about microsoft phi-4-reasoning?",
+    )
 
     args = arg_parser.parse_args()
 
