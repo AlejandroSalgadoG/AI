@@ -8,20 +8,21 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_ollama import ChatOllama
 
-from prompts import prompt_llm, prompt_multimodal
+from config import configs
 from storage import Storage
 
 
 class RagLlm:
     def __init__(self):
+        self.config = configs["llm"]
         self.chain = (
             {
                 "context": Storage().get_vector_store_retriver()
                 | RunnableLambda(self.parse_retrived),
                 "question": RunnablePassthrough(),
             }
-            | PromptTemplate.from_template(prompt_llm)
-            | ChatOllama(temperature=0, model="llama3.1")
+            | PromptTemplate.from_template(self.config.prompt)
+            | ChatOllama(model=self.config.model, **self.config.model_params)
             | StrOutputParser()
         )
 
@@ -32,6 +33,7 @@ class RagLlm:
 class RagMultimodal:
     def __init__(self):
         self.last_context = []
+        self.config = configs["multimodal"]
         self.chain = (
             {
                 "context": Storage().retriever
@@ -40,7 +42,7 @@ class RagMultimodal:
                 "question": RunnablePassthrough(),
             }
             | RunnableLambda(self.create_prompt)
-            | ChatOllama(temperature=0, model="llama3.2-vision")
+            | ChatOllama(model=self.config.model, **self.config.model_params)
             | StrOutputParser()
         )
 
@@ -92,7 +94,7 @@ class RagMultimodal:
 
         text_message = {
             "type": "text",
-            "text": prompt_multimodal.format(
+            "text": self.config.prompt.format(
                 context="\n".join(data_dict["context"]["texts"]),
                 question=data_dict["question"],
             ),
