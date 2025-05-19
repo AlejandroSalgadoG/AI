@@ -5,6 +5,7 @@ from langchain_ollama import ChatOllama
 
 from config import configs
 from definitions import RagDocument, RagDocumentList, WebData
+from failback import retry
 from logs import logger
 
 
@@ -30,6 +31,7 @@ class ImageSummarizer:
         )
         return result.content
 
+    @retry(attempts=3)
     def apply(self, web_data: WebData) -> RagDocumentList:
         documents = []
         for web_image in web_data.images:
