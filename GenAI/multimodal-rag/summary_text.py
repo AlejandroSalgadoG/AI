@@ -8,6 +8,7 @@ from pydantic import BaseModel, Field
 
 from config import configs
 from definitions import RagDocument, RagDocumentList, WebData
+from failback import retry
 from logs import logger
 
 
@@ -36,6 +37,7 @@ class TextSummarizer:
         chain = {"element": lambda x: x} | prompt | self.model | self.summary_parser
         return chain.batch(text_chunks, {"max_concurrency": 5})
 
+    @retry(attempts=3)
     def apply(self, web_data: WebData) -> RagDocumentList:
         source = web_data.text.metadata["source"]
         logger.info(f"Start to construct text summaries for {source}")
