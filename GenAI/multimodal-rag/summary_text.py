@@ -6,9 +6,9 @@ from langchain_ollama import ChatOllama
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from pydantic import BaseModel, Field
 
+from config import configs
 from definitions import RagDocument, RagDocumentList, WebData
 from logs import logger
-from prompts import text_summary_prompt
 
 
 class Summary(BaseModel):
@@ -21,26 +21,20 @@ class Summary(BaseModel):
 class TextSummarizer:
     def __init__(self):
         logger.info("Initializing text summarizer")
-        self.model = ChatOllama(temperature=0, model="llama3.1")
+        self.config = configs["text"]
+        self.model = ChatOllama(model=self.config.model, **self.config.model_params)
         self.summary_parser = PydanticOutputParser(pydantic_object=Summary)
-        self.text_splitter = RecursiveCharacterTextSplitter(
-            chunk_size=2000,
-            chunk_overlap=0,
-            separators=["\n", "."],
-            keep_separator=False,
-        )
+        self.text_splitter = RecursiveCharacterTextSplitter(**self.config.split_params)
 
     def summarize(self, text_chunks: list[str]) -> list[Summary]:
         prompt = PromptTemplate.from_template(
-            text_summary_prompt,
+            self.config.prompt,
             partial_variables={
                 "format_instructions": self.summary_parser.get_format_instructions()
             },
         )
-        summarize_chain = (
-            {"element": lambda x: x} | prompt | self.model | self.summary_parser
-        )
-        return summarize_chain.batch(text_chunks, {"max_concurrency": 5})
+        chain = {"element": lambda x: x} | prompt | self.model | self.summary_parser
+        return chain.batch(text_chunks, {"max_concurrency": 5})
 
     def apply(self, web_data: WebData) -> RagDocumentList:
         source = web_data.text.metadata["source"]

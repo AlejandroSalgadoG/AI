@@ -4,6 +4,7 @@ from langchain_chroma import Chroma
 from langchain_core.vectorstores.base import VectorStoreRetriever
 from langchain_ollama import OllamaEmbeddings
 
+from config import configs
 from definitions import UuidDocument
 from logs import logger
 
@@ -11,9 +12,13 @@ from logs import logger
 class Storage:
     def __init__(self):
         logger.info("Start initialization of vector storage")
+        self.config = configs["storage"]
         self.vector_store = Chroma(
             collection_name="multimod_rag",
-            embedding_function=OllamaEmbeddings(model="llama3.1"),
+            embedding_function=OllamaEmbeddings(
+                model=self.config.model,
+                **self.config.model_params,
+            ),
             persist_directory="data/chroma_db",
         )
 

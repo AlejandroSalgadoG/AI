@@ -3,22 +3,23 @@ import uuid
 from langchain_core.messages import HumanMessage
 from langchain_ollama import ChatOllama
 
+from config import configs
 from definitions import RagDocument, RagDocumentList, WebData
 from logs import logger
-from prompts import image_summary_prompt
 
 
 class ImageSummarizer:
     def __init__(self):
         logger.info("Initializing image summarizer")
-        self.model = ChatOllama(model="bakllava")
+        self.config = configs["image"]
+        self.model = ChatOllama(model=self.config.model, **self.config.model_params)
 
     def summarize(self, data_b64: str) -> str:
         result = self.model.invoke(
             [
                 HumanMessage(
                     content=[
-                        {"type": "text", "text": image_summary_prompt},
+                        {"type": "text", "text": self.config.prompt},
                         {
                             "type": "image_url",
                             "image_url": {"url": f"data:image/png;base64,{data_b64}"},
