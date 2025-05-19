@@ -8,16 +8,7 @@ from pydantic import BaseModel, Field
 
 from definitions import RagDocument, RagDocumentList, WebData
 from logs import logger
-
-
-text_summary_prompt = """
-You are an assistant tasked with summarizing text for retrieval.
-These summaries will be embedded and used to retrieve the raw text elements.
-Give a concise summary of the text that is well optimized for retrieval.
-Text: {element}
-
-{format_instructions}
-"""
+from prompts import text_summary_prompt
 
 
 class Summary(BaseModel):

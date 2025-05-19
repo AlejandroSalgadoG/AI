@@ -5,13 +5,7 @@ from langchain_ollama import ChatOllama
 
 from definitions import RagDocument, RagDocumentList, WebData
 from logs import logger
-
-
-image_summary_prompt = """
-You are an assistant tasked with summarizing images for retrieval.
-These summaries will be embedded and used to retrieve the raw image.
-Give a concise summary of the image that is well optimized for retrieval.
-"""
+from prompts import image_summary_prompt
 
 
 class ImageSummarizer:

@@ -8,30 +8,8 @@ from langchain_core.prompts import PromptTemplate
 from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_ollama import ChatOllama
 
+from prompts import prompt_llm, prompt_multimodal
 from storage import Storage
-
-
-prompt_llm = """
-You are an analyst tasking with responding user questions.
-You will be given some context, use that information to provide a relevant answer
-
-User-provided question: {question}
-
-Context:
-{context}
-"""
-
-
-prompt_multimodal = """
-You are an analyst tasking with responding user questions.
-You will be given a mixed of text and image(s).
-Use this information to provide a relevant answer.
-
-User-provided question: {question}
-
-Context:
-{context}
-"""
 
 
 class RagLlm:
