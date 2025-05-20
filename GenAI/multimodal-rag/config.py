@@ -18,12 +18,18 @@ class TextConfig(Config):
     split_params: dict
 
 
+@dataclass
+class StorageConfig(Config):
+    search_params: dict
+
+
 configs = {
-    "storage": Config(
-        model="llama3.1",
+    "storage": StorageConfig(
+        model="BAAI/bge-small-en-v1.5",
         model_params={
-            "temperature": 0,
+            "normalize_embeddings": True,
         },
+        search_params={"k": 3},
         prompt="",
     ),
     "text": TextConfig(

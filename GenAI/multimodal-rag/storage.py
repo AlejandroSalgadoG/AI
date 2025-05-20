@@ -2,7 +2,7 @@ from langchain.retrievers.multi_vector import MultiVectorRetriever
 from langchain.storage import LocalFileStore
 from langchain_chroma import Chroma
 from langchain_core.vectorstores.base import VectorStoreRetriever
-from langchain_ollama import OllamaEmbeddings
+from langchain_huggingface import HuggingFaceEmbeddings
 
 from config import configs
 from definitions import UuidDocument
@@ -15,9 +15,9 @@ class Storage:
         self.config = configs["storage"]
         self.vector_store = Chroma(
             collection_name="multimod_rag",
-            embedding_function=OllamaEmbeddings(
+            embedding_function=HuggingFaceEmbeddings(
                 model=self.config.model,
-                **self.config.model_params,
+                encode_kwargs=self.config.model_params,
             ),
             persist_directory="data/chroma_db",
         )
@@ -27,6 +27,7 @@ class Storage:
             vectorstore=self.vector_store,
             docstore=LocalFileStore("data/doc_store"),
             id_key="uuid",
+            search_kwargs=self.config.search_params,
         )
 
     def get_vector_store_retriver(self) -> VectorStoreRetriever:
