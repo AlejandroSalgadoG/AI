@@ -43,7 +43,7 @@ configs = {
         },
     ),
     "image": Config(
-        model="bakllava",
+        model="Salesforce/blip-image-captioning-base",
         model_params={},
         prompt="""
             You are an assistant tasked with summarizing images for retrieval.

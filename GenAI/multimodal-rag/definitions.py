@@ -87,3 +87,6 @@ class WebText:
 class WebData:
     text: WebText
     images: list[WebImage]
+
+    def get_images_urls(self) -> list[str]:
+        return [image.metadata["url"] for image in self.images]
