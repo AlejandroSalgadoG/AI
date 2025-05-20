@@ -41,7 +41,7 @@ configs = {
         """,
         split_params={
             "chunk_size": 2000,
-            "chunk_overlap": 0,
+            "chunk_overlap": 100,
             "separators": ["\n", "."],
             "keep_separator": False,
         },
