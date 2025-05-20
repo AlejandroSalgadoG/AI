@@ -27,17 +27,13 @@ configs = {
         prompt="",
     ),
     "text": TextConfig(
-        model="llama3.1",
-        model_params={
-            "temperature": 0,
-        },
+        model="google-t5/t5-small",
+        model_params={},
         prompt="""
             You are an assistant tasked with summarizing text for retrieval.
             These summaries will be embedded and used to retrieve the raw text elements.
             Give a concise summary of the text that is well optimized for retrieval.
             Text: {element}
-
-            {format_instructions}
         """,
         split_params={
             "chunk_size": 2000,
