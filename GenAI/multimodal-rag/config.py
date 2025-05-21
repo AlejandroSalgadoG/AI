@@ -40,8 +40,8 @@ configs = {
             {format_instructions}
         """,
         split_params={
-            "chunk_size": 2000,
-            "chunk_overlap": 100,
+            "chunk_size": 1000,
+            "chunk_overlap": 200,
             "separators": ["\n", "."],
             "keep_separator": False,
         },
