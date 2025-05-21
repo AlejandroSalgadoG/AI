@@ -17,6 +17,7 @@
 * ruff==0.11.10
 * black==25.1.0
 * mypy==1.15.0
+* deepeval==2.9.4
 
 ## Setup
 
@@ -26,3 +27,8 @@ source venv/bin/activate
 pip install -r requirements.txt
 ollama pull qwen2.5:latest
 ollama pull llama3.2:latest
+ollama pull deepseek-r1:1.5b
+
+## Test
+
+deepeval set-ollama deepseek-r1:1.5b
