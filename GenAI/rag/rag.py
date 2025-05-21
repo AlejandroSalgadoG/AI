@@ -15,10 +15,11 @@ class Rag:
             model=self.config.model,
             **self.config.model_params,
         )
+        self.last_context = []
         self.retriever = Storage().get_vector_store_retriver()
         self.chain = (
             {
-                "context": self.retriever | RunnableLambda(self.parse_retrived),
+                "context": RunnableLambda(self.get_context),
                 "question": RunnablePassthrough(),
             }
             | ChatPromptTemplate.from_template(self.config.prompt)
@@ -26,6 +27,11 @@ class Rag:
             | self.llm
             | StrOutputParser()
         )
+
+    def get_context(self, query: str) -> list[Document]:
+        documents = self.retriever.invoke(query)
+        self.last_context = [document.page_content for document in documents]
+        return self.parse_retrived(documents)
 
     def parse_retrived(self, data: list[Document]) -> str:
         return "\n\n".join([d.page_content for d in data])
