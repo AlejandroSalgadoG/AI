@@ -44,13 +44,14 @@ configs = {
         prompt="",
     ),
     "llm": Config(
-        model="qwen2.5",
+        model="gemma3",
         model_params={
             "temperature": 0,
         },
         extra_params={},
         prompt="""
-            You are an AI Assisant. Use the following context to answer the question correctly.
+            You are an AI Assisant.
+            You are provided with a set of images and a context, use them to answer the question correctly.
             If you dont know the answer, just tell, I dont know.
 
             "context: {context} \n\n"
