@@ -25,6 +25,16 @@ configs = {
             "add_start_index": True,
         },
     ),
+    "image": Config(
+        model="llava:13b",
+        prompt="""
+            You are an assistant tasked with summarizing images for retrieval.
+            These summaries will be embedded and used to retrieve the raw image.
+            Give a concise summary of the image that is well optimized for retrieval.
+        """,
+        model_params={},
+        extra_params={},
+    ),
     "storage": Config(
         model="llama3.2",
         model_params={
