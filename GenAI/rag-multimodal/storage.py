@@ -1,3 +1,5 @@
+from langchain.retrievers.multi_vector import MultiVectorRetriever
+from langchain.storage import LocalFileStore
 from langchain_chroma import Chroma
 from langchain_core.documents import Document
 from langchain_core.vectorstores.base import VectorStoreRetriever
@@ -20,12 +22,23 @@ class Storage:
             persist_directory="data/chroma_db",
         )
 
+        logger.info("Start initialization of document storage")
+        self.retriever = MultiVectorRetriever(
+            vectorstore=self.vector_store,
+            byte_store=LocalFileStore("data/doc_store"),
+            id_key="uuid",
+        )
+
     def get_vector_store_retriver(self) -> VectorStoreRetriever:
         return self.vector_store.as_retriever(**self.config.extra_params)
 
-    def add_documents(self, docs: list[Document]) -> None:
-        logger.info(f"Adding {len(docs)} documents to vector storage")
+    def add_documents_to_vector(self, docs: list[Document]) -> None:
+        logger.info(f"Adding {len(docs)} label documents to vector storage")
         self.vector_store.add_documents(docs)
+
+    def add_documents_to_docstore(self, docs: list[Document]) -> None:
+        logger.info("Adding documents info to document storage")
+        self.retriever.docstore.mset([(doc.metadata["uuid"], doc) for doc in docs])
 
     def _to_label_documents(self, docs: list[Document]) -> list[Document]:
         logger.info("Converting documents to label documents")
@@ -39,4 +52,5 @@ class Storage:
 
     def store(self, docs: list[Document]) -> None:
         logger.info("Storing documents")
-        self.add_documents(self._to_label_documents(docs))
+        self.add_documents_to_vector(self._to_label_documents(docs))
+        self.add_documents_to_docstore(docs)
