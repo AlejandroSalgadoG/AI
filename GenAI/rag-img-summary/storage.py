@@ -26,3 +26,17 @@ class Storage:
     def add_documents(self, docs: list[Document]) -> None:
         logger.info(f"Adding {len(docs)} documents to vector storage")
         self.vector_store.add_documents(docs)
+
+    def _to_label_documents(self, docs: list[Document]) -> list[Document]:
+        logger.info("Converting documents to label documents")
+        return [
+            Document(
+                page_content=doc.metadata["label"],
+                metadata=doc.metadata,
+            )
+            for doc in docs
+        ]
+
+    def store(self, docs: list[Document]) -> None:
+        logger.info("Storing documents")
+        self.add_documents(self._to_label_documents(docs))
