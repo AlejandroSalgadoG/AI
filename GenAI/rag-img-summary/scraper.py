@@ -1,3 +1,4 @@
+import base64
 import re
 import requests
 import uuid
@@ -13,7 +14,7 @@ from bs4 import BeautifulSoup
 from bs4.element import Tag
 from langchain_community.document_loaders import WebBaseLoader
 
-from definitions import WebData
+from definitions import WebData, WebImage
 from logs import logger
 
 
@@ -111,6 +112,37 @@ class WebLoader(WebBaseLoader):
 
         return metadata
 
+    def get_images(self, soup: BeautifulSoup, url: str) -> list[WebImage]:
+        base_url = baseurl(url)
+        src_regex = re.compile("/_next/image")
+
+        article = find_tag(soup, "article")
+        if article is None:
+            return []
+
+        header = find_within_tag(article, "header")
+        if header is None:
+            return []
+
+        images = []
+        for img in find_all_within_tag(header, "img", src=src_regex):
+            if src := get_str_from_tag_or_none(img, "src"):
+                image_url = urljoin(base_url, src)
+                if response := get_request(image_url):
+                    logger.info(f"Image found at {image_url}")
+                    images.append(
+                        WebImage(
+                            data_b64=base64.b64encode(response.content).decode("utf-8"),
+                            label=get_str_from_tag_or_none(img, "alt"),
+                            url=image_url,
+                        )
+                    )
+
+        if not images:
+            logger.info("No images found")
+
+        return images
+
     def get_text(self, soup: BeautifulSoup) -> str | None:
         article = find_tag(soup, "article")
         if article is None:
@@ -135,6 +167,7 @@ class WebLoader(WebBaseLoader):
         return WebData(
             text=data,
             metadata=self.build_metadata(soup, web_path),
+            images=self.get_images(soup, web_path),
         )
 
     def lazy_load_web_paths(self) -> Iterator[WebData]:
