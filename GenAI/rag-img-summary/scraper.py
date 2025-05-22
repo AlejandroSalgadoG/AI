@@ -97,7 +97,7 @@ def get_articles_url(date: date) -> list[str]:
 
 class WebLoader(WebBaseLoader):
     def build_metadata(self, soup: BeautifulSoup, url: str) -> dict[str, str]:
-        metadata = {"source": url, "uuid": str(uuid.uuid4())}
+        metadata = {"source": url, "page uuid": str(uuid.uuid4())}
 
         if title := find_tag(soup, "title"):
             metadata["title"] = title.get_text()

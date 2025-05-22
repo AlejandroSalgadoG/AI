@@ -1,3 +1,5 @@
+import uuid
+
 from langchain_core.documents import Document
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
@@ -22,7 +24,11 @@ class TextHandler:
         return [
             Document(
                 page_content=text,
-                metadata=web_data.metadata,
+                metadata=dict(
+                    label=text,
+                    uuid=str(uuid.uuid4()),
+                    **web_data.metadata,
+                ),
             )
             for text in text_chunks
         ]
