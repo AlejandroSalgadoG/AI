@@ -6,6 +6,7 @@ from langchain_ollama import ChatOllama
 
 from config import configs
 from definitions import WebData
+from failback import retry
 from logs import logger
 
 
@@ -15,6 +16,7 @@ class ImageHandler:
         self.config = configs["image"]
         self.model = ChatOllama(model=self.config.model, **self.config.model_params)
 
+    @retry(attempts=3)
     def summarize(self, data_b64: str) -> str:
         return self.model.invoke(
             [

@@ -5,6 +5,7 @@ from langchain_ollama import ChatOllama
 from langchain.prompts import ChatPromptTemplate
 
 from config import configs
+from failback import retry
 from storage import Storage
 
 
@@ -35,6 +36,7 @@ class Rag:
     def parse_retrived(self, data: list[Document]) -> str:
         return "\n\n".join([d.page_content for d in data])
 
+    @retry(attempts=3)
     def consult(self, query: str) -> str:
         return self.chain.invoke(query)
 
