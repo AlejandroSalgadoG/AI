@@ -1,7 +1,0 @@
-venv/
-.vscode/
-.deepeval*
-data/
-
-*.pyc
-*.log
