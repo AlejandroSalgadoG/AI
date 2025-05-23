@@ -39,6 +39,7 @@ class ImageHandler:
                 metadata={
                     "label": self.summarize(web_image.data_b64),
                     "url": web_image.url,
+                    "format": web_image.format,
                     "uuid": str(uuid.uuid4()),
                 },
             )

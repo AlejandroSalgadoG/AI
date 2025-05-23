@@ -135,6 +135,7 @@ class WebLoader(WebBaseLoader):
                             data_b64=base64.b64encode(response.content).decode("utf-8"),
                             label=get_str_from_tag_or_none(img, "alt"),
                             url=image_url,
+                            format=response.headers.get("Content-Type", "image/jpeg"),
                         )
                     )
 

@@ -8,6 +8,7 @@ class WebImage:
     data_b64: str
     url: str
     label: str | None
+    format: str
 
 
 @dataclass
