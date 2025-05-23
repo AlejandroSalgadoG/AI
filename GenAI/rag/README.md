@@ -1,5 +1,7 @@
 # RAG
 
+This is a rag project for *The Batch* that takes information only from the text found in the articles.
+
 ## Dependencies
 
 * ollama - https://ollama.com/download
