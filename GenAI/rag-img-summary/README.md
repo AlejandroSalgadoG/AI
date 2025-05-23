@@ -1,5 +1,7 @@
 # RAG with image summary
 
+This is a rag project for *The Batch* that takes information from the text and a description of the images found in the articles.
+
 ## Dependencies
 
 * ollama - https://ollama.com/download
