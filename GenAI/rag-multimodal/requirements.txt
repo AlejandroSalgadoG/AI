@@ -10,3 +10,4 @@ black==25.1.0
 mypy==1.15.0
 types-requests==2.32.0.20250515
 deepeval==2.9.4
+streamlit==1.42.2 

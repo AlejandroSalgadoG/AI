@@ -20,6 +20,7 @@ This is a multimodal rag project for *The Batch* that takes information from the
 * black==25.1.0
 * mypy==1.15.0
 * deepeval==2.9.4
+* streamlit==1.42.2
 
 ## Setup
 
