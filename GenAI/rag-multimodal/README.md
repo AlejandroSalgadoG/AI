@@ -1,5 +1,7 @@
 # Multimodal RAG
 
+This is a multimodal rag project for *The Batch* that takes information from the text and the images found in the articles.
+
 ## Dependencies
 
 * ollama - https://ollama.com/download
