@@ -5,7 +5,7 @@ This is a rag project for *The Batch* that takes information only from the text 
 ## Dependencies
 
 * ollama - https://ollama.com/download
-* python3 - https://www.python.org/downloads/
+* python3.12.10 - https://www.python.org/downloads/release/python-31210/
 
 ### Python
 
