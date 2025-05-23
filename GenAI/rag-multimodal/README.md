@@ -28,8 +28,9 @@ This is a multimodal rag project for *The Batch* that takes information from the
 python -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
-ollama pull qwen2.5:latest
-ollama pull llama3.2:latest
+ollama pull llama3.2
+ollama pull llava:13b
+ollama pull gemma3
 ollama pull deepseek-r1:1.5b
 ```
 
