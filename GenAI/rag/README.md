@@ -32,6 +32,24 @@ ollama pull llama3.2:latest
 ollama pull deepseek-r1:1.5b
 ```
 
+## Execution
+
+To extract data from The Batch
+
+```
+python populate_db.py -h  # for execution instructions
+python populate_db.py <start_date> <num_issues>
+```
+
+To execute Rag
+
+```
+python rag.py "<query>"
+```
+
 ## Test
 
+```
 deepeval set-ollama deepseek-r1:1.5b
+python test_rag.py
+```
