@@ -8,6 +8,7 @@ from langchain_core.runnables import RunnableLambda, RunnablePassthrough
 from langchain_ollama import ChatOllama
 
 from config import configs
+from failback import retry
 from storage import Storage
 
 
@@ -99,6 +100,7 @@ class Rag:
 
         return [HumanMessage(content=messages)]
 
+    @retry(attempts=3)
     def consult(self, query: str) -> str:
         return self.chain.invoke(query)
 

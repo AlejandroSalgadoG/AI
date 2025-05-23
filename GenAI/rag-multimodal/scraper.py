@@ -15,6 +15,7 @@ from bs4.element import Tag
 from langchain_community.document_loaders import WebBaseLoader
 
 from definitions import WebData, WebImage
+from failback import retry
 from logs import logger
 
 
@@ -156,6 +157,7 @@ class WebLoader(WebBaseLoader):
         logger.info(f"Found {len(data)} paragraphs")
         return "\n".join(data)
 
+    @retry(attempts=3)
     def load_web_path(self, web_path: str) -> WebData | None:
         logger.info(f"Starting scraping of {web_path}")
         soup = self._scrape(web_path, bs_kwargs=self.bs_kwargs)
