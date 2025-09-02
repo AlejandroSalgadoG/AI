@@ -1,24 +1,26 @@
-import gymnasium as gym
-
-from huggingface_hub import login
-from huggingface_sb3 import package_to_hub
-from stable_baselines3 import PPO
+from huggingface_hub import login, upload_file
+from huggingface_sb3 import push_to_hub
 
 login()
 
-env_id = "LunarLander-v3"
+repo_id = "asalgad2/rl_lunar_lander"
 
-env = gym.make(env_id, render_mode="rgb_array")
-
-model_name = "ppo-LunarLander-v2_2"
-model = PPO.load(model_name, env=env)
-
-package_to_hub(
-    model=model,
-    model_name=model_name,
-    model_architecture="PPO",
-    env_id=env_id,
-    eval_env=env,
-    repo_id="asalgad2/rl_lunar_lander",
+push_to_hub(
+    repo_id=repo_id,
+    filename="ppo-LunarLander-v2_2.zip",
     commit_message="commit lunar lander rl model",
+)
+
+upload_file(
+    repo_id=repo_id,
+    path_or_fileobj="replay.mp4",
+    path_in_repo="replay.mp4",
+    commit_message="add replay video",
+)
+
+upload_file(
+    repo_id=repo_id,
+    path_or_fileobj="README.md",
+    path_in_repo="README.md",
+    commit_message="update README",
 )
