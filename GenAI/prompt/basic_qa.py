@@ -1,5 +1,7 @@
 import dspy
 
+from utils import get_lm
+
 
 def predict(question: str) -> str:
     # Creates the following System message:
@@ -42,11 +44,7 @@ def predict(question: str) -> str:
 
 
 if __name__ == "__main__":
-    lm = dspy.LM(
-        "ollama_chat/llama3.1",
-        api_base="http://localhost:11434",
-        api_key="",
-    )
+    lm = get_lm()
     dspy.settings.configure(lm=lm)
     prediction = predict(question="What is the capital of France?")
     print(prediction.answer)
